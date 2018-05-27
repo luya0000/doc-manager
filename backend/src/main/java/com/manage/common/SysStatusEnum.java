@@ -1,4 +1,4 @@
-package com.doc.common;
+package com.manage.common;
 
 /**
  * 系统异常枚举

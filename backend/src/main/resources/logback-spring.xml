@@ -6,7 +6,7 @@
 
         <logger name="jdbc.sqltiming" level="INFO" />
         <logger name="jdbc.sqlOnly" level="INFO" />
-        <logger name="com.doc" level="DEBUG"/>
+        <logger name="com.manage" level="DEBUG"/>
         <logger name="org.springframework" level="INFO"/>
 
         <root level="INFO">

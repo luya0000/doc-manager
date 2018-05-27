@@ -1,4 +1,4 @@
-package com.doc.common;
+package com.manage.common;
 
 public class APIResponse {
 

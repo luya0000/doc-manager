@@ -1,4 +1,4 @@
-package com.doc.config;
+package com.manage.config;
 
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.SqlSessionFactory;

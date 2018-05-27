@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.doc.dao.UserMapper">
-    <resultMap id="userRolesMap" type="com.doc.model.UserDto">
+<mapper namespace="com.manage.user.dao.UserMapper">
+    <resultMap id="userRolesMap" type="com.manage.user.model.UserDto">
         <id column="id" property="id"/>
         <result column="account" property="account"/>
         <result column="name" property="name"/>
@@ -12,10 +12,10 @@
         <result column="note" property="note"/>
         <result column="ctrate_time" property="ctrateTime"/>
         <result column="update_time" property="updateTime"/>
-        <collection property="roles" column="id" select="com.doc.dao.UserRoleMapper.selectByUid"/>
+        <collection property="roles" column="id" select="com.manage.user.dao.UserRoleMapper.selectByUid"/>
     </resultMap>
 
-    <insert id="insert" parameterType="com.doc.model.UserDto">
+    <insert id="insert" parameterType="com.manage.user.model.UserDto">
         insert into t_user (account,name, pwd, email, phone, status,note)
         values (#{account,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
         #{email,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{note,jdbcType=VARCHAR})
