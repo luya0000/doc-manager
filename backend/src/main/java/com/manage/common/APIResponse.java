@@ -1,5 +1,8 @@
 package com.manage.common;
 
+import com.manage.exception.ResponseStatusEnum;
+import com.manage.exception.impl.SuccessStatusEnum;
+
 public class APIResponse {
 
     Integer code;
@@ -19,20 +22,20 @@ public class APIResponse {
 
     public static APIResponse toOkResponse() {
         APIResponse response = new APIResponse();
-        response.setCode(BizStatusEnum.OK.getCode());
-        response.setMessage(BizStatusEnum.OK.getMessage());
+        response.setCode(SuccessStatusEnum.OK.getCode());
+        response.setMessage(SuccessStatusEnum.OK.getMessage());
         return response;
     }
 
     public static APIResponse toOkResponse(Object data) {
-        return toOkResponse(data,BizStatusEnum.OK.getMessage());
+        return toOkResponse(data,SuccessStatusEnum.OK.getMessage());
     }
 
     public static APIResponse toOkResponse(Object data,String message) {
         SuccessAPIResponse response = new SuccessAPIResponse();
         response.setContent(data);
         response.setMessage(message);
-        response.setCode(BizStatusEnum.OK.getCode());
+        response.setCode(SuccessStatusEnum.OK.getCode());
         return response;
     }
 
@@ -40,13 +43,6 @@ public class APIResponse {
         APIResponse response = new APIResponse();
         response.setCode(exceptionEnum.getCode());
         response.setMessage(exceptionEnum.getMessage());
-        return response;
-    }
-
-    public static APIResponse toExceptionResponse(ResponseStatusEnum exceptionEnum,String message){
-        APIResponse response = new APIResponse();
-        response.setCode(exceptionEnum.getCode());
-        response.setMessage(message);
         return response;
     }
 
