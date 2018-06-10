@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,12 +14,11 @@
     <!-- /.login-logo -->
     <div class="login-box-body">
         <form action="#">
-            <div id="d_username" class="form-group has-feedback">
-                <input id="username" type="email" class="form-control" placeholder="User Name">
+            <div id="d_account" class="form-group has-feedback">
+                <input id="account" type="email" class="form-control" placeholder="User Name">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                <label class="control-label hide" for="username">
+                <label class="control-label hide" for="account">
                     <i class="fa fa-times-circle-o"></i>
-                    <span class="t_username">用户名不能为空</span>
                 </label>
             </div>
             <div id="d_password" class="form-group has-feedback">
@@ -33,36 +31,33 @@
             </div>
             <div class="row">
                 <div class="col-xs-8" id="jwtcontent">
-                    <!--<div class="checkbox icheck">
+                    <div class="checkbox icheck">
                       <label>
                         <input type="checkbox"> 记住我
                       </label>
-                    </div>-->
+                    </div>
                 </div>
-                <!-- /.col -->
                 <div class="col-xs-4">
                     <button type="button" class="btn btn-primary btn-block btn-flat btnlogin">登&nbsp;录</button>
                 </div>
-                <!-- /.col -->
             </div>
         </form>
 
     </div>
-    <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
 
 <!-- jQuery 2.1.4 -->
 <script src="../plugins/jQuery/jquery.min.js"></script>
 <!-- Bootstrap 3.3.5 -->
-<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
 <script>
     $(function () {
         $('.btnlogin').click(function(){
             login();
         });
 
-        $('#username,#password').keypress(function (event){
+        $('#account,#password').keypress(function (event){
             if(event.keyCode==13){
                 login();
             }
@@ -71,7 +66,7 @@
 
     function login(){
         if(checkInput()){
-            $.post("/login", {username:$('#username').val(),password:$('#password').val()},
+            $.post("/login", {account:$('#account').val(),password:$('#password').val()},
                     function(user){
                         console.log(user);
                         if(user==null||user===''){
@@ -86,9 +81,9 @@
 
     function checkInput(){
         resetText();
-        if($("#username").val()===''){
-            setErrorText("username","用户名不能为空");
-            $("#username").focus();
+        if($("#account").val()===''){
+            setErrorText("account","用户名不能为空");
+            $("#account").focus();
             return false;
         }
         if($("#password").val()===''){
@@ -100,10 +95,10 @@
     }
 
     function setErrorText(stype,error){
-        if(stype==="username"){
-            $("#d_username > label").removeClass("hide");
-            $("#d_username").addClass("has-error");
-            $(".t_username").html(error);
+        if(stype==="account"){
+            $("#d_account > label").removeClass("hide");
+            $("#d_account").addClass("has-error");
+            $(".t_account").html(error);
         }else if(stype==="password"){
             $("#d_password > label").removeClass("hide");
             $("#d_password").addClass("has-error");
@@ -112,8 +107,8 @@
     }
 
     function  resetText(){
-        $("#d_username > label").addClass("hide");
-        $("#d_username").removeClass("has-error");
+        $("#d_account> label").addClass("hide");
+        $("#d_account").removeClass("has-error");
         $("#d_password > label").addClass("hide");
         $("#d_password").removeClass("has-error");
     }

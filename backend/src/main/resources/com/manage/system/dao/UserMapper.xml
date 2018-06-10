@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.system.dao.UserMapper">
+
+    <insert id="insert" parameterType="com.manage.system.model.UserDto">
+        insert into t_user
+        (account, password, name, sex, age, phone, email, status, note, create_user, create_time, update_user, update_time)
+        values
+        (#{account,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{sex,jdbcType=CHAR},
+         #{age,jdbcType=INTEGER},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR},
+         #{note,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR},now(),#{updateUser,jdbcType=VARCHAR},now())
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from t_user where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.manage.system.model.UserDto">
+        UPDATE t_user
+        <set>
+            <if test="name != null and name != ''">name = #{name,jdbcType=VARCHAR},</if>
+            <if test="password != null and password != ''">password = #{password,jdbcType=VARCHAR},</if>
+            <if test="sex != null">sex = #{sex,jdbcType=CHAR},</if>
+            <if test="age != null">age = #{age,jdbcType=INTEGER},</if>
+            <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+            <if test="email != null and email != ''">email = #{email,jdbcType=VARCHAR},</if>
+            <if test="status != null and status != ''">status = #{status,jdbcType=VARCHAR},</if>
+            <if test="note != null and note != ''">note = #{note,jdbcType=VARCHAR},</if>
+            update_time = now()
+        </set>
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="changePassword">
+        UPDATE t_user
+        set password = #{password,jdbcType=VARCHAR}, update_time = now()
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectAll" resultType="com.manage.system.model.UserDto">
+        select id, account, password, name, sex, age, phone, email, status, note, create_user, create_time, update_user,
+        update_time
+        from t_user
+        <where>
+            <if test="account != null and account != ''">account LIKE #{account,jdbcType=VARCHAR}</if>
+            <if test="name != null and name != ''">AND name LIKE #{name,jdbcType=VARCHAR}</if>
+            <if test="status != null and status != ''">AND status = #{status,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+
+    <select id="selectByPrimaryKey" resultType="com.manage.system.model.UserDto">
+        select id, account, password, name, sex, age, phone, email, status, note, create_user, create_time, update_user, update_time
+        from t_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByAccount" resultType="com.manage.system.model.UserDto">
+        select id, account, password, name, sex, age, phone, email, status, note, create_user, create_time, update_user,
+        update_time
+        from t_user
+        <where>
+            <if test="account != null and account != ''">account = #{account,jdbcType=VARCHAR}</if>
+            <if test="status != null and status != ''">AND status = #{status,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+</mapper>

@@ -2,7 +2,7 @@ package com.manage.util;
 
 import com.manage.auth.properties.JwtProperties;
 import com.manage.common.Constants;
-import com.manage.user.bean.UserBean;
+import com.manage.system.bean.UserBean;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +79,10 @@ public class JwtTokenUtil {
         return getPrivateClaimFromToken(token, jwtProperties.getNameKey());
     }
 
+    public String getAccountFromToken(String token) {
+        return getPrivateClaimFromToken(token, "account");
+    }
+
     public String getRolesKeyFromToken(String token) {
         return getPrivateClaimFromToken(token, jwtProperties.getRolesKey());
     }
@@ -122,6 +126,7 @@ public class JwtTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put(jwtProperties.getMd5Key(), randomKey);
         claims.put(jwtProperties.getNameKey(), user.getName());
+        claims.put("account", user.getAccount());
         String[] roleIds = new String[user.getRoles().size()];
         for (int i = 0; i < user.getRoles().size(); i++) {
             roleIds[i] = user.getRoles().get(i).toString();

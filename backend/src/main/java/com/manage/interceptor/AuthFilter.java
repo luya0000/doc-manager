@@ -33,14 +33,15 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request.getServletPath().equals("/") || request.getServletPath().contains("/plugins") ||
+        // 跟路径。资源路径跳过
+        if (request.getServletPath().equals("/") || request.getServletPath().contains("/plugins") ||request.getServletPath().contains("js") ||
                 request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
             chain.doFilter(request, response);
             return;
         }
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
         String authToken = null;
-        if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
+        if (requestHeader != null && requestHeader.startsWith("Bearer")) {
             authToken = requestHeader.substring(7);
             logger.debug(authToken);
             //验证token是否过期,包含了验证jwt是否正确
@@ -58,6 +59,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
             request.setAttribute(Constants.JWT_ROLES_KEY, jwtTokenUtil.getRolesKeyFromToken(authToken));
             request.setAttribute(Constants.JWT_SUB_KEY, jwtTokenUtil.getUserIdFromToken(authToken));
+            request.setAttribute(Constants.JWT_ACCOUNT_KEY, jwtTokenUtil.getAccountFromToken(authToken));
         } else {
             //header没有带Bearer字段
             RenderUtil.renderJson(response, APIResponse.toExceptionResponse(SysExceptionStatusEnum.TOKEN_ERROR));
