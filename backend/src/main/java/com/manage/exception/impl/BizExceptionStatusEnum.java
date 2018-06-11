@@ -18,7 +18,7 @@ public enum BizExceptionStatusEnum implements ResponseStatusEnum {
     USER_DELETE_ERROR(100005, "删除用户失败"),
     USER_SELETE_ERROR(100006, "查询用户失败"),
     USER_OLD_NEW_PWD_ERROR(100007, "修改密码错误，两次密码不一致"),
-    USER_PWD_DIFF_ERROR(100007, "两次密码不一致"),
+    USER_PWD_DIFF_ERROR(100008, "两次密码不一致"),
 
     /*角色*/
     ROLE_SELETE_ERROR(200001, "查询角色失败"),
@@ -32,7 +32,10 @@ public enum BizExceptionStatusEnum implements ResponseStatusEnum {
     PERMIS_DELETE_ERROR(400003, "删除权限失败"),
 
 
-    USER_HAS_NO_ROLE_ERROR(300007, "权限不足"),;
+    USER_HAS_NO_ROLE_ERROR(300007, "权限不足"),
+
+
+    ;
 
     BizExceptionStatusEnum(int code, String message) {
         this.code = code;

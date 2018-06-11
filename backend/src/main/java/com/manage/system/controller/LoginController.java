@@ -24,7 +24,7 @@ public class LoginController extends BaseController {
 
     private Log logger = LogFactory.getLog(LoginController.class);
 
-    public static final String LOGIN_HTML = "index.html";
+    public static final String LOGIN_HTML = "main-back.html";
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -64,7 +64,8 @@ public class LoginController extends BaseController {
             logger.error(e);
             return APIResponse.toExceptionResponse(BizExceptionStatusEnum.AUTH_REQUEST_ERROR);
         }
-        if (BCrypt.checkpw(password, userBean.getPassword())) {
+
+        if (userBean != null && BCrypt.checkpw(password, userBean.getPassword())) {
             final String token = jwtTokenUtil.generateToken(userBean, randomKey);
             return APIResponse.toOkResponse(token);
         }
