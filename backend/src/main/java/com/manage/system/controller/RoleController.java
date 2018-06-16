@@ -25,7 +25,7 @@ import java.util.Map;
 @RequestMapping(value = UrlConstants.URL_ROLE_MODEL)
 public class RoleController extends BaseController {
 
-    Log logger = LogFactory.getLog(RoleController.class);
+    private Log logger = LogFactory.getLog(RoleController.class);
 
     @Autowired
     private RoleService roleService;

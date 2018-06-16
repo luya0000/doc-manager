@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * 对客户端请求的jwt token验证过滤器
@@ -35,11 +36,16 @@ public class AuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 跟路径。资源路径跳过
         if (request.getServletPath().equals("/") || request.getServletPath().contains("/plugins") ||
-                request.getServletPath().contains("js") || request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
+                request.getServletPath().contains("/resource") || request.getServletPath().contains("/view") ||
+                request.getServletPath().equals("/" + jwtProperties.getAuthPath()) || request.getServletPath().contains("/index")) {
             chain.doFilter(request, response);
             return;
         }
-        final String requestHeader = request.getHeader(jwtProperties.getHeader());
+        final String requestHeader = request.getHeader(jwtProperties.getHeader().toLowerCase());
+        Enumeration<String> es = request.getHeaderNames();
+        while (es.hasMoreElements()){
+            System.out.println(es.nextElement());
+        }
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
             authToken = requestHeader.substring(7);

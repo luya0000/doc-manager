@@ -69,7 +69,7 @@ public class UserController extends BaseController {
 
     /**
      * 根据主键获取用户
-     *
+     * id 为－１表示查询自己数据
      * @param userId
      * @return
      */
@@ -77,6 +77,9 @@ public class UserController extends BaseController {
     public APIResponse getUserByKey(@PathVariable("id") Integer userId) {
 
         try {
+            if(userId == -1){
+                userId = getUserId();
+            }
             UserBean userBean = userService.selectByPrimaryKey(userId);
             return APIResponse.toOkResponse(userBean);
         } catch (Exception e) {

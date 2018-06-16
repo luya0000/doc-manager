@@ -4,21 +4,34 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>文档管理系统</title>
-    <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../css/AdminLTE.css">
+    <link rel="stylesheet" href="./plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./plugins/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./plugins/css/ionicons.min.css">
+    <link rel="stylesheet" href="./plugins/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="./plugins/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="./plugins/pace/pace.min.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
+    <div class="login-logo">
+        <span style="font-size: 60px;color: orangered;font-weight: 900;">文档管理</span>
+    </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
+        <p class="login-box-msg">登录开启您的K8s之旅</p>
+
         <form action="#">
-            <div id="d_account" class="form-group has-feedback">
-                <input id="account" type="email" class="form-control" placeholder="User Name">
+            <div id="d_username" class="form-group has-feedback">
+                <input id="account" type="email" class="form-control" placeholder="Account">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 <label class="control-label hide" for="account">
                     <i class="fa fa-times-circle-o"></i>
+                    <span class="t_username">用户名不能为空</span>
                 </label>
             </div>
             <div id="d_password" class="form-group has-feedback">
@@ -30,12 +43,7 @@
                 </label>
             </div>
             <div class="row">
-                <div class="col-xs-8" id="jwtcontent">
-                    <div class="checkbox icheck">
-                      <label>
-                        <input type="checkbox"> 记住我
-                      </label>
-                    </div>
+                <div class="col-xs-8">
                 </div>
                 <div class="col-xs-4">
                     <button type="button" class="btn btn-primary btn-block btn-flat btnlogin">登&nbsp;录</button>
@@ -45,68 +53,74 @@
 
     </div>
 </div>
-<!-- /.login-box -->
 
 <!-- jQuery 2.1.4 -->
-<script src="../plugins/jQuery/jquery.min.js"></script>
+<script src="./plugins/jQuery/jQuery-2.1.4.min.js"></script>
 <!-- Bootstrap 3.3.5 -->
-<script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="./plugins/bootstrap/js/bootstrap.min.js"></script>
+
 <script>
     $(function () {
-        $('.btnlogin').click(function(){
+        $('.btnlogin').click(function () {
             login();
         });
 
-        $('#account,#password').keypress(function (event){
-            if(event.keyCode==13){
+        $('#account,#password').keypress(function (event) {
+            if (event.keyCode == 13) {
                 login();
             }
         });
     });
 
-    function login(){
-        if(checkInput()){
-            $.post("/login", {account:$('#account').val(),password:$('#password').val()},
-                    function(user){
-                        console.log(user);
-                        if(user==null||user===''){
-                            setErrorText("password","用户名或密码错误");
-                        }/*else{
-                            location.href = "/index";
-                        }*/
-                        $("#jwtcontent").text(user.content);
-                    });
+    function login() {
+        if (checkInput()) {
+            $.ajax({
+                type: "POST",
+                data: {account: $('#account').val(), password: $('#password').val()},
+                url: '/login',
+                async: false,
+                dataType: 'json',
+                success: function (result) {
+                    if (result == null || result === '') {
+                        setErrorText("password", "用户名或密码错误");
+                    } else {
+                        token = 'Bearer ' + result.content;
+                        localStorage.setItem('JWT_TOKEN',token);
+                        location.href = "/index";
+                    }
+                }
+            });
         }
     }
 
-    function checkInput(){
+    function checkInput() {
         resetText();
-        if($("#account").val()===''){
-            setErrorText("account","用户名不能为空");
+        if ($("#account").val() === '') {
+            setErrorText("account", "用户名不能为空");
             $("#account").focus();
             return false;
         }
-        if($("#password").val()===''){
-            setErrorText("password","密码不能为空");
+        if ($("#password").val() === '') {
+            setErrorText("password", "密码不能为空");
             $("#password").focus();
             return false;
         }
         return true;
     }
 
-    function setErrorText(stype,error){
-        if(stype==="account"){
+    function setErrorText(stype, error) {
+        if (stype === "account") {
             $("#d_account > label").removeClass("hide");
             $("#d_account").addClass("has-error");
             $(".t_account").html(error);
-        }else if(stype==="password"){
+        } else if (stype === "password") {
             $("#d_password > label").removeClass("hide");
             $("#d_password").addClass("has-error");
             $(".t_password").html(error);
         }
     }
 
-    function  resetText(){
+    function resetText() {
         $("#d_account> label").addClass("hide");
         $("#d_account").removeClass("has-error");
         $("#d_password > label").addClass("hide");

@@ -24,7 +24,7 @@ public class LoginController extends BaseController {
 
     private Log logger = LogFactory.getLog(LoginController.class);
 
-    public static final String LOGIN_HTML = "main-back.html";
+    public static final String LOGIN_HTML = "index.html";
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -37,20 +37,21 @@ public class LoginController extends BaseController {
         return LOGIN_HTML;
     }
 
-    @RequestMapping(value = "index")
-    public String example(HttpServletRequest request) {
-        return LOGIN_HTML;
+    @RequestMapping(value = "/index")
+    public ModelAndView login() {
+        ModelAndView model = new ModelAndView("/view/main.html");
+        return model;
     }
 
-    @PostMapping(value = "logout")
-    public ModelAndView signOut(HttpServletRequest request) {
+    @PostMapping(value = "/logout")
+    public ModelAndView logout(HttpServletRequest request) {
         return new ModelAndView(LOGIN_HTML);
     }
 
 
     @PostMapping(value = "${jwt.auth-path}")
     @ResponseBody
-    public APIResponse createAuthenticationToken(
+    public APIResponse createToken(
             @RequestParam("account") String account,
             @RequestParam("password") String password) {
 
