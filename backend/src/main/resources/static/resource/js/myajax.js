@@ -10,14 +10,13 @@ var myAjax = function (type, async, url,param, succCallBack) {
         dataType: "json",
         data: param,
         beforeSend: function (request) {
-            console.log(localStorage.getItem('JWT_TOKEN'));
             request.setRequestHeader("Authorization", localStorage.getItem('JWT_TOKEN'));
         },
         success: function (result, status) {
             if (result.code == 701) {
                 location.href = "/";
             }
-            succCallBack(result);
+            succCallBack(result, status);
         }
     });
 }

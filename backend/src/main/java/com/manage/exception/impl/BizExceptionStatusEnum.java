@@ -34,6 +34,16 @@ public enum BizExceptionStatusEnum implements ResponseStatusEnum {
 
     USER_HAS_NO_ROLE_ERROR(300007, "权限不足"),
 
+    /*文件*/
+    FILE_NOT_EXIST_ERROR(500001, "文件或文件夹不存在"),
+    FILE_NOT_FILE_ERROR(500002, "不是文件"),
+    FILE_NOT_DIR_ERROR(500003, "不是文件夹"),
+    FILE_CREATE_ERROR(500004, "创建文件失败"),
+    FILE_DELETE_ERROR(500005, "删除文件失败"),
+    FILE_RENAME_ERROR(500006, "文件改名失败"),
+    FILE_COPY_ERROR(500007, "文件复制失败"),
+    FILE_NOT_EXEC_ERROR(500008, "无权限操作当前文件或文件夹"),
+
 
     ;
 

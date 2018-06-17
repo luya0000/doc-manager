@@ -2,6 +2,7 @@ package com.manage.util.file;
 
 import com.manage.exception.DocException;
 import com.manage.exception.impl.BizExceptionStatusEnum;
+import com.manage.source.bean.FileDetail;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.util.http.fileupload.FileUtils;

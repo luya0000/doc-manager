@@ -1,4 +1,4 @@
-<style>
+<!--<style>
     .fileManage {
         margin-top: 10px;
         border: 1px solid;
@@ -72,28 +72,33 @@
         width: 80%;
         font-size: 9px;
     }
-</style>
+</style>-->
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
             <!-- /.box-header -->
             <div class="box-body">
                 <div style="padding-bottom: 5px;margin-left:20px;">
-                    <img class="fl" id="return" src="../resource/img/file/return.png"/>
-                    <label>当前路径：</label>
-                    <input id="path" type="text" value="E:/adiainfo/k8s_ext_files" style="height:28px;width:29%;">
-                    <a class="btn btn-primary" id="dele" data-toggle="modal" data-target="#myModal2">删除</a>
-                    <div class="btns" style="width:10%;float:right;margin-right: 43%;">
-                        <div id="picker" style="height:40px;">上传文件</div>
-                    </div>
-
+                    <!--根路径-->
+                    <input id="path" type="hidden" value="">
+                    <a class="btn btn-default" id="return"><i class="fa fa-mail-reply"> 返回</i></a>
+                    <a class="btn btn-default" id="uploadFile"><i class="fa fa-upload"> 上传文件</i></a>
+                    <a class="btn btn-default" id="newFile"><i class="fa fa-plus"> 新建文件夹</i></a>
+                    <!--<a class="btn btn-default" id="viewFile"><i class="fa fa-eye"> 预览文件</i></a>-->
+                    <a class="btn btn-default" id="downloadFile"><i class="fa fa-download"> 下载文件</i></a>
+                    <a class="btn btn-danger" id="dele"><i class="fa fa-bitbucket"> 删除</i></a>
                 </div>
-                <div class="fileManage-alltitle">
-                    <span>文件名称</span>
-                    <span>更新日期</span>
-                    <span>大小</span>
-                </div>
-                <div class="fileManage">
+                <div class="fileManage" style="padding-bottom: 5px;margin-left:20px;">
+                    <table class="table" id="fileTable">
+                        <tbody>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>文件名称</th>
+                            <th>更新日期</th>
+                            <th>大小</th>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <!-- /.box-body -->
@@ -113,136 +118,168 @@
     </div>
 </div>
 <script>
-    var _path = $("#path").val();
-    searchFile(_path);
 
+    var rootPath;
+    $(function () {
+
+        // 获取根路径
+        myAjax("get", false, "/doc/file/getBasePath", null, getRootPath);
+        // 获取目录
+        if ($("#path").val() != "") {
+            searchFile($("#path").val());
+        }
+        $('#fileTable').delegate('.c_path', "click", function () {
+            var newPath = $("#path").val() + "/" + this.innerText;
+            $("#path").val(newPath);
+            searchFile(newPath);
+        });
+        $(".webuploader-pick").remove("class");
+    })
+
+    // 获取根路径
+    function getRootPath(result) {
+        if (result.code == 200 && result.content != "") {
+            rootPath = result.content;
+            $("#path").val(result.content);
+        } else {
+            layer.alert('根路径获取失败，联系管理员！', {
+                skin: 'layui-layer-lan' //样式类名
+                , closeBtn: 0
+            });
+        }
+    }
+    /*查询路径文件*/
     function searchFile(_path) {
         var data = {
             path: _path
         }
-        myAjax("GET", true, "/extresources/listfiles", data, searchFileCallBack)
+        myAjax("GET", true, "/doc/file/fileList", data, searchFileCallBackNew);
     }
-
-
-    function searchFileCallBack(data) {
-        if (data.err == "1") {
-            alert(data.msg);
+    /*查询路径文件后处理*/
+    function searchFileCallBackNew(result) {
+        if (result.code != 200) {
+            layer.alert(result.message, {
+                skin: 'layui-layer-lan' //样式类名
+                , closeBtn: 0
+            });
             var path = $("#path").val();
-            var path_old = path.split("/");
-            var path_new = "";
-            for (var i = 1; i < path_old.length - 1; i++) {
-                path_new += "/" + path_old[i];
+            // 到达根路径不需要再操作
+            if (rootPath.indexOf(path) > 0) {
+                return;
             }
-            if (path_new != "") {
-                $("#path").attr("value", path_new);
-                searchFile(path_new);
+            // 不是根路径向上返回一级
+            var pathNew = path.substr(0, path.lastIndexOf("/"));
+            if (pathNew != "") {
+                $("#path").attr("value", pathNew);
+                searchFile(pathNew);
             }
         } else {
-            var pathString = "";
-            var fileString = "";
-            $.each(data.result, function (i, item) {
-                if (item.type == "path") {
-                    pathString += [
-                        '<div class="fileManage-all" c="file" name="' + item.name + '">',
-                        '<img src="../img/file/file.png" alt=""/>',
-                        '<span>' + item.name + '</span>',
-                        '<span>' + item.date + '</span>',
-                        '<span></span>',
-                        '</div>'
-                    ].join('');
-                } else {
-                    fileString += [
-                        '<div class="fileManage-all" c="other" name="' + item.name + '">',
-                        '<img src="../img/file/' + item.pic + '" alt=""/>',
-                        '<span>' + item.name + '</span>',
-                        '<span>' + item.date + '</span>',
-                        '<span>' + item.size + 'KB</span>',
-                        '</div>'
-                    ].join('');
-                }
+            $('#fileTable').find('td').remove();
+            var tableList = "";
+
+            $.each(result.content, function (i, item) {
+                tableList += [
+                    '<tr><td><input type="checkbox" class="checkBox"/></td>',
+                    '<td><input type = "hidden" class = "fileType" value="' + item.type + '"/>',
+                    '<input type = "hidden" class = "filePath" value="' + item.path + '"/>',
+                    '<img src="../resource/img/file/' + item.pic + '" alt=""/>',
+                    '<span class="c_' + item.type + '" style="cursor: pointer;">' + item.name + '</span></td>',
+                    '<td>' + item.date + '</td>',
+                    '<td>' + (item.type == "file" ? (item.size + ' ' + item.unit) : "") + '</td>'
+                ].join('');
             });
-            $(".fileManage").html(pathString + fileString);
-
-            $(".fileManage").find(".fileManage-all[c=file]").dblclick(function () {
-                var path = $("#path").val();
-                var name = $(this).attr('name');
-                $("#path").attr("value", path + "/" + name);
-                searchFile(path + "/" + name);
-
-            });
-
-            $(".fileManage").find(".fileManage-all").click(function () {
-                $(".fileManage").unbind();
-                $("#dele").unbind();
-                $(".fileManage-all").css({'background': ''});
-                $(this).css({'background': '#eeeeee'});
-                var _pathOrFile = "";
-                var path = $("#path").val();
-                var path_new = $(this).attr('name');
-                _pathOrFile = path + "/" + path_new;
-                $("#dele").click(function () {
-                    $.ajax({
-                        url: "/extresources/deleteFileOrPath",
-                        data: {
-                            pathOrFile: _pathOrFile
-                        },
-                        type: "GET",
-                        dataType: "json",
-                        success: function (data) {
-                            var _path = $("#path").val();
-                            searchFile(_path);
-                        },
-                        error: function () {
-                            alert("删除失败");
-                        }
-                    });
-
-                });
-            });
-
+            $('#fileTable').append(tableList);
         }
     }
+    /*返回按钮*/
     $("#return").click(function () {
         var path = $("#path").val();
-        if (path.lastIndexOf("/") == 0) {
-            alert("已经到达跟目录，不允许查看其他目录");
+        if (rootPath.indexOf(path) >= 0) {
+            layer.alert('已经到达跟目录！', {
+                skin: 'layui-layer-lan' //样式类名
+                , closeBtn: 0
+            });
         } else {
-            var path_old = path.split("/");
-            var path_new = "";
-            for (var i = 1; i < path_old.length - 1; i++) {
-                path_new += "/" + path_old[i];
+            var pathNew = path.substr(0, path.lastIndexOf("/"));
+            if (pathNew != "") {
+                $("#path").attr("value", pathNew);
+                searchFile(pathNew);
             }
-            $("#path").attr("value", path_new);
-            searchFile(path_new);
         }
-
-
+    });
+    /*新建文件夹*/
+    $("#return").click(function () {
+        var path = $("#path").val();
+        if (rootPath.indexOf(path) >= 0) {
+            layer.alert('已经到达跟目录！', {
+                skin: 'layui-layer-lan' //样式类名
+                , closeBtn: 0
+            });
+        } else {
+            var pathNew = path.substr(0, path.lastIndexOf("/"));
+            if (pathNew != "") {
+                $("#path").attr("value", pathNew);
+                searchFile(pathNew);
+            }
+        }
+    });
+    /*删除文件或文件夹*/
+    $("#return").click(function () {
+        var path = $("#path").val();
+        if (rootPath.indexOf(path) >= 0) {
+            layer.alert('已经到达跟目录！', {
+                skin: 'layui-layer-lan' //样式类名
+                , closeBtn: 0
+            });
+        } else {
+            var pathNew = path.substr(0, path.lastIndexOf("/"));
+            if (pathNew != "") {
+                $("#path").attr("value", pathNew);
+                searchFile(pathNew);
+            }
+        }
+    });
+    /*下载文件*/
+    $("#return").click(function () {
+        var path = $("#path").val();
+        if (rootPath.indexOf(path) >= 0) {
+            layer.alert('已经到达跟目录！', {
+                skin: 'layui-layer-lan' //样式类名
+                , closeBtn: 0
+            });
+        } else {
+            var pathNew = path.substr(0, path.lastIndexOf("/"));
+            if (pathNew != "") {
+                $("#path").attr("value", pathNew);
+                searchFile(pathNew);
+            }
+        }
     });
 
-    function uploadimagesall(_path) {
+
+    function uploadFileAll(_path) {
         var $ = jQuery,
                 $list = $('#thelist'),
-                state = 'pending',
-                uploader;
-        uploader = WebUploader.create({
+                state = 'pending';
 
-            resize: true,// 不压缩image
-            swf: '../js/Uploader.swf',// swf文件路径
+        var uploader = WebUploader.create({
+            swf: '../../plugins/uploader/Uploader.swf',// swf文件路径
             auto: true, // 选完文件后，是否自动上传
+            duplicate: true, // 开起分片上传。
+            paste: "document.body",
+            pick: '#uploadFile',// 选择文件的按钮。可选。
+            prepareNextFile: true,//是否允许在文件传输时提前把下一个文件准备好
+            resize: true,// 不压缩image
 
-            // 文件接收服务端。
-            server: '/extresources/upload-file',
-            // 选择文件的按钮。可选。
-            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-            pick: '#picker',
             formData: {
                 path: _path,
                 name: "zzzzzzzzz"
             },
-            duplicate: true,
+            method: "post",
+            fileNumLimit: 50,//验证文件总数量, 超出则不允许加入队列
+            server: '/doc/file/upload-file',// 文件接收服务端。
             sendAsBinary: true,
-            extensions: 'img',
-            headers: {"Authorization": localStorage.getItem('JWT_TOKEN')}
+            //extensions: 'img',
         });
 
 //uploader.options.formData.uid = $("#path").val();//全局参数
@@ -295,8 +332,84 @@
 
     }
 
+
+    /*上传文件*/
+    /*function uploadFileAll(_path) {
+     var $ = jQuery,
+     $list = $('#thelist'),
+     state = 'pending',
+     uploader;
+     uploader = WebUploader.create({
+
+     resize: true,// 不压缩image
+     swf: '../../plugins/uploader/Uploader.swf',// swf文件路径
+     auto: true, // 选完文件后，是否自动上传
+
+     // 文件接收服务端。
+     server: '/doc/file/upload-file',
+     // 选择文件的按钮。可选。
+     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+     pick: '#uploadFile',
+     formData: {
+     path: _path,
+     name: "zzzzzzzzz"
+     },
+     duplicate: true,
+     sendAsBinary: true,
+     extensions: 'img',
+     });
+
+     //uploader.options.formData.uid = $("#path").val();//全局参数
+     //局部参数
+     uploader.on('uploadBeforeSend', function (obj, data, headers) {
+     var path_update = $("#path").val();
+     data['path'] = path_update;
+     });
+
+     //当有文件添加进来的时候
+     uploader.on('fileQueued', function (file) {
+     $list.append('<div id="' + file.id + '" class="item">' +
+     '<h4 class="info">' + file.name + '</h4>' +
+     '<p class="state">等待上传...</p>' +
+     '</div>');
+     });
+
+     //文件上传过程中创建进度条实时显示。
+     uploader.on('uploadProgress', function (file, percentage) {
+     $('#myModal').modal({backdrop: 'static', keyboard: false});
+     var $li = $('#' + file.id),
+     $percent = $li.find('.progress .progress-bar');
+
+     // 避免重复创建
+     if (!$percent.length) {
+     $percent = $('<div class="progress progress-striped active">' +
+     '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+     '</div>' +
+     '</div>').appendTo($li).find('.progress-bar');
+     }
+
+     $li.find('p.state').text('上传中');
+
+     $percent.css('width', percentage * 100 + '%');
+     });
+
+     uploader.on('uploadSuccess', function (file) {
+     $('#' + file.id).find('p.state').text('已上传');
+     var path_update = $("#path").val();
+     searchFile(path_update);
+     });
+
+     uploader.on('uploadError', function (file) {
+     $('#' + file.id).find('p.state').text('上传出错');
+     });
+     uploader.on('uploadComplete', function (file) {
+     $("#myModal").modal('hide');
+     $('#' + file.id).find('.progress').fadeOut();
+     });
+
+     }*/
     var path_update = $("#path").val();
-    uploadimagesall(path_update);
+    uploadFileAll(path_update);
 
 
 </script>

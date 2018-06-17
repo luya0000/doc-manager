@@ -53,7 +53,7 @@ public class UserController extends BaseController {
         List<UserBean> userList = null;
         try {
             Page page = PageHelper.startPage(pageNum, pageSize, true);
-            userList = userService.getUserList(account, userName, Constants.STATUE_INVALID);
+            userList = userService.selectUserList(account, userName, Constants.STATUE_INVALID);
             Map result = new HashedMap();
             result.put("data", userList);
             result.put("pageNum", pageNum);

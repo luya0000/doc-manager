@@ -1,11 +1,14 @@
-package com.manage.util.file;
+package com.manage.source.bean;
 
 public class FileDetail {
 	private String name;
 	private String type;
 	private long size;
+	private String unit;// 大小单位 MB/KB
 	private String date;
 	private String pic;
+	private String auth;
+	private String path;
 	public String getName() {
 		return name;
 	}
@@ -35,5 +38,29 @@ public class FileDetail {
 	}
 	public void setPic(String pic) {
 		this.pic = pic;
+	}
+
+	public String getAuth() {
+		return auth;
+	}
+
+	public void setAuth(String auth) {
+		this.auth = auth;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 }

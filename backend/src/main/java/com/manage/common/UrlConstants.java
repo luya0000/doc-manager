@@ -1,7 +1,6 @@
 package com.manage.common;
 
 public class UrlConstants {
-    public static final String URL_SYS_MODEL = "/sys";
     public static final String URL_USER_MODEL = "/doc/user";
     public static final String URL_FILE_MODEL = "/doc/file";
     public static final String URL_ROLE_MODEL = "/doc/role";

@@ -42,10 +42,6 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
         final String requestHeader = request.getHeader(jwtProperties.getHeader().toLowerCase());
-        Enumeration<String> es = request.getHeaderNames();
-        while (es.hasMoreElements()){
-            System.out.println(es.nextElement());
-        }
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
             authToken = requestHeader.substring(7);

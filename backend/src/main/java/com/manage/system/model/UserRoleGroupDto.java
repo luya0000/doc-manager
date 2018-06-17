@@ -6,8 +6,10 @@ public class UserRoleGroupDto {
     private int id;
     private int userId;
     private int roleId;
-    private String roleType;
     private int groupId;
+    private String roleType;
+    private String account;
+    private String groupName;
     private Timestamp createTime;
     private String createUser;
 
@@ -42,12 +44,29 @@ public class UserRoleGroupDto {
     public void setRoleType(String roleType) {
         this.roleType = roleType;
     }
+
     public int getGroupId() {
         return groupId;
     }
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public Timestamp getCreateTime() {

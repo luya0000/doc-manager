@@ -32,10 +32,9 @@ public class UserService {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
-
     /*获取用户带权限列表*/
     @Transactional(readOnly = true)
-    public List<UserBean> getUserList(String account, String name, String status) throws Exception {
+    public List<UserBean> selectUserList(String account, String name, String status) throws Exception {
         // 设置模糊查询参数
         account = StringUtils.isBlank(account) ? null : "%" + account.trim() + "%";
         String userName = StringUtils.isBlank(name) ? null : "%" + name.trim() + "%";

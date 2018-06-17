@@ -23,13 +23,24 @@
     </delete>
 
     <select id="selectByParam" resultType="com.manage.system.model.UserRoleGroupDto">
-        SELECT tu.id, tu.user_id, tu.role_id, tu.group_id, tr.type as role_type ,tu.create_time, tu.create_user
-        FROM t_user_role_group tu, t_role tr
+        SELECT
+        turg.id,
+        turg.user_id,
+        turg.role_id,
+        turg.group_id,
+        tr.type    AS role_type,
+        tu.account AS account,
+        tg.name    AS group_name,
+        turg.create_time,
+        turg.create_user
+        FROM t_user tu,t_user_role_group turg, t_role tr, t_group tg
         <where>
-            tu.role_id = tr.id
-            <if test="userId != null">AND tu.user_id = #{userId,jdbcType=VARCHAR}</if>
-            <if test="roleId != null">AND tu.role_id = #{roleId,jdbcType=INTEGER}</if>
-            <if test="groupId != null">AND tu.group_id = #{groupId,jdbcType=INTEGER}</if>
+            turg.role_id = tr.id
+            AND turg.group_id = tg.id
+            AND turg.user_id = tu.id
+            <if test="userId != null">AND turg.user_id = #{userId,jdbcType=VARCHAR}</if>
+            <if test="roleId != null">AND turg.role_id = #{roleId,jdbcType=INTEGER}</if>
+            <if test="groupId != null">AND turg.group_id = #{groupId,jdbcType=INTEGER}</if>
         </where>
     </select>
 

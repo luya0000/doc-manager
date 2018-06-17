@@ -1725,18 +1725,18 @@
                     opts = me.options,
                     button = opts.button;
     
-                button.addClass('webuploader-pick');
+                //button.addClass('webuploader-pick');
     
                 me.on( 'all', function( type ) {
                     var files;
     
                     switch ( type ) {
                         case 'mouseenter':
-                            button.addClass('webuploader-pick-hover');
+                            //button.addClass('webuploader-pick-hover');
                             break;
     
                         case 'mouseleave':
-                            button.removeClass('webuploader-pick-hover');
+                            //button.removeClass('webuploader-pick-hover');
                             break;
     
                         case 'change':

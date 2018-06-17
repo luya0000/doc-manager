@@ -8,11 +8,13 @@ public class Constants {
     public static final String JWT_ACCOUNT_KEY = "jwt_account_key";
     /**/
     public static final String ROLE_SPLITOR = "|";
+    public static final String FILE_SPLITOR = "/";
 
     /*管理员角色*/
-    public static final String SYSTEM_TYPE = "0";
-    public static final String ADMIN_TYPE = "1";
-    public static final String NOMAL_TYPE = "2";
+    public static final String SYSTEM_TYPE = "SYSTEM_USER";
+    public static final String ADMIN_TYPE = "ADMIN_USER";
+    public static final String NOMAL_TYPE = "NOMAL_USER";
+    public static final String DEFAULT_TYPE = "DEFAULT_USER";
 
     // 状态 0有效、1无效
     public static final String STATUE_VALID = "1";
