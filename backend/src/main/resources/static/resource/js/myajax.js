@@ -13,8 +13,9 @@ var myAjax = function (type, async, url,param, succCallBack) {
             request.setRequestHeader("Authorization", localStorage.getItem('JWT_TOKEN'));
         },
         success: function (result, status) {
-            if (result.code == 701) {
+            if (result.code === 701) {
                 location.href = "/";
+                return;
             }
             succCallBack(result, status);
         }

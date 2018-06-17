@@ -26,5 +26,8 @@ public class Constants {
     /*每页显示条数*/
     public static final Integer PAGEHELPER_PAGE_SIZE = 10;
 
+    //
+    public static final String DATE_FORMAT_YMDHMS = "yyyyMMddHHmmss";
+
 
 }

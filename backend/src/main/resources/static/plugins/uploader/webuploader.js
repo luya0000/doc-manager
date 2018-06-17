@@ -3990,7 +3990,7 @@
                     requestAccept, ret;
     
                 block.transport = tr;
-                headers.Authorization = localStorage.getItem('JWT_TOKEN');
+                //headers.Authorization = localStorage.getItem('JWT_TOKEN');
 
                 tr.on( 'destroy', function() {
                     delete block.transport;

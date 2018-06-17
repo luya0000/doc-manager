@@ -1,78 +1,3 @@
-<!--<style>
-    .fileManage {
-        margin-top: 10px;
-        border: 1px solid;
-    }
-
-    .fileManage-alltitle {
-        margin-left: 22px;
-        margin-top: 14px;
-        float: left;
-        width: 100%;
-    }
-
-    .fileManage-alltitle span {
-        margin-top: 2px;
-        float: left;
-        overflow: hidden;
-        width: 250px;
-    }
-
-    .fileManage-all {
-        margin-top: 2px;
-        float: left;
-        width: 100%;
-        padding: 3px;
-    }
-
-    .fileManage-all span {
-
-        float: left;
-        overflow: hidden;
-        width: 250px;
-    }
-
-    .fileManage-all img {
-        float: left;
-    }
-
-    .fl {
-        vertical-align: middle;
-        width: 25px;
-        height: 25px;
-        margin-right: 10px;
-        margin-left: -2%;
-    }
-
-    .f2 {
-        vertical-align: middle;
-        width: 25px;
-        height: 25px;
-        margin-right: 10px;
-    }
-
-    .webuploader-pick {
-        height: 32px;
-        width: 75px;
-        margin-left: 15px;
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
-        background: #367fa9;
-        padding: 7px 5px 2px 5px;
-        color: #fff;
-        text-align: center;
-        border-radius: 3px;
-        overflow: hidden;
-        font-size: 14px;
-    }
-
-    .uploader-list {
-        margin: 40% 30%;
-        width: 80%;
-        font-size: 9px;
-    }
-</style>-->
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
@@ -86,13 +11,13 @@
                     <a class="btn btn-default" id="newFile"><i class="fa fa-plus"> 新建文件夹</i></a>
                     <!--<a class="btn btn-default" id="viewFile"><i class="fa fa-eye"> 预览文件</i></a>-->
                     <a class="btn btn-default" id="downloadFile"><i class="fa fa-download"> 下载文件</i></a>
-                    <a class="btn btn-danger" id="dele"><i class="fa fa-bitbucket"> 删除</i></a>
+                    <a class="btn btn-danger" id="deleFile"><i class="fa fa-bitbucket"> 删除</i></a>
                 </div>
                 <div class="fileManage" style="padding-bottom: 5px;margin-left:20px;">
                     <table class="table" id="fileTable">
                         <tbody>
                         <tr>
-                            <th style="width: 10px">#</th>
+                            <th style="width: 10px"><input type="checkbox" id="All"></th>
                             <th>文件名称</th>
                             <th>更新日期</th>
                             <th>大小</th>
@@ -108,12 +33,36 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-     aria-labelledby="myModalLabel">
+
+<!--文件上传model-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <!--用来存放文件信息-->
-            <div id="thelist" class="uploader-list"></div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">文件上传列表</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Horizontal Form -->
+                <div class="box box-info" style="margin-bottom:0px;">
+                    <!-- form start -->
+                    <form class="form-horizontal">
+                        <table id="thelist" class="table table-condensed">
+                            <tbody>
+                            <tr>
+                                <th style="width: 60%">任务名</th>
+                                <th style="width: 40%">状态</th>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- /.box-body -->
+                    </form>
+                </div>
+                <!-- /.box -->
+            </div>
         </div>
     </div>
 </div>
@@ -137,7 +86,7 @@
     })
 
     // 获取根路径
-    function getRootPath(result) {
+    function getRootPath(result, status) {
         if (result.code == 200 && result.content != "") {
             rootPath = result.content;
             $("#path").val(result.content);
@@ -156,7 +105,7 @@
         myAjax("GET", true, "/doc/file/fileList", data, searchFileCallBackNew);
     }
     /*查询路径文件后处理*/
-    function searchFileCallBackNew(result) {
+    function searchFileCallBackNew(result, status) {
         if (result.code != 200) {
             layer.alert(result.message, {
                 skin: 'layui-layer-lan' //样式类名
@@ -179,7 +128,7 @@
 
             $.each(result.content, function (i, item) {
                 tableList += [
-                    '<tr><td><input type="checkbox" class="checkBox"/></td>',
+                    '<tr><td><input type="checkbox" class="fileCheckBox"/></td>',
                     '<td><input type = "hidden" class = "fileType" value="' + item.type + '"/>',
                     '<input type = "hidden" class = "filePath" value="' + item.path + '"/>',
                     '<img src="../resource/img/file/' + item.pic + '" alt=""/>',
@@ -208,39 +157,75 @@
         }
     });
     /*新建文件夹*/
-    $("#return").click(function () {
-        var path = $("#path").val();
-        if (rootPath.indexOf(path) >= 0) {
-            layer.alert('已经到达跟目录！', {
-                skin: 'layui-layer-lan' //样式类名
-                , closeBtn: 0
-            });
-        } else {
-            var pathNew = path.substr(0, path.lastIndexOf("/"));
-            if (pathNew != "") {
-                $("#path").attr("value", pathNew);
-                searchFile(pathNew);
+    $("#newFile").click(function () {
+        layer.prompt({title: '文件夹名称', formType: 3}, function (text, index) {
+            var path = $("#path").val();
+            if (text == "") {
+                layer.msg("文件名不能为空");
+                return false;
             }
-        }
+            var param = {
+                path: path,
+                dir: text
+            }
+            myAjax("post", false, "/doc/file/newdir", param, function (result, status) {
+                if (result.code != 200) {
+                    layer.msg(result.message);
+                }
+            });
+            layer.close(index);
+            searchFile(path);
+        });
     });
     /*删除文件或文件夹*/
-    $("#return").click(function () {
-        var path = $("#path").val();
-        if (rootPath.indexOf(path) >= 0) {
-            layer.alert('已经到达跟目录！', {
-                skin: 'layui-layer-lan' //样式类名
-                , closeBtn: 0
-            });
+    <!-- 选择全部/全不选 -->
+    $("#All").click(function () {
+        if (this.checked) {
+            $(".fileCheckBox").prop("checked", true);
         } else {
-            var pathNew = path.substr(0, path.lastIndexOf("/"));
-            if (pathNew != "") {
-                $("#path").attr("value", pathNew);
-                searchFile(pathNew);
-            }
+            $(".fileCheckBox").prop("checked", false);
         }
+    });
+
+    $("#deleFile").click(function () {
+        layer.confirm('删除后不可恢复，确认删除？', {
+            btn: ['删除', '取消'] //按钮
+        }, function () {
+            // 选择列表
+            var paths = "";
+            $.each($('.fileCheckBox'), function () {
+                if (this.checked) {
+                    paths += $(this).parent().parent().find(".filePath").val();
+                    paths += ":";
+                }
+            });
+            var param = {
+                paths: paths
+            }
+            myAjax("post", false, "/doc/file/delete", param, function (result, status) {
+                if(result.code != 200){
+                    layer.msg(result.message);
+                    searchFile($("#path").val());
+                    return;
+                }else if (result.content != "") {
+                    console.log(result.content);
+                    var fileNames = "";
+                    for (var i = 0; i < result.content.length; i++) {
+                        fileNames += result.content[i] + "<br>";
+                    }
+                    layer.alert("以下文件删除失败！<br>" + fileNames, {
+                        skin: 'layui-layer-lan' //样式类名
+                        , closeBtn: 0
+                    });
+                } else {
+                    layer.msg("删除成功");
+                }
+                searchFile($("#path").val());
+            });
+        });
     });
     /*下载文件*/
-    $("#return").click(function () {
+    $("#downloadFile").click(function () {
         var path = $("#path").val();
         if (rootPath.indexOf(path) >= 0) {
             layer.alert('已经到达跟目录！', {
@@ -256,14 +241,14 @@
         }
     });
 
-
+    /*上传文件*/
     function uploadFileAll(_path) {
         var $ = jQuery,
                 $list = $('#thelist'),
                 state = 'pending';
 
         var uploader = WebUploader.create({
-            swf: '../../plugins/uploader/Uploader.swf',// swf文件路径
+            swf: 'Uploader.swf',// swf文件路径
             auto: true, // 选完文件后，是否自动上传
             duplicate: true, // 开起分片上传。
             paste: "document.body",
@@ -279,29 +264,33 @@
             fileNumLimit: 50,//验证文件总数量, 超出则不允许加入队列
             server: '/doc/file/upload-file',// 文件接收服务端。
             sendAsBinary: true,
+            headers: {Authorization: localStorage.getItem('JWT_TOKEN')}
             //extensions: 'img',
         });
-
-//uploader.options.formData.uid = $("#path").val();//全局参数
-//局部参数
+        //uploader.options.formData.uid = $("#path").val();//全局参数
+        //局部参数
         uploader.on('uploadBeforeSend', function (obj, data, headers) {
             var path_update = $("#path").val();
             data['path'] = path_update;
         });
 
-//当有文件添加进来的时候
+        //当有文件添加进来的时候
         uploader.on('fileQueued', function (file) {
-            $list.append('<div id="' + file.id + '" class="item">' +
-                    '<h4 class="info">' + file.name + '</h4>' +
-                    '<p class="state">等待上传...</p>' +
-                    '</div>');
+            var tableList = "";
+            tableList += [
+                '<tr id="' + file.id + '">',
+                '<td class="item"><h5 class="info">' + file.name + '</h5></td>',
+                '<td class="state" style="vertical-align:middle;">等待上传..</td>',
+                '</tr>'
+            ].join('');
+            $list.append(tableList);
         });
 
-//文件上传过程中创建进度条实时显示。
+        //文件上传过程中创建进度条实时显示。
         uploader.on('uploadProgress', function (file, percentage) {
             $('#myModal').modal({backdrop: 'static', keyboard: false});
-            var $li = $('#' + file.id),
-                    $percent = $li.find('.progress .progress-bar');
+            var $li = $('#' + file.id).find('.item');
+            var $percent = $li.find('.progress .progress-bar');
 
             // 避免重复创建
             if (!$percent.length) {
@@ -310,104 +299,26 @@
                         '</div>' +
                         '</div>').appendTo($li).find('.progress-bar');
             }
-
-            $li.find('p.state').text('上传中');
-
+            $('#' + file.id).find('.state').text('上传中');
             $percent.css('width', percentage * 100 + '%');
         });
 
         uploader.on('uploadSuccess', function (file) {
-            $('#' + file.id).find('p.state').text('已上传');
+            $('#' + file.id).find('.state').text('已上传');
             var path_update = $("#path").val();
             searchFile(path_update);
         });
 
         uploader.on('uploadError', function (file) {
-            $('#' + file.id).find('p.state').text('上传出错');
+            $('#' + file.id).find('.state').text('上传失败，当前文件夹无操作权限');
         });
         uploader.on('uploadComplete', function (file) {
-            $("#myModal").modal('hide');
+            //$("#myModal").modal('hide');
             $('#' + file.id).find('.progress').fadeOut();
+            searchFile($("#path").val());
         });
 
     }
-
-
-    /*上传文件*/
-    /*function uploadFileAll(_path) {
-     var $ = jQuery,
-     $list = $('#thelist'),
-     state = 'pending',
-     uploader;
-     uploader = WebUploader.create({
-
-     resize: true,// 不压缩image
-     swf: '../../plugins/uploader/Uploader.swf',// swf文件路径
-     auto: true, // 选完文件后，是否自动上传
-
-     // 文件接收服务端。
-     server: '/doc/file/upload-file',
-     // 选择文件的按钮。可选。
-     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-     pick: '#uploadFile',
-     formData: {
-     path: _path,
-     name: "zzzzzzzzz"
-     },
-     duplicate: true,
-     sendAsBinary: true,
-     extensions: 'img',
-     });
-
-     //uploader.options.formData.uid = $("#path").val();//全局参数
-     //局部参数
-     uploader.on('uploadBeforeSend', function (obj, data, headers) {
-     var path_update = $("#path").val();
-     data['path'] = path_update;
-     });
-
-     //当有文件添加进来的时候
-     uploader.on('fileQueued', function (file) {
-     $list.append('<div id="' + file.id + '" class="item">' +
-     '<h4 class="info">' + file.name + '</h4>' +
-     '<p class="state">等待上传...</p>' +
-     '</div>');
-     });
-
-     //文件上传过程中创建进度条实时显示。
-     uploader.on('uploadProgress', function (file, percentage) {
-     $('#myModal').modal({backdrop: 'static', keyboard: false});
-     var $li = $('#' + file.id),
-     $percent = $li.find('.progress .progress-bar');
-
-     // 避免重复创建
-     if (!$percent.length) {
-     $percent = $('<div class="progress progress-striped active">' +
-     '<div class="progress-bar" role="progressbar" style="width: 0%">' +
-     '</div>' +
-     '</div>').appendTo($li).find('.progress-bar');
-     }
-
-     $li.find('p.state').text('上传中');
-
-     $percent.css('width', percentage * 100 + '%');
-     });
-
-     uploader.on('uploadSuccess', function (file) {
-     $('#' + file.id).find('p.state').text('已上传');
-     var path_update = $("#path").val();
-     searchFile(path_update);
-     });
-
-     uploader.on('uploadError', function (file) {
-     $('#' + file.id).find('p.state').text('上传出错');
-     });
-     uploader.on('uploadComplete', function (file) {
-     $("#myModal").modal('hide');
-     $('#' + file.id).find('.progress').fadeOut();
-     });
-
-     }*/
     var path_update = $("#path").val();
     uploadFileAll(path_update);
 

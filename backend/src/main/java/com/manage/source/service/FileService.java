@@ -2,20 +2,20 @@ package com.manage.source.service;
 
 import com.manage.common.Constants;
 import com.manage.source.bean.FileDetail;
-import com.manage.source.controller.FileController;
-import com.manage.system.bean.UserBean;
 import com.manage.system.model.UserRoleGroupDto;
 import com.manage.system.service.UserRoleService;
-import com.manage.system.service.UserService;
+import javafx.scene.input.DataFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ibatis.javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.StringUtils;
+import sun.util.resources.cldr.agq.CalendarData_agq_CM;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -25,17 +25,9 @@ import java.util.*;
 @Service
 public class FileService {
     private Log logger = LogFactory.getLog(FileService.class);
-    // 文件上传根目录
-    private String uploadedPath;
-    // 用户文件根目录
-    private String userBasePath;
-    // 小组根目录
-    private String groupPath;
 
     @Autowired
     private UserRoleService userRoleService;
-    @Autowired
-    private UserService userService;
 
     /*过滤目标地址下的文件列表*/
     public List<FileDetail> listAdminFiles(File currentFile, List<String> ownerDirs) {
@@ -89,7 +81,6 @@ public class FileService {
         return results;
     }
 
-
     /*获取系统管理员以外用户可视的文件夹*/
     public List<String> getAdminUserDirs(Integer userId, String rootPath) {
         List<String> ownDirs = new ArrayList<>();
@@ -97,17 +88,22 @@ public class FileService {
             List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
             for (UserRoleGroupDto dto : roleGroupDtoList) {
                 // 拼接用户目录列表
-                StringBuilder hasPath = new StringBuilder();
+                StringBuilder adminPath = new StringBuilder();
                 // 系统管理员基本目录 等于根目录
-                if (Constants.ADMIN_TYPE.equals(dto.getRoleType()) || Constants.NOMAL_TYPE.equals(dto.getRoleType())) {
+                if (Constants.ADMIN_TYPE.equals(dto.getRoleType())) {
                     // 高级管理员 拥有小组的路径
-                    hasPath.append(rootPath).append(Constants.FILE_SPLITOR)
+                    adminPath.append(rootPath).append(Constants.FILE_SPLITOR)
                             .append("GROUP").append(dto.getGroupId()).append("_").toString();
-                } else {
-                    hasPath.append(rootPath).append(Constants.FILE_SPLITOR)
-                            .append("DEFAULT").append(Constants.FILE_SPLITOR).append(dto.getAccount()).toString();
+                    ownDirs.add(adminPath.toString());
                 }
-                ownDirs.add(hasPath.toString());
+                StringBuilder nomalPath = new StringBuilder();
+                if (Constants.NOMAL_TYPE.equals(dto.getRoleType())) {
+                    nomalPath.append(rootPath).append(Constants.FILE_SPLITOR)
+                            .append("GROUP").append(dto.getGroupId()).append("_")
+                            .append(dto.getGroupName()).append(Constants.FILE_SPLITOR)
+                            .append(dto.getAccount()).toString();
+                    ownDirs.add(nomalPath.toString());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,6 +111,7 @@ public class FileService {
         return ownDirs;
     }
 
+    /*上传文件*/
     public void uploadFile(HttpServletRequest request, String path, String filename) {
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -125,6 +122,13 @@ public class FileService {
                 logger.info("修改目录名称成功！");
             }
             File file = new File(path + File.separator + filename);
+
+            if (file.exists()) {
+                StringBuffer name = new StringBuffer();
+                String date = "_" + new SimpleDateFormat(Constants.DATE_FORMAT_YMDHMS).format(new Date());
+                name.append(filename).insert(filename.lastIndexOf("."), date);
+                file = new File(path + File.separator + name.toString());
+            }
             fileTmp = new File(path + File.separator + filename + ".tmp");
 
             inputStream = request.getInputStream();
@@ -134,14 +138,12 @@ public class FileService {
             while ((byteCount = inputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, byteCount);
             }
-            if (file.delete()) {
-                logger.info("删除成功");
-            }
             inputStream.close();
             outputStream.close();
             if (fileTmp.renameTo(file)) {
                 logger.info("修改文件名称成功");
             }
+
         } catch (IOException ioe) {
             logger.error(ioe);
         } finally {
@@ -165,60 +167,19 @@ public class FileService {
         }
     }
 
-
-
-
-    /*public List<FileDetail> listFiles(File dir) {
-        List<FileDetail> results = new LinkedList<>();
-        File[] files = dir.listFiles();
-
-        if (files == null) {
-            return Collections.emptyList();
+    /*删除文件或文件夹*/
+    public boolean deleteFile(String path) {
+        if (StringUtils.isEmpty(path)) {
+            return true;
         }
-        for (File file : files) {
-            FileDetail fileDetail = new FileDetail();
-            fileDetail.setName(file.getName());
-            fileDetail.setSize(file.length());
-            fileDetail.setPath(file.getPath());
-            fileDetail.setDate(new SimpleDateFormat("yyyy/MM/dd HH:mm")
-                    .format(new Date(file.lastModified())));
-            if (file.isFile()) {
-                long size = file.length() / 1024;
-                size = size == 0 ? 1 : size;
-                fileDetail.setSize(size);// KB
-                String fileName = file.getName();
-                String pic = "";
-                String tmp = fileName.substring(fileName.lastIndexOf('.') + 1);
-                switch (tmp) {
-                    case "gz":
-                        pic = "gz.png";
-                        break;
-                    case "img":
-                        pic = "img.png";
-                        break;
-                    case "png":
-                        pic = "pic.png";
-                        break;
-                    case "jpg":
-                        pic = "pic.png";
-                        break;
-                    default:
-                        pic = "other.png";
-                        break;
-                }
-                fileDetail.setPic(pic);
-                fileDetail.setType("file");
-            } else {
-                fileDetail.setType("path");
-                fileDetail.setPic("file.png");
-            }
-            results.add(fileDetail);
-        }
-        return results;
-    }*/
+        File file = new File(path);
+        return file.delete();
+    }
+    /*下载文件*/
 
 
-    private void makeDirs(String path) {
+    /*创建文件夹*/
+    public void makeDirs(String path) {
         File rootFile = new File(path);
         logger.info("make sure dirs exist " + rootFile.getAbsolutePath());
         if (!rootFile.exists() && rootFile.mkdirs()) {
@@ -226,10 +187,24 @@ public class FileService {
         }
     }
 
-
-    /*获取用户角色*/
-    private String getUserRoleType() {
-
-        return "";
+    /*获取用户角色对应根目录*/
+    public List<String> getUserRolePath(Integer userId, String rootPath) {
+        List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
+        List<String> selfRootPath = new ArrayList<>();
+        for (UserRoleGroupDto dto : roleGroupDtoList) {
+            // 拼接用户目录列表
+            StringBuilder hasPath = new StringBuilder();
+            // 系统管理员基本目录 等于根目录
+            if (Constants.SYSTEM_TYPE.equals(dto.getRoleType())) {
+                selfRootPath.add(rootPath);
+                return selfRootPath;
+            } else if (Constants.NOMAL_TYPE.equals(dto.getRoleType()) || Constants.ADMIN_TYPE.equals(dto.getRoleType())) {
+                hasPath.append(rootPath).append(Constants.FILE_SPLITOR)
+                        .append("GROUP").append(dto.getGroupId()).append("_")
+                        .append(dto.getGroupName()).toString();
+                selfRootPath.add(hasPath.toString());
+            }
+        }
+        return selfRootPath;
     }
 }
