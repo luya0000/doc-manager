@@ -11,20 +11,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by luya on 2018/6/11.
  */
-@RestController
+@Controller
 @RequestMapping(value = UrlConstants.URL_FILE_MODEL)
 public class FileController extends BaseController {
     private Log logger = LogFactory.getLog(FileController.class);
@@ -35,6 +39,7 @@ public class FileController extends BaseController {
     @Autowired
     private FileService fileService;
 
+    @ResponseBody
     @RequestMapping(value = "/getBasePath")
     public APIResponse getRootpath() {
         Integer userId = getUserId();
@@ -43,6 +48,7 @@ public class FileController extends BaseController {
         return APIResponse.toOkResponse(fileRootPath);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/fileList")
     public APIResponse fileList(@RequestParam("path") String path) {
         String roles = getRoles();
@@ -74,6 +80,7 @@ public class FileController extends BaseController {
     }
 
     /*按类型查找文件*/
+    @ResponseBody
     public void fileListByType() {
 
     }
@@ -109,10 +116,39 @@ public class FileController extends BaseController {
 
     }
 
-    public void downloadFile() {
+    // 文件下载,表示/upload后面接的任何路径都会进入到这里
+    @RequestMapping("/download/**")
+    public void downloadFile(HttpServletResponse response, String paths) {
+        String[] path = paths.split(":");
+        for (String filePath : path) {
 
+            File file = new File(filePath);
+            try {
+                if (file.exists()) {
+                    String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+                    // 设置下载文件的名称,如果想直接在想查看就注释掉，因为要是文件原名才能下载，不然就只能在浏览器直接浏览无法下载
+                    response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+
+                    // 把文件输出到浏览器
+                    OutputStream os = response.getOutputStream();
+                    FileInputStream fs = new FileInputStream(file);
+                    byte[] b = new byte[1024];
+                    int len = 0;
+                    while ((len = fs.read(b)) > 0) {
+                        os.write(b, 0, len);
+                    }
+                    fs.close();
+                    os.flush();
+                } else {
+                    response.sendError(404);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+    @ResponseBody
     @RequestMapping(value = "/delete")
     public APIResponse deleteFile(String paths) {
         if (StringUtils.isEmpty(paths)) {
@@ -132,7 +168,7 @@ public class FileController extends BaseController {
             List<String> dirList = fileService.getAdminUserDirs(getUserId(), this.fileRootPath);
             for (String dir : dirList) {
                 // 转换成文件地址格式
-                dir = dir.replace("/","\\");
+                dir = dir.replace("/", "\\");
                 for (String delDir : dirs) {
                     if (delDir.contains(dir)) {
                         if (!fileService.deleteFile(delDir)) {
@@ -147,10 +183,11 @@ public class FileController extends BaseController {
         return APIResponse.toOkResponse(errorFileList);
     }
 
+    //TODO
     public void changeFolder() {
-
     }
 
+    @ResponseBody
     @RequestMapping(value = "/newdir")
     public APIResponse newFolder(String path, String dir) {
         try {

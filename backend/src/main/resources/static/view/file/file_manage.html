@@ -102,10 +102,10 @@
         var data = {
             path: _path
         }
-        myAjax("GET", true, "/doc/file/fileList", data, searchFileCallBackNew);
+        myAjax("GET", true, "/doc/file/fileList", data, searchFileCallBack);
     }
     /*查询路径文件后处理*/
-    function searchFileCallBackNew(result, status) {
+    function searchFileCallBack(result, status) {
         if (result.code != 200) {
             layer.alert(result.message, {
                 skin: 'layui-layer-lan' //样式类名
@@ -132,7 +132,8 @@
                     '<td><input type = "hidden" class = "fileType" value="' + item.type + '"/>',
                     '<input type = "hidden" class = "filePath" value="' + item.path + '"/>',
                     '<img src="../resource/img/file/' + item.pic + '" alt=""/>',
-                    '<span class="c_' + item.type + '" style="cursor: pointer;">' + item.name + '</span></td>',
+                    '<span class="c_' + item.type + '" style="cursor: pointer;">' + item.name + '</span>',
+                    '<a href="' + item.path + '"/></td>',
                     '<td>' + item.date + '</td>',
                     '<td>' + (item.type == "file" ? (item.size + ' ' + item.unit) : "") + '</td>'
                 ].join('');
@@ -203,11 +204,11 @@
                 paths: paths
             }
             myAjax("post", false, "/doc/file/delete", param, function (result, status) {
-                if(result.code != 200){
+                if (result.code != 200) {
                     layer.msg(result.message);
                     searchFile($("#path").val());
                     return;
-                }else if (result.content != "") {
+                } else if (result.content != "") {
                     console.log(result.content);
                     var fileNames = "";
                     for (var i = 0; i < result.content.length; i++) {
@@ -226,20 +227,44 @@
     });
     /*下载文件*/
     $("#downloadFile").click(function () {
-        var path = $("#path").val();
-        if (rootPath.indexOf(path) >= 0) {
-            layer.alert('已经到达跟目录！', {
-                skin: 'layui-layer-lan' //样式类名
-                , closeBtn: 0
-            });
-        } else {
-            var pathNew = path.substr(0, path.lastIndexOf("/"));
-            if (pathNew != "") {
-                $("#path").attr("value", pathNew);
-                searchFile(pathNew);
+        // 选择列表
+        var paths = "";
+        var fileType = "";
+        $.each($('.fileCheckBox'), function () {
+            if (this.checked) {
+                fileType = $(this).parent().parent().find(".fileType").val();
+                if (fileType == "path") {
+                    layer.msg("网页版不支持文件夹下载");
+                    paths = "";
+                    return false;
+                }
+                paths += $(this).parent().parent().find(".filePath").val();
+                paths += ":";
             }
-        }
+        });
+        download("/doc/file/download", paths, "get");
     });
+
+
+    function download(url, data, method) {
+        //url and data options required
+        if (url && data) {
+            //data can be string of parameters or array/object
+            //data = typeof data == 'string' ? data : jQuery.param(data);
+            //split params into form inputs
+            var inputs = '';
+            console.log(data);
+           /* jQuery.each(data.split('&'), function () {
+                var pair = this.split('=');
+            });*/
+            inputs += '<input type="hidden" name="paths" value="' + data + '" />';
+            inputs += '<input type="hidden" name="Authorization" value="' + localStorage.getItem('JWT_TOKEN') + '" />';
+            //send request
+            jQuery('<form action="' + url + '" method="' + (method || 'post') + '">' + inputs + '</form>')
+                    .appendTo('body').submit().remove();
+        }
+    }
+
 
     /*上传文件*/
     function uploadFileAll(_path) {
