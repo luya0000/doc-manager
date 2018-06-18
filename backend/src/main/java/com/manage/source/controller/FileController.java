@@ -93,7 +93,7 @@ public class FileController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/upload-file")
-    public APIResponse uploadFile(HttpServletRequest request) throws IOException {
+    public APIResponse uploadFile(HttpServletRequest request){
         String filename = request.getParameter("name");
         String path = request.getParameter("path");
 
@@ -118,7 +118,7 @@ public class FileController extends BaseController {
 
     // 文件下载,表示/upload后面接的任何路径都会进入到这里
     @RequestMapping("/download/**")
-    public void downloadFile(HttpServletResponse response, String paths) {
+    public void downloadFile(HttpServletResponse response, HttpServletRequest request, String paths) {
         String[] path = paths.split(":");
         for (String filePath : path) {
 
@@ -126,8 +126,19 @@ public class FileController extends BaseController {
             try {
                 if (file.exists()) {
                     String fileName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+                    String userAgent = request.getHeader("User-Agent");
+                    /* IE 8 至 IE 10 *//* IE 11 */
+                    if (userAgent.toUpperCase().contains("MSIE") || userAgent.contains("Trident/7.0")) {
+                        fileName = URLEncoder.encode(fileName, "UTF-8");
+                    } else if (userAgent.toUpperCase().contains("MOZILLA") || userAgent.toUpperCase().contains("CHROME")) {
+                        fileName = new String(fileName.getBytes(), "ISO-8859-1");
+                    } else {
+                        fileName = URLEncoder.encode(fileName, "UTF-8");
+                    }
+                    response.setHeader("Content-type", "text/html;charset=UTF-8");
+                    response.setCharacterEncoding("UTF-8");
                     // 设置下载文件的名称,如果想直接在想查看就注释掉，因为要是文件原名才能下载，不然就只能在浏览器直接浏览无法下载
-                    response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+                    response.setHeader("content-disposition", "attachment;filename=" + fileName);
 
                     // 把文件输出到浏览器
                     OutputStream os = response.getOutputStream();

@@ -209,7 +209,6 @@
                     searchFile($("#path").val());
                     return;
                 } else if (result.content != "") {
-                    console.log(result.content);
                     var fileNames = "";
                     for (var i = 0; i < result.content.length; i++) {
                         fileNames += result.content[i] + "<br>";
@@ -249,14 +248,7 @@
     function download(url, data, method) {
         //url and data options required
         if (url && data) {
-            //data can be string of parameters or array/object
-            //data = typeof data == 'string' ? data : jQuery.param(data);
-            //split params into form inputs
             var inputs = '';
-            console.log(data);
-           /* jQuery.each(data.split('&'), function () {
-                var pair = this.split('=');
-            });*/
             inputs += '<input type="hidden" name="paths" value="' + data + '" />';
             inputs += '<input type="hidden" name="Authorization" value="' + localStorage.getItem('JWT_TOKEN') + '" />';
             //send request
@@ -335,6 +327,7 @@
         });
 
         uploader.on('uploadError', function (file) {
+            console.log(file);
             $('#' + file.id).find('.state').text('上传失败，当前文件夹无操作权限');
         });
         uploader.on('uploadComplete', function (file) {

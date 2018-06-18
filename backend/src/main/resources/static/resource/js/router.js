@@ -11,7 +11,6 @@ Router.prototype.route = function (path, callback) {
 };
 Router.prototype.refresh = function () {
     this.currentUrl = location.hash.slice(1) == '' ? '/' : location.hash.slice(1);//如果存在hash值则获取到，否则设置hash值为/
-    console.log(this.currentUrl);
     this.routes[this.currentUrl]();//根据当前的hash值来调用相对应的回调函数
 };
 Router.prototype.init = function () {

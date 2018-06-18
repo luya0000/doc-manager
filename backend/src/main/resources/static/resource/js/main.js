@@ -150,7 +150,6 @@ function getMenuIcon(menutype) {
 }
 
 function initUserInfo() {
-
     myAjax("get",false,"/doc/user/-1",null,showUserName);
     function showUserName(result,status) {
         if (result != null && result != '') {
