@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by luya on 2018/6/11.
  */
-@Controller
+@RestController
 @RequestMapping(value = UrlConstants.URL_FILE_MODEL)
 public class FileController extends BaseController {
     private Log logger = LogFactory.getLog(FileController.class);
@@ -39,7 +39,6 @@ public class FileController extends BaseController {
     @Autowired
     private FileService fileService;
 
-    @ResponseBody
     @RequestMapping(value = "/getBasePath")
     public APIResponse getRootpath() {
         Integer userId = getUserId();
@@ -48,7 +47,6 @@ public class FileController extends BaseController {
         return APIResponse.toOkResponse(fileRootPath);
     }
 
-    @ResponseBody
     @RequestMapping(value = "/fileList")
     public APIResponse fileList(@RequestParam("path") String path) {
         String roles = getRoles();
@@ -80,7 +78,6 @@ public class FileController extends BaseController {
     }
 
     /*按类型查找文件*/
-    @ResponseBody
     public void fileListByType() {
 
     }
@@ -93,7 +90,7 @@ public class FileController extends BaseController {
      * @throws IOException
      */
     @RequestMapping(value = "/upload-file")
-    public APIResponse uploadFile(HttpServletRequest request){
+    public APIResponse uploadFile(HttpServletRequest request) throws IOException {
         String filename = request.getParameter("name");
         String path = request.getParameter("path");
 
@@ -198,7 +195,6 @@ public class FileController extends BaseController {
     public void changeFolder() {
     }
 
-    @ResponseBody
     @RequestMapping(value = "/newdir")
     public APIResponse newFolder(String path, String dir) {
         try {

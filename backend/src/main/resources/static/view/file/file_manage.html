@@ -132,8 +132,7 @@
                     '<td><input type = "hidden" class = "fileType" value="' + item.type + '"/>',
                     '<input type = "hidden" class = "filePath" value="' + item.path + '"/>',
                     '<img src="../resource/img/file/' + item.pic + '" alt=""/>',
-                    '<span class="c_' + item.type + '" style="cursor: pointer;">' + item.name + '</span>',
-                    '<a href="' + item.path + '"/></td>',
+                    '<span class="c_' + item.type + '" style="cursor: pointer;">' + item.name + '</span></td>',
                     '<td>' + item.date + '</td>',
                     '<td>' + (item.type == "file" ? (item.size + ' ' + item.unit) : "") + '</td>'
                 ].join('');
