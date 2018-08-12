@@ -1,3 +1,5 @@
+use manager;
+
 CREATE TABLE t_code
 (
   id INT(10) PRIMARY KEY NOT NULL AUTO_INCREMENT,
