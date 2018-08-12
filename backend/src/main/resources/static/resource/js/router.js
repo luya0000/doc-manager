@@ -25,9 +25,12 @@ function routerPage(pageName) {
     $('.content').load(pageName);
 }
 
-Router.route('/', function () {
+Router.route('/content', function () {
     routerPage('/view/content.html');
 });
 Router.route('/view/file_manage', function () {
     routerPage('/view/file/file_manage.html');
+});
+Router.route('/view/changepwd', function () {
+    routerPage('/view/user/chang_password.html');
 });

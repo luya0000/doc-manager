@@ -2,37 +2,43 @@ $(function () {
     $(document).ajaxStart(function () {
         Pace.restart();
     });
-    //initUserMenu();
+    initUserMenu();
     initUserInfo();
 })
 
 function initUserMenu() {
     //先将菜单清理掉
     $('.sidebar-menu > li:eq(0)').nextAll().remove();
-     $.ajax({url: '/menus', cache:false,success: function(menu){
-     setMenu($('.sidebar-menu'),menu);
-     $('.smenuitem').bind('click',function(){
-     if($(this).attr("data")!=''){
-     $(".content").empty();//清除原有内容，避免页面内容冲突
-     $(".content").load($(this).attr("data"));
-     }
-     });
-     //首页菜单单独处理点击事件
-     $('.home-menu').bind('click',function(){
-     if($(this).attr("data")!=''){
-     //$('#title').empty();
-     $('.treeview').removeClass("active");
-     $(this).parent().addClass("active");
-     $(".content").empty();//清除原有内容，避免页面内容冲突
-     $(".content").load($(this).attr("data"));
-     }
-     });
-     $("#dashboard").trigger("click");
-     }});
+    myAjax("get", false, "/doc/menus", null, showMenus);
+}
+
+function showMenus(result, status) {
+    if (result != null && result != '') {
+        setMenu($('.sidebar-menu'), result);
+        /*$('.smenuitem').bind('click', function () {
+            if ($(this).attr("data") != '') {
+                $(".content").empty();//清除原有内容，避免页面内容冲突
+                $(".content").load($(this).attr("data"));
+            }
+        });
+        //首页菜单单独处理点击事件
+        $('.home-menu').bind('click', function () {
+            if ($(this).attr("data") != '') {
+                //$('#title').empty();
+                $('.treeview').removeClass("active");
+                $(this).parent().addClass("active");
+                $(".content").empty();//清除原有内容，避免页面内容冲突
+                $(".content").load($(this).attr("data"));
+            }
+        });
+        $("#dashboard").trigger("click");*/
+    }
 }
 
 function setMenu(menuid, menus) {
+    console.log(menus);
     var menuhtm = [];
+
     $.each(menus, function (n, menudata) {
         menuhtm.push("<li id=\"menu");
         menuhtm.push(menudata.menuId);
@@ -43,11 +49,11 @@ function setMenu(menuid, menus) {
         }
         //首页菜单 单独处理
         if (menudata.menuType == 0) {
-            menuhtm.push("<a href='#' id='dashboard' class='home-menu'  onclick='setTitle(this)' data='" + menudata.menuUrl + "'>");
+            menuhtm.push("<a href='"+menudata.menuUrl+"' class='home-menu' data='" + menudata.menuUrl + "'>");
         } else {
-            menuhtm.push("<a href=\"#\">");
+            menuhtm.push("<a href=\#>");
         }
-        menuhtm.push("<i class=\"fa " + getMenuIcon(menudata.menuType) + "\"></i> <span>");
+        //menuhtm.push("<i class=\"fa " + getMenuIcon(menudata.menuType) + "\"></i> <span>");
         menuhtm.push(menudata.menuName);
         if (menudata.subMenus.length > 0) {
             menuhtm.push("</span><i class=\"fa fa-angle-left pull-right\"></i></a>")
@@ -65,7 +71,8 @@ function setSecondLevelMenu(menus) {
     menuhtm.push("<ul class=\"treeview-menu\">");
     $.each(menus, function (n, menudata) {
 
-        menuhtm.push("<li><a class=\"smenuitem\" href='javascript:void(0)' onclick='setTitle(this)' data=\"" + menudata.menuUrl + "\"><i class=\"fa " + getMenuIcon(menudata.menuType) + "\"></i>" + menudata.menuName);
+        //menuhtm.push("<li><a class=\"smenuitem\" href='javascript:void(0)' onclick='setTitle(this)' data=\"" + menudata.menuUrl + "\"><i class=\"fa " + getMenuIcon(menudata.menuType) + "\"></i>" + menudata.menuName);
+        menuhtm.push("<li><a class=\"smenuitem\" href='"+menudata.menuUrl+"' data=\"" + menudata.menuUrl + "\">" + menudata.menuName);
         if (menudata.subMenus.length > 0) {
             menuhtm.push("<i class=\"fa fa-angle-left pull-right\"></i></a>")
             menuhtm.push(setThirdLevelMenu(menudata.subMenus));
@@ -82,13 +89,14 @@ function setThirdLevelMenu(menus) {
     var menuhtm = [];
     menuhtm.push("<ul class=\"treeview-menu\">");
     $.each(menus, function (n, menudata) {
-        menuhtm.push("<li><a class=\"smenuitem\" href='javascript:void(0)' onclick='setTitle(this)' data=\"" + menudata.menuUrl + "\"><i class=\"fa " + getMenuIcon(menudata.menuType) + "\"></i>" + menudata.menuName + "</a>");
+       /* menuhtm.push("<li><a class=\"smenuitem\" href='javascript:void(0)' onclick='setTitle(this)' data=\"" + menudata.menuUrl + "\"><i class=\"fa " + getMenuIcon(menudata.menuType) + "\"></i>" + menudata.menuName + "</a>");*/
+        menuhtm.push("<li><a class=\"smenuitem\" href='"+menudata.menuUrl+"' data=\"" + menudata.menuUrl + "\">" + menudata.menuName + "</a>");
     })
     menuhtm.push("</ul>");
     return '' + menuhtm.join('') + '';
 }
 
-function getMenuIcon(menutype) {
+/*function getMenuIcon(menutype) {
     var iconClass;
     switch (menutype) {
         case "0" :
@@ -147,11 +155,11 @@ function getMenuIcon(menutype) {
             break;//日志接入
     }
     return iconClass;
-}
+}*/
 
 function initUserInfo() {
-    myAjax("get",false,"/doc/user/-1",null,showUserName);
-    function showUserName(result,status) {
+    myAjax("get", false, "/doc/user/-1", null, showUserName);
+    function showUserName(result, status) {
         if (result != null && result != '') {
             $('.username').html(result.content.name);
         }

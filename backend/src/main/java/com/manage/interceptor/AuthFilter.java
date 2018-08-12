@@ -43,7 +43,7 @@ public class AuthFilter extends OncePerRequestFilter {
         }
         String requestHeader = request.getHeader(jwtProperties.getHeader().toLowerCase());
         String authToken = null;
-        if (requestHeader == null && request.getParameterMap() != null) {
+        if (requestHeader == null && request.getParameterMap() != null && request.getParameterMap().get(jwtProperties.getHeader()) != null) {
             requestHeader = request.getParameterMap().get(jwtProperties.getHeader())[0];
         }
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {

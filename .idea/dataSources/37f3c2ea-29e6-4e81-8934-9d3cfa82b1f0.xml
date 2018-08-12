@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="MySQL - manager@140.143.141.105 [2]">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="2.6">
+    <schema id="1" name="manager">
+      <visible>1</visible>
+    </schema>
+    <schema id="2" name="information_schema"/>
+    <schema id="3" name="mysql"/>
+    <schema id="4" name="performance_schema"/>
+    <schema id="5" name="shiro_oauth2"/>
+    <table id="6" parent="1" name="t_code"/>
+    <table id="7" parent="1" name="t_file"/>
+    <table id="8" parent="1" name="t_group"/>
+    <table id="9" parent="1" name="t_log"/>
+    <table id="10" parent="1" name="t_menu"/>
+    <table id="11" parent="1" name="t_permission"/>
+    <table id="12" parent="1" name="t_role"/>
+    <table id="13" parent="1" name="t_role_menu"/>
+    <table id="14" parent="1" name="t_role_perm"/>
+    <table id="15" parent="1" name="t_user"/>
+    <table id="16" parent="1" name="t_user_role_group"/>
+    <column id="17" parent="6" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="18" parent="6" name="type1">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="19" parent="6" name="type2">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="20" parent="6" name="name">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="21" parent="6" name="value">
+      <data-type>varchar(512)|0</data-type>
+    </column>
+    <column id="22" parent="6" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="23" parent="6" name="create_user">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="24" parent="6" name="update_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="25" parent="6" name="update_user">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <key id="26" parent="6" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="27" parent="7" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="28" parent="7" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="29" parent="7" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(1024)|0</data-type>
+    </column>
+    <column id="30" parent="7" name="path">
+      <mandatory>1</mandatory>
+      <data-type>varchar(1024)|0</data-type>
+    </column>
+    <column id="31" parent="7" name="owner">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="32" parent="7" name="type">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="33" parent="7" name="size">
+      <mandatory>1</mandatory>
+      <data-type>double|0</data-type>
+    </column>
+    <column id="34" parent="7" name="pic">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="35" parent="7" name="status">
+      <mandatory>1</mandatory>
+      <data-type>char(4)|0</data-type>
+    </column>
+    <column id="36" parent="7" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="37" parent="7" name="create_user">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <key id="38" parent="7" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="39" parent="8" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="40" parent="8" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="41" parent="8" name="status">
+      <mandatory>1</mandatory>
+      <data-type>char(1)|0</data-type>
+    </column>
+    <column id="42" parent="8" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="43" parent="8" name="create_user">
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="44" parent="8" name="update_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="45" parent="8" name="update_user">
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <index id="46" parent="8" name="uk_gropu_name">
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="47" parent="8" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="48" parent="8" name="uk_gropu_name">
+      <columns>name</columns>
+      <underlying-index>uk_gropu_name</underlying-index>
+    </key>
+    <column id="49" parent="9" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(20)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="50" parent="9" name="file_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="51" parent="9" name="file_path">
+      <mandatory>1</mandatory>
+      <data-type>varchar(1024)|0</data-type>
+    </column>
+    <column id="52" parent="9" name="action">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="53" parent="9" name="account">
+      <comment>鎵ц浜鸿处鍙�</comment>
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="54" parent="9" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="55" parent="9" name="create_user">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <key id="56" parent="9" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="57" parent="10" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="58" parent="10" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="59" parent="10" name="type">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="60" parent="10" name="parent_id">
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="61" parent="10" name="menu_id">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="62" parent="10" name="sort">
+      <data-type>int(4)|0</data-type>
+    </column>
+    <column id="63" parent="10" name="status">
+      <mandatory>1</mandatory>
+      <data-type>int(1)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="64" parent="10" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="65" parent="10" name="create_user">
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <index id="66" parent="10" name="menu_id">
+      <columns>menu_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="67" parent="10" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="68" parent="10" name="menu_id">
+      <columns>menu_id</columns>
+      <underlying-index>menu_id</underlying-index>
+    </key>
+    <column id="69" parent="11" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="70" parent="11" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="71" parent="11" name="type">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="72" parent="11" name="status">
+      <mandatory>1</mandatory>
+      <data-type>char(1)|0</data-type>
+    </column>
+    <column id="73" parent="11" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="74" parent="11" name="create_user">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="75" parent="11" name="update_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="76" parent="11" name="update_user">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <index id="77" parent="11" name="uk_perm_name">
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="78" parent="11" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="79" parent="11" name="uk_perm_name">
+      <columns>name</columns>
+      <underlying-index>uk_perm_name</underlying-index>
+    </key>
+    <column id="80" parent="12" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="81" parent="12" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="82" parent="12" name="type">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="83" parent="12" name="status">
+      <mandatory>1</mandatory>
+      <data-type>char(4)|0</data-type>
+    </column>
+    <column id="84" parent="12" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="85" parent="12" name="create_user">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <column id="86" parent="12" name="update_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="87" parent="12" name="update_user">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <index id="88" parent="12" name="t_role_name">
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="89" parent="12" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="90" parent="12" name="t_role_name">
+      <columns>name</columns>
+      <underlying-index>t_role_name</underlying-index>
+    </key>
+    <column id="91" parent="13" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="92" parent="13" name="role_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="93" parent="13" name="menu_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+    </column>
+    <index id="94" parent="13" name="role_id">
+      <columns>role_id
+menu_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="95" parent="13" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="96" parent="13" name="role_id">
+      <columns>role_id
+menu_id</columns>
+      <underlying-index>role_id</underlying-index>
+    </key>
+    <column id="97" parent="14" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="98" parent="14" name="role_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="99" parent="14" name="perm_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="100" parent="14" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="101" parent="14" name="create_user">
+      <mandatory>1</mandatory>
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <index id="102" parent="14" name="uk_rid_pid">
+      <columns>role_id
+perm_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="103" parent="14" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="104" parent="14" name="uk_rid_pid">
+      <columns>role_id
+perm_id</columns>
+      <underlying-index>uk_rid_pid</underlying-index>
+    </key>
+    <column id="105" parent="15" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="106" parent="15" name="account">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="107" parent="15" name="password">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="108" parent="15" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="109" parent="15" name="sex">
+      <mandatory>1</mandatory>
+      <data-type>char(1)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="110" parent="15" name="age">
+      <mandatory>1</mandatory>
+      <data-type>int(4)|0</data-type>
+      <default-expression>&apos;1&apos;</default-expression>
+    </column>
+    <column id="111" parent="15" name="phone">
+      <data-type>varchar(15)|0</data-type>
+    </column>
+    <column id="112" parent="15" name="email">
+      <data-type>varchar(512)|0</data-type>
+    </column>
+    <column id="113" parent="15" name="status">
+      <mandatory>1</mandatory>
+      <data-type>char(1)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="114" parent="15" name="note">
+      <data-type>text|0</data-type>
+    </column>
+    <column id="115" parent="15" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="116" parent="15" name="create_user">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <column id="117" parent="15" name="update_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="118" parent="15" name="update_user">
+      <mandatory>1</mandatory>
+      <data-type>varchar(128)|0</data-type>
+    </column>
+    <index id="119" parent="15" name="uk_user_account">
+      <columns>account</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="120" parent="15" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="121" parent="15" name="uk_user_account">
+      <columns>account</columns>
+      <underlying-index>uk_user_account</underlying-index>
+    </key>
+    <column id="122" parent="16" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="123" parent="16" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="124" parent="16" name="role_id">
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="125" parent="16" name="group_id">
+      <data-type>int(10)|0</data-type>
+    </column>
+    <column id="126" parent="16" name="create_time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="127" parent="16" name="create_user">
+      <data-type>varchar(256)|0</data-type>
+    </column>
+    <index id="128" parent="16" name="uk_uid_rid_gid">
+      <columns>user_id
+role_id
+group_id</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="129" parent="16" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="130" parent="16" name="uk_uid_rid_gid">
+      <columns>user_id
+role_id
+group_id</columns>
+      <underlying-index>uk_uid_rid_gid</underlying-index>
+    </key>
+  </database-model>
+</dataSource>
