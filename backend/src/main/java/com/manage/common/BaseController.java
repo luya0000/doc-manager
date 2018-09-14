@@ -30,7 +30,7 @@ public class BaseController {
         Integer userId = getUserId();
         try {
             UserBean user = userService.selectByPrimaryKey(userId);
-            return user.getName();
+            return user.getUserName();
         } catch (Exception e) {
             e.printStackTrace();
         }

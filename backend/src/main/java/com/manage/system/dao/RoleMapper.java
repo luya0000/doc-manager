@@ -1,6 +1,6 @@
 package com.manage.system.dao;
 
-import com.manage.system.model.RoleDto;
+import com.manage.system.model.SysRoleDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,13 +12,13 @@ import java.util.List;
 @Mapper
 public interface RoleMapper {
 
-    List<RoleDto> selectAll( @Param("name") String name, @Param("status") String status) throws Exception;
+    List<SysRoleDto> selectAll(@Param("name") String name, @Param("status") Integer status) throws Exception;
 
-    int insert(RoleDto user) throws Exception;
+    int insert(SysRoleDto user) throws Exception;
 
     int deleteByPrimaryKey(Integer id) throws Exception;
 
-    RoleDto selectByPrimaryKey(Integer id) throws Exception;
+    SysRoleDto selectByPrimaryKey(Integer id) throws Exception;
 
-    int updateByPrimaryKey(RoleDto user) throws Exception;
+    int updateByPrimaryKey(SysRoleDto user) throws Exception;
 }

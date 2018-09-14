@@ -117,15 +117,13 @@ public class UserController extends BaseController {
             return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_PWD_DIFF_ERROR);
         }
         UserBean userBean = new UserBean();
-        userBean.setAccount(account);
-        userBean.setName(name);
+        userBean.setUserId(account);
+        userBean.setUserName(name);
         userBean.setPassword(password);
         userBean.setSex(sex);
         userBean.setPhone(phone);
-        userBean.setAge(age);
         userBean.setEmail(email);
         userBean.setNote(note);
-        userBean.setCreateUser(getUserName());
         userBean.setUpdateUser(getUserName());
         try {
             userService.insertUser(userBean);
@@ -150,8 +148,7 @@ public class UserController extends BaseController {
      * @return
      */
     @PostMapping("/update")
-    public APIResponse updateUser(@RequestParam(value = "id") Integer id,
-                                  @RequestParam(value = "account") String account,
+    public APIResponse updateUser(@RequestParam(value = "account") String account,
                                   @RequestParam(value = "name") String name,
                                   @RequestParam(value = "sex") String sex,
                                   @RequestParam(value = "phone") String phone,
@@ -160,15 +157,12 @@ public class UserController extends BaseController {
                                   @RequestParam(value = "note") String note) {
 
         UserBean userBean = new UserBean();
-        userBean.setId(id);
-        userBean.setAccount(account);
-        userBean.setName(name);
+        userBean.setUserId(account);
+        userBean.setUserName(name);
         userBean.setSex(sex);
         userBean.setPhone(phone);
-        userBean.setAge(age);
         userBean.setEmail(email);
         userBean.setNote(note);
-        userBean.setUpdateUser(getUserName());
         try {
             userService.updateUser(userBean);
         } catch (Exception e) {

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.manage.system.dao.RoleMapper">
 
-    <insert id="insert" parameterType="com.manage.system.model.RoleDto">
+    <insert id="insert" parameterType="com.manage.system.model.SysRoleDto">
         INSERT INTO t_role (name, status, type,create_time, create_user,update_time,update_user)
         VALUES (#{name,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},now(),
         #{createUser,jdbcType=VARCHAR},now(),#{updateUser,jdbcType=VARCHAR})
@@ -12,7 +12,7 @@
         DELETE FROM t_role WHERE ID = #{id,jdbcType=INTEGER}
     </delete>
 
-    <select id="selectAll" resultType="com.manage.system.model.RoleDto">
+    <select id="selectAll" resultType="com.manage.system.model.SysRoleDto">
         SELECT id, name, status, type, create_time, create_user,update_time,update_user
         FROM t_role
         <where>
@@ -21,13 +21,13 @@
         </where>
     </select>
 
-    <select id="selectByPrimaryKey" resultType="com.manage.system.model.RoleDto" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" resultType="com.manage.system.model.SysRoleDto" parameterType="java.lang.Integer">
         SELECT id, name, status, type, create_time, create_user,update_time,update_user
         FROM t_role
         WHERE id = #{id,jdbcType=INTEGER}
     </select>
 
-    <update id="updateByPrimaryKey" parameterType="com.manage.system.model.RoleDto">
+    <update id="updateByPrimaryKey" parameterType="com.manage.system.model.SysRoleDto">
         UPDATE t_role
         <set>
             <if test="name != null and name != ''">name = #{name,jdbcType=VARCHAR},</if>

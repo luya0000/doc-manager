@@ -17,8 +17,8 @@ public class Constants {
     public static final String DEFAULT_TYPE = "DEFAULT_USER";
 
     // 状态 0有效、1无效
-    public static final String STATUE_VALID = "1";
-    public static final String STATUE_INVALID = "0";
+    public static final Integer STATUE_VALID = 1;
+    public static final Integer STATUE_INVALID = 0;
 
     // --------------------分页常量-------------------
     /*当前页*/

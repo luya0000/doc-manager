@@ -2,20 +2,15 @@ package com.manage.source.service;
 
 import com.manage.common.Constants;
 import com.manage.source.bean.FileDetail;
-import com.manage.system.model.UserRoleGroupDto;
 import com.manage.system.service.UserRoleService;
-import javafx.scene.input.DataFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sun.util.resources.cldr.agq.CalendarData_agq_CM;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,7 +79,7 @@ public class FileService {
     /*获取系统管理员以外用户可视的文件夹*/
     public List<String> getAdminUserDirs(Integer userId, String rootPath) {
         List<String> ownDirs = new ArrayList<>();
-        try {
+        /*try {
             List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
             for (UserRoleGroupDto dto : roleGroupDtoList) {
                 // 拼接用户目录列表
@@ -107,7 +102,7 @@ public class FileService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return ownDirs;
     }
 
@@ -189,9 +184,9 @@ public class FileService {
 
     /*获取用户角色对应根目录*/
     public List<String> getUserRolePath(Integer userId, String rootPath) {
-        List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
+       // List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
         List<String> selfRootPath = new ArrayList<>();
-        for (UserRoleGroupDto dto : roleGroupDtoList) {
+        /*for (UserRoleGroupDto dto : roleGroupDtoList) {
             // 拼接用户目录列表
             StringBuilder hasPath = new StringBuilder();
             // 系统管理员基本目录 等于根目录
@@ -204,7 +199,7 @@ public class FileService {
                         .append(dto.getGroupName()).toString();
                 selfRootPath.add(hasPath.toString());
             }
-        }
+        }*/
         return selfRootPath;
     }
 }

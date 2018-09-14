@@ -1,19 +1,13 @@
 package com.manage.system.service;
 
 import com.manage.common.Constants;
-import com.manage.system.bean.RoleBean;
 import com.manage.system.dao.PermissionMapper;
-import com.manage.system.dao.RoleMapper;
-import com.manage.system.model.PermissionDto;
-import com.manage.system.model.RoleDto;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
+import com.manage.system.model.SysPermissionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,14 +21,14 @@ public class PermissionService {
 
     /*获取权限列表*/
     @Transactional(readOnly = true)
-    public List<PermissionDto> getPermissionList() throws Exception {
-        List<PermissionDto> permissionDtoList = permissionMapper.selectAll();
+    public List<SysPermissionDto> getPermissionList() throws Exception {
+        List<SysPermissionDto> permissionDtoList = permissionMapper.selectAll();
         return permissionDtoList;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public int insertPermission(PermissionDto permissionDto) throws Exception {
-        permissionDto.setStatus(Constants.STATUE_INVALID);
+    public int insertPermission(SysPermissionDto permissionDto) throws Exception {
+        permissionDto.setId(1);
         return permissionMapper.insert(permissionDto);
     }
 

@@ -125,9 +125,9 @@ public class JwtTokenUtil {
     public String generateToken(UserBean user, String randomKey) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(jwtProperties.getMd5Key(), randomKey);
-        claims.put(jwtProperties.getNameKey(), user.getName());
-        claims.put("account", user.getAccount());
-        String[] roleIds = new String[user.getRoles().size()];
+        claims.put(jwtProperties.getNameKey(), user.getUserName());
+        claims.put("account", user.getUserId());
+        /*String[] roleIds = new String[user.getRoles().size()];
         for (int i = 0; i < user.getRoles().size(); i++) {
             roleIds[i] = user.getRoles().get(i).toString();
         }
@@ -135,8 +135,8 @@ public class JwtTokenUtil {
             claims.put(jwtProperties.getRolesKey(), StringUtils.join(roleIds, Constants.ROLE_SPLITOR));
         }else{
             claims.put(jwtProperties.getRolesKey(), StringUtils.EMPTY);
-        }
-        return doGenerateToken(claims, user.getId().toString());
+        }*/
+        return doGenerateToken(claims, user.getUserId().toString());
     }
 
     /**

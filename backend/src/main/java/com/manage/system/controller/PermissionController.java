@@ -4,7 +4,7 @@ import com.manage.common.APIResponse;
 import com.manage.common.BaseController;
 import com.manage.common.UrlConstants;
 import com.manage.exception.impl.BizExceptionStatusEnum;
-import com.manage.system.model.PermissionDto;
+import com.manage.system.model.SysPermissionDto;
 import com.manage.system.service.PermissionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +34,7 @@ public class PermissionController extends BaseController {
     @GetMapping("/list")
     public APIResponse permissionList() {
 
-        List<PermissionDto> permissionList = null;
+        List<SysPermissionDto> permissionList = null;
         try {
             permissionList = permissionService.getPermissionList();
             return APIResponse.toOkResponse(permissionList);
@@ -57,11 +57,8 @@ public class PermissionController extends BaseController {
             @RequestParam("name") String name,
             @RequestParam("type") String type) {
 
-        PermissionDto permission = new PermissionDto();
+        SysPermissionDto permission = new SysPermissionDto();
         permission.setName(name);
-        permission.setType(type);
-        permission.setCreateUser(getUserName());
-        permission.setUpdateUser(getUserName());
         try {
             permissionService.insertPermission(permission);
         } catch (Exception e) {

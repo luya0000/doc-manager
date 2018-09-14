@@ -1,5 +1,6 @@
 package com.manage.system.bean;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,54 +8,53 @@ import java.util.List;
 /**
  * Created by luya on 2018/6/5.
  */
-public class UserBean {
-    /*id*/
-    private Integer id;
+public class UserBean implements Serializable{
+
+    private static final long serialVersionUID = 2690909283253774113L;
+
     /*账号名称*/
-    private String account;
+    private String userId;
+    /*用户名*/
+    private String userName;
     /*密码*/
     private String password;
-    /*用户名*/
-    private String name;
-    /*性别*/
-    private String sex;
-    /*年龄*/
-    private Integer age;
     /*电话*/
     private String phone;
+    /*性别*/
+    private String sex;
     /*邮箱*/
     private String email;
     /*备注*/
     private String note;
+    /*问题*/
+    private String question;
+    /*答案*/
+    private String answer;
     /*用户状态，0有效；1无效*/
     private Integer status = 0;
-    /*用户组*/
-    private Integer group;
-    /*用户角色*/
-    private List<String> roles = new ArrayList<>();
-    /*创建人*/
-    private String createUser;
-    /*创建时间*/
-    private Timestamp createTime;
-    /*修改人*/
+    /*用户组Id*/
+    private List<Integer> group;
+    /*用户角色Id*/
+    private List<Integer> roles = new ArrayList<>();
+    /*最后修改人*/
     private String updateUser;
-    /*修改时间*/
+    /*最后修改时间*/
     private Timestamp updateTime;
 
-    public Integer getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getAccount() {
-        return account;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -65,12 +65,12 @@ public class UserBean {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getSex() {
@@ -79,22 +79,6 @@ public class UserBean {
 
     public void setSex(String sex) {
         this.sex = sex;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getEmail() {
@@ -113,6 +97,22 @@ public class UserBean {
         this.note = note;
     }
 
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -121,37 +121,20 @@ public class UserBean {
         this.status = status;
     }
 
-    public Integer getGroup() {
+    public List<Integer> getGroup() {
         return group;
     }
 
-    public void setGroup(Integer group) {
+    public void setGroup(List<Integer> group) {
         this.group = group;
     }
 
-    public List<String> getRoles() {
+    public List<Integer> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Integer> roles) {
         this.roles = roles;
-    }
-
-
-    public Timestamp getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(String createUser) {
-        this.createUser = createUser;
     }
 
     public String getUpdateUser() {
@@ -160,5 +143,13 @@ public class UserBean {
 
     public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
+    }
+
+    public Timestamp getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.manage.system.dao.PermissionMapper">
 
-    <insert id="insert" parameterType="com.manage.system.model.PermissionDto">
+    <insert id="insert" parameterType="com.manage.system.model.SysPermissionDto">
        insert into t_permission (name, type, status, create_user, create_time,update_user, update_time)
         VALUES (#{name,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR},#{status,jdbcType=CHAR},
         #{createUser,jdbcType=VARCHAR},now(),#{updateUser,jdbcType=VARCHAR},now())
@@ -12,7 +12,7 @@
         DELETE FROM t_permission WHERE ID = #{id,jdbcType=INTEGER}
     </delete>
 
-    <select id="selectAll" resultType="com.manage.system.model.RoleDto">
+    <select id="selectAll" resultType="com.manage.system.model.SysRoleDto">
         SELECT id, name, type, status, create_time, create_user, update_time, update_user
         FROM t_permission
         <where>

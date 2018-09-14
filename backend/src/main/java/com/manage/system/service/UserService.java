@@ -4,8 +4,8 @@ import com.manage.common.Constants;
 import com.manage.system.bean.UserBean;
 import com.manage.system.dao.UserMapper;
 import com.manage.system.dao.UserRoleMapper;
-import com.manage.system.model.UserDto;
-import com.manage.system.model.UserRoleGroupDto;
+import com.manage.system.model.SysUserDto;
+import com.manage.system.model.SysUserRoleDto;
 import org.apache.commons.lang.StringUtils;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +36,18 @@ public class UserService {
 
     /*获取用户带权限列表*/
     @Transactional(readOnly = true)
-    public List<UserBean> selectUserList(String account, String name, String status) throws Exception {
+    public List<UserBean> selectUserList(String account, String name, Integer status) throws Exception {
         // 设置模糊查询参数
         account = StringUtils.isBlank(account) ? null : "%" + account.trim() + "%";
         String userName = StringUtils.isBlank(name) ? null : "%" + name.trim() + "%";
-        status = status == null ? Constants.STATUE_INVALID : status;
-        List<UserDto> userDtos = userMapper.selectAll(account, userName, status);
+        //status = status == null ? Constants.STATUE_INVALID : status;
+        List<SysUserDto> userDtos = userMapper.selectAll(account, userName, status);
         List<UserBean> userList = new ArrayList<>();
         if (userDtos != null) {
-            for (UserDto dto : userDtos) {
+            for (SysUserDto dto : userDtos) {
                 UserBean bean = new UserBean();
                 BeanUtils.copyProperties(dto, bean);
-                List<String> roles = userRoleService.getRolesByUserId(bean.getId());
+                List<Integer> roles = userRoleService.getRolesByUserId(bean.getUserId());
                 bean.setRoles(roles);
                 userList.add(bean);
             }
@@ -55,7 +57,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserBean selectByPrimaryKey(Integer userId) throws Exception {
-        UserDto userDto = userMapper.selectByPrimaryKey(userId);
+        SysUserDto userDto = userMapper.selectByPrimaryKey(userId);
         UserBean userBean = new UserBean();
         if (userDto != null) {
             BeanUtils.copyProperties(userDto, userBean);
@@ -66,27 +68,29 @@ public class UserService {
     /*获取用户带权限*/
     @Transactional(readOnly = true)
     public UserBean selectUserAndRoleByAccount(String account) throws Exception {
-        UserBean bean = new UserBean();
-        UserDto userDto = userMapper.selectByAccount(account, Constants.STATUE_INVALID);
+        // 获取用户信息
+        SysUserDto userDto = userMapper.selectByUserId(account, Constants.STATUE_INVALID);
+
         if (userDto != null) {
+            UserBean bean = new UserBean();
             BeanUtils.copyProperties(userDto, bean);
-            List<UserRoleGroupDto> roleGroupDtos = userRoleMapper.selectByParam(bean.getId(), null, null);
-            if (roleGroupDtos != null && roleGroupDtos.size() > 0) {
-                bean.setGroup(roleGroupDtos.get(0).getGroupId());
+
+            List<SysUserRoleDto> userRoleDtoList = userRoleMapper.selectByParam(bean.getUserId(), null, null);
+            if (userRoleDtoList != null && userRoleDtoList.size() > 0) {
+                //bean.setGroup(roleGroupDtos.get(0).getGroupId());
             }
-            List<String> roles = userRoleService.getRolesByUserId(bean.getId());
+            List<Integer> roles = userRoleService.getRolesByUserId(bean.getUserId());
             bean.setRoles(roles);
+            return bean;
         }
-        return bean;
+        return null;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public int insertUser(UserBean userBean) throws Exception {
-        UserDto userDto = new UserDto();
+        SysUserDto userDto = new SysUserDto();
         BeanUtils.copyProperties(userBean, userDto);
         userDto.setPassword(BCrypt.hashpw(userBean.getPassword(), BCrypt.gensalt()));
-        userDto.setStatus(Constants.STATUE_INVALID);
-        userDto.setCreateUser("SYSTEM");
         userDto.setUpdateUser("SYSTEM");
         return userMapper.insert(userDto);
     }
@@ -94,7 +98,7 @@ public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public int updateUser(UserBean userBean) throws Exception {
 
-        UserDto userDto = new UserDto();
+        SysUserDto userDto = new SysUserDto();
         BeanUtils.copyProperties(userBean, userDto);
         userDto.setPassword(null);
         return userMapper.updateByPrimaryKey(userDto);

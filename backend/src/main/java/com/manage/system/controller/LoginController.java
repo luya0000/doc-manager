@@ -3,6 +3,7 @@ package com.manage.system.controller;
 import com.manage.common.APIResponse;
 import com.manage.common.BaseController;
 import com.manage.exception.impl.BizExceptionStatusEnum;
+import com.manage.exception.impl.SysExceptionStatusEnum;
 import com.manage.system.bean.UserBean;
 import com.manage.system.service.UserService;
 import com.manage.util.JwtTokenUtil;
@@ -51,7 +52,7 @@ public class LoginController extends BaseController {
 
     @PostMapping(value = "${jwt.auth-path}")
     @ResponseBody
-    public APIResponse createToken(
+    public APIResponse login(
             @RequestParam("account") String account,
             @RequestParam("password") String password) {
 
@@ -63,14 +64,15 @@ public class LoginController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
-            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.AUTH_REQUEST_ERROR);
+            return APIResponse.toExceptionResponse(SysExceptionStatusEnum.SERVER_ERROR);
         }
 
         if (userBean != null && BCrypt.checkpw(password, userBean.getPassword())) {
             final String token = jwtTokenUtil.generateToken(userBean, randomKey);
             return APIResponse.toOkResponse(token);
         }
-        return APIResponse.toExceptionResponse(BizExceptionStatusEnum.AUTH_REQUEST_ERROR);
+        return APIResponse.toExceptionResponse(BizExceptionStatusEnum.AUTH_REQUEST_ERROR.getCode(),
+                BizExceptionStatusEnum.AUTH_REQUEST_ERROR.getMessage());
     }
 
 }
