@@ -15,41 +15,27 @@ function initUserMenu() {
 function showMenus(result, status) {
     if (result.code === 200) {
         setMenu($('.sidebar-menu'), result.content);
-        $('.smenuitem').bind('click', function () {
-            if ($(this).attr("data") != '') {
-                $(".content").empty();//清除原有内容，避免页面内容冲突
-                $(".content").load($(this).attr("data"));
-            }
-        });
         //首页菜单单独处理点击事件
         $('.home-menu').bind('click', function () {
-            if ($(this).attr("data") != '') {
-                //$('#title').empty();
-                $('.treeview').removeClass("active");
-                $(this).parent().addClass("active");
-                $(".content").empty();//清除原有内容，避免页面内容冲突
-                $(".content").load($(this).attr("data"));
-            }
+            $('.treeview').removeClass("active");
+            $(this).parent().addClass("active");
         });
-        $("#dashboard").trigger("click");
     }
 }
 
 function setMenu(menuid, menus) {
     var menuhtm = [];
-    menuhtm.push("<li id='menu' class='treeview active'>");
-    menuhtm.push("<a href='#/content' class='home-menu'> 首页</a>");
-    menuhtm.push("</li>");
+
+    menuhtm.push("<li id='menu' class='treeview active'><a href='#/content' class='home-menu'> 首页</a></li>");
 
     $.each(menus, function (n, menudata) {
-        menuhtm.push("<li id=\"menu");
-        menuhtm.push(menudata.menuId);
+        menuhtm.push("<li id=\"menu"+menudata.menuId);
         menuhtm.push("\" class=\"treeview\">");
         //首页菜单 单独处理
         menuhtm.push("<a href=\#>");
         menuhtm.push(menudata.menuName);
         if (menudata.subMenus.length > 0) {
-            menuhtm.push("</span><i class=\"fa fa-angle-left pull-right\"></i></a>")
+            menuhtm.push("<i class=\"fa fa-angle-left pull-right\"></i></a>")
             menuhtm.push(setSecondLevelMenu(menudata.subMenus));
         } else {
             menuhtm.push("</a>")

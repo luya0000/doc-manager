@@ -37,7 +37,7 @@ public class AuthFilter extends OncePerRequestFilter {
         // 跟路径。资源路径跳过
         if (request.getServletPath().equals("/") || request.getServletPath().contains("/plugins") ||
                 request.getServletPath().contains("/resource") || request.getServletPath().contains("/view") ||
-                request.getServletPath().equals("/" + jwtProperties.getAuthPath()) || request.getServletPath().contains("/main")) {
+                request.getServletPath().equals("/" + jwtProperties.getAuthPath()) || request.getServletPath().contains("/index")) {
             chain.doFilter(request, response);
             return;
         }

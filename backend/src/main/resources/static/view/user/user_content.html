@@ -1,10 +1,554 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-header">
+                <div >
+                    <div class="col-sm-3">
+                        <input id="user_id" type="text" class="form-control" placeholder="帐号"/>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control app_namespace"  type="text" id="name_space" placeholder="资源分区"
+                                name="name_space" value=""></select>
+                    </div>
 
-</body>
-</html>
+                    <button class="btn btn-primary" id="queryTable" onclick="queryTable();">查询</button>
+
+                    <!--<button class="btn btn-primary" id="addUser" onclick="addUser();">新增租户</button>-->
+
+                    <a href="javascript:void(0);" class="btn btn-primary " data-toggle="modal" onclick="preAddUser();"
+                       data-target="#addUserModal">新增用户</a>
+
+                </div>
+            </div>
+            <div class="box-body">
+
+
+                <table id="username_space_table" class="table table-bordered table-hover"
+                       style="font-size: 12px;" width="100%">
+                    <thead>
+                    <tr>
+                        <th>账号</th>
+                        <th>姓名</th>
+                        <th>类型</th>
+                        <th>状态</th>
+                        <th>可用资源分区</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                <div id="page" class="page" style="float: right;"></div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<!-- Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">新增用户</h4>
+            </div>
+            <div class="modal-body">
+                <!-- form start -->
+                <form class="form-horizontal" id="userForm">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="userId" class="col-sm-4 control-label">帐号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control validate" id="userId" name="userId" placeholder="帐号（半角英文数字）">
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="alias" class="col-sm-4 control-label">姓名</label>
+                            <div class="col-sm-7">
+                                <input   type="text" class="form-control validate" id="alias" name="alias" placeholder="姓名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-4 control-label">密码</label>
+                            <div class="col-sm-7">
+                                <input type="password" class="form-control validate" id="password" name="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="userType"  class="col-sm-4 control-label">角色</label>
+                            <div class="col-sm-7">
+                                <label>
+                                    <input type="checkbox" name="userType" id="userType" value="0" >
+                                    管理员
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="status" class="col-sm-4 control-label">状态</label>
+                            <div class="col-sm-7">
+                                <label>
+                                    <input type="checkbox" name="status" id="status" checked  value="0" >
+                                    启用
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="note" class="col-sm-4 control-label">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="note" name="note" placeholder="备注信息">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="namespace_modal" class="col-sm-4 control-label">命名空间</label>
+                            <div class="col-sm-7">
+                                <select multiple class="form-control" id="namespace_modal" name="namespaces">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关<span style="padding-left: 12px"/>闭
+                </button>
+                <button type="button" class="btn btn-primary" id="addUser" onclick="addUser();">
+                    保<span style="padding-left: 12px"/>存
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">编辑用户</h4>
+            </div>
+            <div class="modal-body">
+                <!-- form start -->
+                <form class="form-horizontal" id="editUserForm">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="userId" class="col-sm-4 control-label">帐号</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control validate" id="userId" name="userId" placeholder="帐号（半角英文数字）" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="alias" class="col-sm-4 control-label">姓名</label>
+                            <div class="col-sm-7">
+                                <input  type="text" class="form-control validate" id="alias" name="alias" placeholder="姓名" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-4 control-label">密码</label>
+                            <div class="col-sm-7">
+                                <input   type="password" class="form-control validate" id="password" name="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="userType"  class="col-sm-4 control-label">角色</label>
+                            <div class="col-sm-7">
+                                <label>
+                                    <input type="checkbox" name="userType" id="userType" value="0">
+                                    管理员
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="status" class="col-sm-4 control-label">状态</label>
+                            <div class="col-sm-7">
+                                <label>
+                                    <input type="checkbox" name="status" id="status" checked  value="0" >
+                                    启用
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="note" class="col-sm-4 control-label">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="note" name="note" placeholder="备注信息">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="used_namespaces" class="col-sm-4 control-label">已用命名空间</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="used_namespaces" name="used_namespaces" placeholder="已用命名空间" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_namespace_modal" class="col-sm-4 control-label">命名空间</label>
+                            <div class="col-sm-7">
+                                <select multiple class="form-control" id="edit_namespace_modal" name="namespaces">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关<span style="padding-left: 12px"/>闭
+                </button>
+                <button type="button" class="btn btn-primary" id="editUser" onclick="editUser();">
+                    修<span style="padding-left: 12px"/>改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--命名空间列表-->
+<script type="text/template" id="username_space_table_content">
+    <tbody>
+    {@each data as item ,index}
+    <tr>
+        <td style="vertical-align:middle" class="data_name">@{item.userId}</td>
+        <td style="vertical-align:middle">@{item.alias}</td>
+        {@if item.userType == 0}
+        <td style="vertical-align:middle">管理员</td>
+        {@else}
+        <td style="vertical-align:middle">普通用户</td>
+        {@/if}
+
+        {@if item.status == 0}
+        <td style="vertical-align:middle">启用</td>
+        {@else}
+        <td style="vertical-align:middle">未启用</td>
+        {@/if}
+
+        {@if item.namespaces != null}
+        <td style="vertical-align:middle">@{item.namespaces}</td>
+        {@else}
+        <td style="vertical-align:middle"></td>
+        {@/if}
+
+        {@if item.note != null}
+        <td style="vertical-align:middle">@{item.note}</td>
+        {@else}
+        <td style="vertical-align:middle"></td>
+        {@/if}
+
+        <td style="vertical-align:middle">
+            <!--<button type="button" id="user_name_space_del" class="btn btn-primary btn-sm user_name_space_del" title="删除用户信息"
+                    data-target="#namespaceModal" data-toggle="modal" data-con-id="@{item.userId}">
+                <span class="glyphicon glyphicon-trash"></span>
+                <span style="margin-left: 3px">删除</span>
+            </button>-->
+            <!--<button type="button" id="user_name_space_edit" class="btn btn-primary btn-sm user_name_space_edit" title="编辑租户信息"
+                    data-target="#namespaceModal" data-toggle="modal">
+                <span class="glyphicon glyphicon-edit"></span>
+                <span style="margin-left: 3px">编辑</span>
+            </button>-->
+            <a href="javascript:void(0);" id="user_name_space_del"
+               class="btn btn-primary user_name_space_edit user_name_space_del"  title="删除用户信息"  data-con-id="@{item.userId}">
+                <span class="glyphicon glyphicon-trash"></span> 删除</a>
+
+            <a href="javascript:void(0);" class="btn btn-primary user_name_space_edit" data-toggle="modal"
+               data-target="#editUserModal" data-con-id="@{item.userId}">
+                <span class="glyphicon glyphicon-edit"></span> 编辑</a>
+        </td>
+    </tr>
+    {@/each}
+    </tbody>
+
+</script>
+<script src="../js/common.js"></script>
+<script src="../js/laypage.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // 获取命名空间
+        $.ajax({
+            type: "GET",
+            data: {currentPage : 1,pageSize:10000},
+            url: '/respartion/list/1',
+            async: false,
+            dataType: 'json',
+            success: function (pros) {
+                $("#name_space").empty();
+                $("#name_space").append($("<option/>").attr("value", "").attr("selected", "selected")/*.attr("disabled", "disabled")*/.text('所有分区'));
+                $.each(pros.data, function (i, pro) {
+                    $("#name_space").append($("<option/>").attr("value", pro.namespace).text(pro['namespace']));
+                });
+                $("#name_space").append($("<option/>").attr("value", "_addSpace_").text('--添加分区--'));
+                //$(".name_space").val(0).change();
+            }
+        });
+
+        //选择命名空间事件绑定
+        $('#name_space').change(function(){
+            var space=$(this).children('option:selected').val();//这就是selected的值
+            if (space == '_addSpace_'){
+                $(".content").load("respartion_main.html");
+            }
+        });
+
+        //初始化表格数据
+        dataShowPage($("#page"), "/user/user_namespace_list", "GET", "", showTableData);
+
+
+    });
+
+    /**
+     * 处理表格数据呈现
+     * @param result
+     */
+    function showTableData(result) {
+        if (result.status == 0) {
+            var tableContent = juicer($("#username_space_table_content").text(), result);
+            $('#username_space_table').find('td').remove();
+            $('#username_space_table').append(tableContent);
+        } else if (result.data.status == 1) {
+            alert(result.data.message);
+        }
+    }
+
+    /**
+     * 查询租户数据
+     */
+    function queryTable() {
+
+        var queryParms = {
+            userId : $('#user_id').val(),
+            namespace : $('#name_space').val()
+        };
+        dataShowPage($("#page"), "/user/user_namespace_list", "GET", queryParms, showTableData);
+
+    }
+    function clearModelForm(form) {
+//        var form = $("#userForm");
+        form.find("input[id='userId']").val("");
+        form.find("input[id='alias']").val("");
+        form.find("input[id='password']").val("");
+        form.find("input[id='note']").val("");
+//        form.find("input[id='userType']").removeProp("checked");
+//        form.find("input[id='status']").prop("checked","true");
+        form.find('.formtips').remove().end();
+        form.find('.has-error').removeClass("has-error");
+        form.find('.has-success').removeClass("has-success");
+    }
+    /**
+     * 打开添加租户弹出层触发事件
+     * */
+    function preAddUser() {
+        clearModelForm($("#userForm"));
+        $.ajax({
+            type: "GET",
+            data: {currentPage : 1,pageSize:10000},
+            url: '/respartion/unused_res_partion',
+            async: false,
+            dataType: 'json',
+            success: function (pros) {
+                $("#namespace_modal").empty();
+                $.each(pros.data, function (i, pro) {
+                    $("#namespace_modal").append($("<option/>").attr("value", pro.id).text(pro['namespace']));
+                });
+            }
+        });
+    }
+
+    /***
+     * 添加租户
+     */
+    function addUser() {
+        var userId = $("#userForm").find("input[id='userId']").val();
+        var userForm = $("#userForm").serialize();
+        if(!checkInput($("#userForm")) ){
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            data: userForm,
+            url: '/user/add',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if(result.status==0){
+                    showResult(result,"用户信息", userId, "添加成功.");
+                }else{
+                    showResult(result,"用户信息", userId, "添加失败.");
+                }
+                $("#addUserModal").modal('hide');
+                dataShowPage($("#page"), "/user/user_namespace_list", "GET", "", showTableData);
+            }
+        });
+    }
+
+
+    /***
+     * 打开编辑租户弹出层触发事件
+     */
+    $("#username_space_table").delegate('.user_name_space_edit', "click", function () {
+        var userId = $(this).attr("data-con-id");
+        clearModelForm($("#editUserForm"));
+
+        //构造命名空间select
+        $.ajax({
+            type: "GET",
+            data: {currentPage : 1,pageSize:10000},
+            url: '/respartion/unused_res_partion',
+            async: false,
+            dataType: 'json',
+            success: function (pros) {
+                $("#edit_namespace_modal").empty();
+                $.each(pros.data, function (i, pro) {
+                    $("#edit_namespace_modal").append($("<option/>").attr("value", pro.id).text(pro['namespace']));
+                });
+            }
+        });
+        //获取用户数据
+        $.ajax({
+            type: "GET",
+//            data: {currentPage : 1,pageSize:10000},
+            url: '/user/'+userId,
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if(result.status==0){
+                    var user = result.data;
+                    var form = $("#editUserForm");
+                    form.find("input[id='userId']").val(user.userId);
+                    form.find("input[id='alias']").val(user.alias);
+                    form.find("input[id='password']").val(user.password);
+                    form.find("input[id='note']").val(user.note);
+                    form.find("input[id='used_namespaces']").val(user.namespaces);
+                    if (user.userType==0){
+                        form.find("input[id='userType']").prop("checked",true);
+                    }else{
+                        form.find("input[id='userType']").prop("checked",false);
+                    }
+                }
+
+            }
+        });
+
+
+    });
+
+    /***
+     * 编辑租户
+     */
+    function editUser() {
+        var userId = $("#editUserForm").find("input[id='userId']").val();
+        var editForm = $("#editUserForm").serialize();
+        if(!checkInput($("#editUserForm")) ){
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            data: editForm,
+            url: '/user/update',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if(result.status==0){
+                    showResult(result,"用户信息", userId, "修改成功.");
+                }else{
+                    showResult(result,"用户信息", userId, "修改失败.");
+                }
+                $("#editUserModal").modal('hide');
+                dataShowPage($("#page"), "/user/user_namespace_list", "GET", "", showTableData);
+            }
+        });
+
+    }
+
+
+    /** 添加或编辑时的表单验证 */
+    function checkInput(form) {
+        var ret = true;
+        //校验所有带有validate的class
+        $(form).find(".validate").each(function () {
+            if (ret) {
+                ret = setFormTips(this);
+            }
+        });
+        return ret;
+    }
+    /** 表单验证提示效果 */
+    function setFormTips(field) {
+        $(field).parent().find('.formtips').remove().end();
+        var userIdRex = new RegExp("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$");
+        var password = new RegExp("^[a-zA-Z0-9]{1,8}$");
+        var v = $(field).val();
+        // 返回结果
+        var result = true;
+        if ($(field).attr("datatype") == 'number' && (v % 1 != 0 || isNaN(v))) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">必须为整数!</span>');
+            result = false;
+        } else if (v === '') {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">不能为空!</span>');
+            result = false;
+        } else if ($(field).attr("id") == 'userId' && !userIdRex.test(v)) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">格式不正确!(只能为英文或数字或英文数字组合)</span>');
+            result = false;
+        } else if ($(field).attr("id") == 'password' && !password.test(v)) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">密码格式不正确!(只能为英文或数字组合，不能超过8位)</span>');
+            result = false;
+        } else {
+            $(field).closest('.form-group').removeClass('has-error');
+//            $(field).closest('.form-group').removeClass('has-error').addClass('has-SUCCESS');
+        }
+        return result;
+    }
+
+    /**
+     * 删除租户信息
+     */
+    $("#username_space_table").delegate('.user_name_space_del', "click", function () {
+        var userId = $(this).attr("data-con-id");
+        var index = layer.confirm('删除用户连同其所属的<span style="color: red">命名空间</span>都会一同删除，确认删除？', {
+            btn: ['删除', '取消'] //按钮
+        }, function () {
+
+
+            $.ajax({
+                url: '/user/del/'+userId,
+                type: "POST",
+                dataType: 'json',
+//                data: {id: id },
+                success: function (response) {
+
+                    if(response.status==0){
+                        showResult(response,"用户信息", userId, "删除成功.");
+                    }else{
+                        showResult(response,"用户信息", userId, "删除失败.");
+                    }
+                    dataShowPage($("#page"), "/user/user_namespace_list", "GET", "", showTableData);
+                    parent.layer.close(index);
+                }
+            });
+        });
+
+    });
+
+</script>

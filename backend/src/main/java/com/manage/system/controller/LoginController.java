@@ -36,7 +36,7 @@ public class LoginController extends BaseController {
         return LOGIN_HTML;
     }
 
-    @RequestMapping(value = "/main")
+    @RequestMapping(value = "/index")
     public ModelAndView goIndex() {
         ModelAndView model = new ModelAndView("/view/main.html");
         return model;
