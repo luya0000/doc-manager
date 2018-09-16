@@ -6,8 +6,8 @@ public class SysRoleDto {
   private Integer id;
   private String name;
   private String desc;
-  private Timestamp createTime;
-  private String createUser;
+  private Timestamp updateTime;
+  private String updateUser;
 
   public Integer getId() {
     return id;
@@ -33,19 +33,19 @@ public class SysRoleDto {
     this.desc = desc;
   }
 
-  public Timestamp getCreateTime() {
-    return createTime;
+  public Timestamp getUpdateTime() {
+    return updateTime;
   }
 
-  public void setCreateTime(Timestamp createTime) {
-    this.createTime = createTime;
+  public void setUpdateTime(Timestamp updateTime) {
+    this.updateTime = updateTime;
   }
 
-  public String getCreateUser() {
-    return createUser;
+  public String getUpdateUser() {
+    return updateUser;
   }
 
-  public void setCreateUser(String createUser) {
-    this.createUser = createUser;
+  public void setUpdateUser(String updateUser) {
+    this.updateUser = updateUser;
   }
 }

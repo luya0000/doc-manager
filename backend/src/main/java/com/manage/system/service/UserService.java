@@ -4,6 +4,7 @@ import com.manage.common.Constants;
 import com.manage.system.bean.UserBean;
 import com.manage.system.dao.UserMapper;
 import com.manage.system.dao.UserRoleMapper;
+import com.manage.system.model.SysDepartDto;
 import com.manage.system.model.SysUserDto;
 import com.manage.system.model.SysUserRoleDto;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +33,7 @@ public class UserService {
     private UserMapper userMapper;
 
     @Autowired
-    private UserRoleMapper userRoleMapper;
+    private DepartService departService;
 
     /*获取用户带权限列表*/
     @Transactional(readOnly = true)
@@ -56,7 +57,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserBean selectByPrimaryKey(Integer userId) throws Exception {
+    public UserBean selectByPrimaryKey(String userId) throws Exception {
         SysUserDto userDto = userMapper.selectByPrimaryKey(userId);
         UserBean userBean = new UserBean();
         if (userDto != null) {
@@ -65,22 +66,25 @@ public class UserService {
         return userBean;
     }
 
-    /*获取用户带权限*/
+    /*获取用户带角色和权限*/
     @Transactional(readOnly = true)
     public UserBean selectUserAndRoleByAccount(String account) throws Exception {
         // 获取用户信息
-        SysUserDto userDto = userMapper.selectByUserId(account, Constants.STATUE_INVALID);
+        SysUserDto userDto = userMapper.selectByUserId(account);
 
         if (userDto != null) {
             UserBean bean = new UserBean();
             BeanUtils.copyProperties(userDto, bean);
-
-            List<SysUserRoleDto> userRoleDtoList = userRoleMapper.selectByParam(bean.getUserId(), null, null);
-            if (userRoleDtoList != null && userRoleDtoList.size() > 0) {
-                //bean.setGroup(roleGroupDtos.get(0).getGroupId());
-            }
+            // 获取角色
             List<Integer> roles = userRoleService.getRolesByUserId(bean.getUserId());
             bean.setRoles(roles);
+            // 获取部门
+            List<SysDepartDto> departDtoList = departService.getDepartListByRoles(roles);
+            List<Integer> departList = new ArrayList<>();
+            for(SysDepartDto dto : departDtoList){
+                departList.add(dto.getId());
+            }
+            bean.setGroup(departList);
             return bean;
         }
         return null;
@@ -105,7 +109,7 @@ public class UserService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public int deleteUser(Integer userId) throws Exception {
+    public int deleteUser(String userId) throws Exception {
         return userMapper.deleteByPrimaryKey(userId);
     }
 
@@ -120,7 +124,7 @@ public class UserService {
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean changePassword(Integer userId, String oldPassword, String newPassword, boolean self) throws Exception {
+    public boolean changePassword(String userId, String oldPassword, String newPassword, boolean self) throws Exception {
         UserBean user = selectByPrimaryKey(userId);
         if (self) {
             if (BCrypt.checkpw(oldPassword, user.getPassword())) {

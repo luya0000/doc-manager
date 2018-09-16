@@ -1,5 +1,6 @@
 package com.manage.system.dao;
 
+import com.manage.system.model.SysRoleDto;
 import com.manage.system.model.SysUserRoleDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,11 +13,11 @@ import java.util.List;
 @Mapper
 public interface UserRoleMapper {
 
-    public int insert(SysUserRoleDto userRoleGroupDto);
+    public int insert(SysUserRoleDto userRoleDto);
 
-    public int deleteByPrimaryKey(Integer id);
+    public int updateByParam(SysUserRoleDto userRoleDto);
 
-    public int deleteByParam(@Param("userId") Integer userId, @Param("roleId") Integer roleId, @Param("groupId") Integer groupId);
+    public int deleteByParam(@Param("userId") String userId, @Param("roleId") Integer roleId);
 
-    public List<SysUserRoleDto> selectByParam(@Param("userId") String userId, @Param("roleId") Integer roleId, @Param("groupId") Integer groupId);
+    public List<SysRoleDto> selectByParam(@Param("userId") String userId, @Param("roleId") Integer roleId);
 }

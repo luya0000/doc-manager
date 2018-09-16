@@ -8,10 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * <p>jwt token工具类</p>
@@ -36,7 +33,7 @@ public class JwtTokenUtil {
     /**
      * 获取用户名从token中
      */
-    public String getUserIdFromToken(String token) {
+    public String getDepartFromToken(String token) {
         return getClaimFromToken(token).getSubject();
     }
 
@@ -64,27 +61,27 @@ public class JwtTokenUtil {
     /**
      * 获取私有的jwt claim
      */
-    public String getPrivateClaimFromToken(String token, String key) {
-        return getClaimFromToken(token).get(key).toString();
+    public Object getPrivateClaimFromToken(String token, String key) {
+        return getClaimFromToken(token).get(key);
     }
 
     /**
      * 获取md5 key从token中
      */
     public String getMd5KeyFromToken(String token) {
-        return getPrivateClaimFromToken(token, jwtProperties.getMd5Key());
+        return getPrivateClaimFromToken(token, jwtProperties.getMd5Key()).toString();
     }
 
     public String getNameKeyFromToken(String token) {
-        return getPrivateClaimFromToken(token, jwtProperties.getNameKey());
+        return getPrivateClaimFromToken(token, jwtProperties.getNameKey()).toString();
     }
 
     public String getAccountFromToken(String token) {
-        return getPrivateClaimFromToken(token, "account");
+        return getPrivateClaimFromToken(token, "account").toString();
     }
 
-    public String getRolesKeyFromToken(String token) {
-        return getPrivateClaimFromToken(token, jwtProperties.getRolesKey());
+    public List<Integer> getRolesKeyFromToken(String token) {
+        return (List<Integer>) getPrivateClaimFromToken(token, jwtProperties.getRolesKey());
     }
 
     /**
@@ -127,16 +124,9 @@ public class JwtTokenUtil {
         claims.put(jwtProperties.getMd5Key(), randomKey);
         claims.put(jwtProperties.getNameKey(), user.getUserName());
         claims.put("account", user.getUserId());
-        /*String[] roleIds = new String[user.getRoles().size()];
-        for (int i = 0; i < user.getRoles().size(); i++) {
-            roleIds[i] = user.getRoles().get(i).toString();
-        }
-        if(roleIds.length>0){
-            claims.put(jwtProperties.getRolesKey(), StringUtils.join(roleIds, Constants.ROLE_SPLITOR));
-        }else{
-            claims.put(jwtProperties.getRolesKey(), StringUtils.EMPTY);
-        }*/
-        return doGenerateToken(claims, user.getUserId().toString());
+        List<Integer> roleIds = new ArrayList<>();
+        claims.put(jwtProperties.getRolesKey(), user.getRoles()); //StringUtils.join(roleIds, Constants.ROLE_SPLITOR)
+        return doGenerateToken(claims, user.getUserId());
     }
 
     /**

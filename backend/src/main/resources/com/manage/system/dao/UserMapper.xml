@@ -30,7 +30,6 @@
             <if test="answer != null and answer != ''">,answer = #{answer,jdbcType=VARCHAR}</if>
             <if test="status != null and status != ''">,status = #{status,jdbcType=INTEGER}</if>
             <if test="updateUser != null and updateUser != ''">,update_user = #{updateUser,jdbcType=VARCHAR}</if>
-            update_time = now()
         </set>
         WHERE user_id = #{userId,jdbcType=VARCHAR}
     </update>
@@ -63,9 +62,6 @@
         select user_id, user_name, password, phone, sex, email, note, rank,
         question, answer,status, update_time, update_user
         from sys_user
-        <where>
-            user_id = #{userId,jdbcType=VARCHAR}
-            <if test="status != null">AND status = #{status,jdbcType=INTEGER}</if>
-        </where>
+        where user_id = #{userId,jdbcType=VARCHAR}
     </select>
 </mapper>

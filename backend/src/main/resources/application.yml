@@ -10,7 +10,7 @@ mybatis:
     map-underscore-to-camel-case: true
 jwt:
   auth-path: login
-  expiration: 604800
+  expiration: 86400
   header: Authorization
   md5-key: randomKey
   secret: defaultSecret

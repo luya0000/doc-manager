@@ -1,9 +1,13 @@
 package com.manage.system.model;
 
+import java.sql.Timestamp;
+
 public class SysDepartDto {
   private Integer id;
   private String name;
   private String desc;
+  private Timestamp updateTime;
+  private String updateUser;
 
   public Integer getId() {
     return id;
@@ -27,5 +31,21 @@ public class SysDepartDto {
 
   public void setDesc(String desc) {
     this.desc = desc;
+  }
+
+  public Timestamp getUpdateTime() {
+    return updateTime;
+  }
+
+  public void setUpdateTime(Timestamp updateTime) {
+    this.updateTime = updateTime;
+  }
+
+  public String getUpdateUser() {
+    return updateUser;
+  }
+
+  public void setUpdateUser(String updateUser) {
+    this.updateUser = updateUser;
   }
 }

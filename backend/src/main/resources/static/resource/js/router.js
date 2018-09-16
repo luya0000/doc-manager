@@ -25,6 +25,9 @@ function routerPage(pageName) {
     $('.content').load(pageName);
 }
 
+Router.route('/', function () {
+    routerPage('/index.html');
+});
 Router.route('/content', function () {
     routerPage('/view/content.html');
 });
@@ -34,3 +37,8 @@ Router.route('/view/file_manage', function () {
 Router.route('/view/changepwd', function () {
     routerPage('/view/user/chang_password.html');
 });
+redirectRouter = function (path, url){
+    Router.route(path, function () {
+        routerPage(url + '.html');
+    });
+}
