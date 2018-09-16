@@ -32,7 +32,7 @@ public class MenuController extends BaseController{
      */
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
     public List<Menu> getUserMenus(HttpServletRequest request) {
-        Integer useId = super.getUserId();
+        String useId = super.getAccount();
         return menuService.generateMenus(useId);
     }
 

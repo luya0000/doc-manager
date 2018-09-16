@@ -62,7 +62,6 @@ public class LoginController extends BaseController {
         try {
             userBean = userService.selectUserAndRoleByAccount(account);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e);
             return APIResponse.toExceptionResponse(SysExceptionStatusEnum.SERVER_ERROR);
         }

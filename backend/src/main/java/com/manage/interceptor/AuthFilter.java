@@ -54,20 +54,23 @@ public class AuthFilter extends OncePerRequestFilter {
                 boolean flag = jwtTokenUtil.isTokenExpired(authToken);
                 if (flag) {
                     RenderUtil.renderJson(response, APIResponse.toExceptionResponse(SysExceptionStatusEnum.TOKEN_EXPIRED));
+                    response.sendRedirect("/");
                     return;
                 }
             } catch (JwtException e) {
                 //有异常就是token解析失败
                 RenderUtil.renderJson(response, APIResponse.toExceptionResponse(SysExceptionStatusEnum.TOKEN_ERROR));
+                response.sendRedirect("/");
                 return;
             }
 
             request.setAttribute(Constants.JWT_ROLES_KEY, jwtTokenUtil.getRolesKeyFromToken(authToken));
-            request.setAttribute(Constants.JWT_SUB_KEY, jwtTokenUtil.getUserIdFromToken(authToken));
+            request.setAttribute(Constants.JWT_SUB_KEY, jwtTokenUtil.getDepartFromToken(authToken));
             request.setAttribute(Constants.JWT_ACCOUNT_KEY, jwtTokenUtil.getAccountFromToken(authToken));
         } else {
             //header没有带Bearer字段
             RenderUtil.renderJson(response, APIResponse.toExceptionResponse(SysExceptionStatusEnum.TOKEN_ERROR));
+            response.sendRedirect("/");
             return;
         }
         chain.doFilter(request, response);

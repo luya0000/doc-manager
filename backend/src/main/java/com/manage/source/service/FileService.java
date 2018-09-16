@@ -77,7 +77,7 @@ public class FileService {
     }
 
     /*获取系统管理员以外用户可视的文件夹*/
-    public List<String> getAdminUserDirs(Integer userId, String rootPath) {
+    public List<String> getAdminUserDirs(String userId, String rootPath) {
         List<String> ownDirs = new ArrayList<>();
         /*try {
             List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
@@ -183,7 +183,7 @@ public class FileService {
     }
 
     /*获取用户角色对应根目录*/
-    public List<String> getUserRolePath(Integer userId, String rootPath) {
+    public List<String> getUserRolePath(String userId, String rootPath) {
        // List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
         List<String> selfRootPath = new ArrayList<>();
         /*for (UserRoleGroupDto dto : roleGroupDtoList) {

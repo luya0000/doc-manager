@@ -41,7 +41,7 @@ public class FileController extends BaseController {
 
     @RequestMapping(value = "/getBasePath")
     public APIResponse getRootpath() {
-        Integer userId = getUserId();
+        String userId = getAccount();
         List<String> rootPatn = fileService.getUserRolePath(userId, fileRootPath);
         fileService.makeDirs(fileRootPath);
         return APIResponse.toOkResponse(fileRootPath);
@@ -71,7 +71,7 @@ public class FileController extends BaseController {
         if (roles.contains(Constants.SYSTEM_TYPE)) {
             ownerDirs.add(this.fileRootPath);
         } else {
-            ownerDirs = fileService.getUserRolePath(getUserId(), this.fileRootPath);
+            ownerDirs = fileService.getUserRolePath(getAccount(), this.fileRootPath);
         }
         List<FileDetail> reFiles = fileService.listAdminFiles(listPath, ownerDirs);
         return APIResponse.toOkResponse(reFiles);
@@ -97,7 +97,7 @@ public class FileController extends BaseController {
         if (getRoles().contains(Constants.SYSTEM_TYPE)) {
             fileService.uploadFile(request, path, filename);
         } else {
-            List<String> dirs = fileService.getAdminUserDirs(getUserId(), this.fileRootPath);
+            List<String> dirs = fileService.getAdminUserDirs(getAccount(), this.fileRootPath);
             for (String dir : dirs) {
                 if (path.contains(dir)) {
                     fileService.uploadFile(request, path, filename);
@@ -173,7 +173,7 @@ public class FileController extends BaseController {
                 }
             }
         } else {
-            List<String> dirList = fileService.getAdminUserDirs(getUserId(), this.fileRootPath);
+            List<String> dirList = fileService.getAdminUserDirs(getAccount(), this.fileRootPath);
             for (String dir : dirList) {
                 // 转换成文件地址格式
                 dir = dir.replace("/", "\\");
@@ -202,7 +202,7 @@ public class FileController extends BaseController {
                 if (getRoles().contains(Constants.SYSTEM_TYPE)) {
                     fileService.makeDirs(path + "/" + dir);
                 } else {
-                    List<String> dirs = fileService.getAdminUserDirs(getUserId(), this.fileRootPath);
+                    List<String> dirs = fileService.getAdminUserDirs(getAccount(), this.fileRootPath);
                     for (String d : dirs) {
                         if (path.contains(d)) {
                             fileService.makeDirs(path + "/" + dir);

@@ -2,9 +2,17 @@ package com.manage.system.model;
 
 public class SysUserRoleDto {
 
+  private String userId;
+
   private Integer roleId;
 
-  private String roleName;
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
   public Integer getRoleId() {
     return roleId;
@@ -12,13 +20,5 @@ public class SysUserRoleDto {
 
   public void setRoleId(Integer roleId) {
     this.roleId = roleId;
-  }
-
-  public String getRoleName() {
-    return roleName;
-  }
-
-  public void setRoleName(String roleName) {
-    this.roleName = roleName;
   }
 }

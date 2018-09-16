@@ -66,19 +66,18 @@ public class UserController extends BaseController {
         }
     }
 
-
     /**
      * 根据主键获取用户
      * id 为－１表示查询自己数据
      * @param userId
      * @return
      */
-    @GetMapping("/{id}")
-    public APIResponse getUserByKey(@PathVariable("id") Integer userId) {
+    @GetMapping("/{userId}")
+    public APIResponse getUserByKey(@PathVariable("userId") String userId) {
 
         try {
-            if(userId == -1){
-                userId = getUserId();
+            if(StringUtils.isEmpty(userId)){
+                userId = getAccount();
             }
             UserBean userBean = userService.selectByPrimaryKey(userId);
             return APIResponse.toOkResponse(userBean);
@@ -177,14 +176,14 @@ public class UserController extends BaseController {
     /**
      * 删除用户
      *
-     * @param id
+     * @param userId
      * @return
      */
-    @PostMapping("/delete/{id}")
-    public APIResponse deleteUser(@PathVariable(value = "id") Integer id) {
+    @PostMapping("/delete/{userId}")
+    public APIResponse deleteUser(@PathVariable(value = "userId") String userId) {
 
         try {
-            userService.deleteUser(id);
+            userService.deleteUser(userId);
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
@@ -204,7 +203,7 @@ public class UserController extends BaseController {
      */
     @PostMapping("/password")
     public APIResponse changePassword(
-            @RequestParam(value = "id", required = false) Integer userId,
+            @RequestParam(value = "userId", required = false) String userId,
             @RequestParam("oldPass") String oldPass,
             @RequestParam("newPass") String newPass,
             @RequestParam("confPass") String confPass) {
@@ -226,7 +225,7 @@ public class UserController extends BaseController {
                 }
                 return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_HAS_NO_ROLE_ERROR);
             } else if (StringUtils.isEmpty(userId)) {
-                userId = getUserId();
+                userId = getAccount();
                 if (userService.changePassword(userId, oldPass, newPass, true)) {
                     return APIResponse.toOkResponse();
                 }

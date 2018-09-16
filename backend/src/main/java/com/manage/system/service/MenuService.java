@@ -44,7 +44,7 @@ public class MenuService {
 	 * @return
 	 */
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
-	public List<Menu> generateMenus(Integer userId) {
+	public List<Menu> generateMenus(String userId) {
 		List<Menu> menus = new ArrayList<>();
 		Menu home = new Menu("home", "首页", "#/content", MENU_TYPE_HOME_GROUP);
 		Menu departs = new Menu("departs", "部门", "", MENU_TYPE_DEPART_GROUP);

@@ -14,20 +14,21 @@ public class BaseController {
     @Autowired
     UserService userService;
 
-    public Integer getUserId() {
-        return Integer.parseInt(HttpKit.getRequest().getAttribute(Constants.JWT_SUB_KEY).toString());
+    /* 获取部门 */
+    public String getDepart() {
+        return (HttpKit.getRequest().getAttribute(Constants.JWT_SUB_KEY)).toString();
     }
-
+    /* 获取账号 */
     public String getAccount() {
         return HttpKit.getRequest().getAttribute(Constants.JWT_ACCOUNT_KEY).toString();
     }
-
+    /* 获取角色 */
     public String getRoles() {
         return (String) HttpKit.getRequest().getAttribute(Constants.JWT_ROLES_KEY);
     }
 
     public String getUserName() {
-        Integer userId = getUserId();
+        String userId = getAccount();
         try {
             UserBean user = userService.selectByPrimaryKey(userId);
             return user.getUserName();
