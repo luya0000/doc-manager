@@ -2,6 +2,7 @@ package com.manage.system.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.manage.common.APIResponse;
 import com.manage.common.BaseController;
 import com.manage.common.UrlConstants;
 import com.manage.system.bean.Menu;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = UrlConstants.URL_DOC_MODEL)
+@RequestMapping(value = UrlConstants.URL_MENU_MODEL)
 public class MenuController extends BaseController{
 
     Log logger = LogFactory.getLog(MenuController.class);
@@ -25,15 +26,24 @@ public class MenuController extends BaseController{
     private MenuService menuService;
 
     /**
-     * get menus
+     * 获取用户拥有的菜单列表
      *
-     * @param request
      * @return
      */
-    @RequestMapping(value = "/menus", method = RequestMethod.GET)
-    public List<Menu> getUserMenus(HttpServletRequest request) {
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public APIResponse getUserMenus() {
         String useId = super.getAccount();
-        return menuService.generateMenus(useId);
+        List<Menu> menus = menuService.getUserMenus(useId);
+        return response(menus);
+    }
+
+    /**
+     * 系统管理以外的所有菜单
+     * @return
+     */
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public List<Menu> getAllMenus() {
+        return menuService.getAllMenusWithOutSystem();
     }
 
 }

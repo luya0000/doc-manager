@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.manage.system.dao.UserRoleMapper">
 
-    <insert id="insert" parameterType="com.manage.system.model.SysUserRoleDto">
+    <insert id="insert" parameterType="com.manage.system.model.SysUserRoleDto" >
       insert into sys_user_role
         (user_id, role_id)
 	  values

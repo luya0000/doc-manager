@@ -1,14 +1,18 @@
 package com.manage.system.model;
 
+import java.sql.Timestamp;
+
 public class SysMenuDto {
   private Integer id;
-  private Integer parentid;
+  private Integer parentId;
   private String name;
   private String icon;
   private String url;
-  private String type;
-  private String order;
-  private String status;
+  private Integer type;
+  private Integer order;
+  private Integer status;
+  private String updateUser;
+  private Timestamp updateTime;
 
   public Integer getId() {
     return id;
@@ -18,12 +22,12 @@ public class SysMenuDto {
     this.id = id;
   }
 
-  public Integer getParentid() {
-    return parentid;
+  public Integer getParentId() {
+    return parentId;
   }
 
-  public void setParentid(Integer parentid) {
-    this.parentid = parentid;
+  public void setParentId(Integer parentId) {
+    this.parentId = parentId;
   }
 
   public String getName() {
@@ -50,27 +54,43 @@ public class SysMenuDto {
     this.url = url;
   }
 
-  public String getType() {
+  public Integer getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(Integer type) {
     this.type = type;
   }
 
-  public String getOrder() {
+  public Integer getOrder() {
     return order;
   }
 
-  public void setOrder(String order) {
+  public void setOrder(Integer order) {
     this.order = order;
   }
 
-  public String getStatus() {
+  public Integer getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Integer status) {
     this.status = status;
+  }
+
+  public String getUpdateUser() {
+    return updateUser;
+  }
+
+  public void setUpdateUser(String updateUser) {
+    this.updateUser = updateUser;
+  }
+
+  public Timestamp getUpdateTime() {
+    return updateTime;
+  }
+
+  public void setUpdateTime(Timestamp updateTime) {
+    this.updateTime = updateTime;
   }
 }

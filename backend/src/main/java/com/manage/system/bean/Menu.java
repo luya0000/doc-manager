@@ -8,13 +8,15 @@ import java.util.List;
  */
 public class Menu {
 
-	private String menuId;
+	private Integer menuId;
 
 	private String menuName;
 
 	private String menuUrl;
 
-	private String menuType;
+	private String icon;
+
+	private Integer menuType;
 
 	private List<Menu> subMenus;
 
@@ -22,12 +24,13 @@ public class Menu {
 		super();
 	}
 
-	public Menu(String menuId, String menuName, String menuUrl, String menuType) {
+	public Menu(Integer menuId, String menuName, String menuUrl, String icon, Integer menuType) {
 		super();
 		this.menuId = menuId;
 		this.menuName = menuName;
 		this.menuUrl = menuUrl;
 		this.menuType = menuType;
+		this.icon = icon;
 		this.subMenus = new ArrayList<>();
 	}
 
@@ -39,11 +42,11 @@ public class Menu {
 		this.subMenus = subMenus;
 	}
 
-	public String getMenuId() {
+	public Integer getMenuId() {
 		return menuId;
 	}
 
-	public void setMenuId(String menuId) {
+	public void setMenuId(Integer menuId) {
 		this.menuId = menuId;
 	}
 
@@ -63,12 +66,20 @@ public class Menu {
 		this.menuUrl = menuUrl;
 	}
 
-	public String getMenuType() {
+	public Integer getMenuType() {
 		return menuType;
 	}
 
-	public void setMenuType(String menuType) {
+	public void setMenuType(Integer menuType) {
 		this.menuType = menuType;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 }

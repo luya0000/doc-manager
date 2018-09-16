@@ -2,6 +2,7 @@ package com.manage.system.controller;
 
 import com.manage.common.APIResponse;
 import com.manage.common.BaseController;
+import com.manage.common.UrlConstants;
 import com.manage.exception.impl.BizExceptionStatusEnum;
 import com.manage.exception.impl.SysExceptionStatusEnum;
 import com.manage.system.bean.UserBean;
@@ -12,10 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,14 +36,14 @@ public class LoginController extends BaseController {
         return LOGIN_HTML;
     }
 
-    @RequestMapping(value = "/index")
-    public ModelAndView login() {
+    @RequestMapping(value = "/main")
+    public ModelAndView goIndex() {
         ModelAndView model = new ModelAndView("/view/main.html");
         return model;
     }
 
     @PostMapping(value = "/logout")
-    public ModelAndView logout(HttpServletRequest request) {
+    public ModelAndView logout() {
         return new ModelAndView(LOGIN_HTML);
     }
 
@@ -72,6 +70,19 @@ public class LoginController extends BaseController {
         }
         return APIResponse.toExceptionResponse(BizExceptionStatusEnum.AUTH_REQUEST_ERROR.getCode(),
                 BizExceptionStatusEnum.AUTH_REQUEST_ERROR.getMessage());
+    }
+
+    @GetMapping(value = "/loginUser")
+    @ResponseBody
+    public APIResponse getUserInfo(){
+        String userId = super.getAccount();
+        try {
+            UserBean userBean = userService.selectByPrimaryKey(userId);
+            return APIResponse.toOkResponse(userBean);
+        } catch (Exception e) {
+            logger.error(e);
+            return APIResponse.toExceptionResponse(SysExceptionStatusEnum.SERVER_ERROR);
+        }
     }
 
 }

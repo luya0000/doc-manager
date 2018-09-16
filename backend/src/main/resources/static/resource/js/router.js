@@ -37,8 +37,15 @@ Router.route('/view/file_manage', function () {
 Router.route('/view/changepwd', function () {
     routerPage('/view/user/chang_password.html');
 });
-redirectRouter = function (path, url){
-    Router.route(path, function () {
-        routerPage(url + '.html');
-    });
-}
+Router.route('/view/role', function () {
+    routerPage('/view/role/role_content.html');
+});
+Router.route('/view/depart', function () {
+    routerPage('/view/depart/depart_content.html');
+});
+Router.route('/view/menu', function () {
+    routerPage('/view/menu/menu_content.html');
+});
+Router.route('/view/user', function () {
+    routerPage('/view/user/user_content.html');
+});

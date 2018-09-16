@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.manage.system.dao.DepartMapper">
 
-    <insert id="insert" parameterType="com.manage.system.model.SysDepartDto">
+    <insert id="insert" parameterType="com.manage.system.model.SysDepartDto" useGeneratedKeys="true" keyProperty="id">
         insert into sys_depart
         (name, 'desc', update_user, update_time)
         values

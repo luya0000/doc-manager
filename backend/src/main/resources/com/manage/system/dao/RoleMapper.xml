@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.manage.system.dao.RoleMapper">
 
-    <insert id="insert" parameterType="com.manage.system.model.SysRoleDto">
+    <insert id="insert" parameterType="com.manage.system.model.SysRoleDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_role (name, status, type,create_time, create_user,update_time,update_user)
         VALUES (#{name,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},now(),
         #{createUser,jdbcType=VARCHAR},now(),#{updateUser,jdbcType=VARCHAR})
