@@ -113,7 +113,7 @@ public class RoleController extends BaseController {
      *
      * @param id
      * @param name
-     * @param note
+     * @param type
      * @return
      */
     @PostMapping("/update")

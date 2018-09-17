@@ -84,7 +84,7 @@
                     if (result.code === 200) {
                         token = 'Bearer ' + result.content;
                         localStorage.setItem('JWT_TOKEN',token);
-                        location.href = "/index#/content";
+                        location.href = "/index";
                     } else {
                         setErrorText("password", result.message);
                     }

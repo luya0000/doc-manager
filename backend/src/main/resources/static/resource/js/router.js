@@ -24,9 +24,8 @@ window.Router.init();
 function routerPage(pageName) {
     $('.content').load(pageName);
 }
-
 Router.route('/', function () {
-    routerPage('/index.html');
+    routerPage('/view/content.html');
 });
 Router.route('/content', function () {
     routerPage('/view/content.html');
