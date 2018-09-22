@@ -34,29 +34,26 @@ public class UserController extends BaseController {
     /**
      * 根据条件获取用户列表
      *
-     * @param pageNum
+     * @param currPage
      * @param pageSize
-     * @param userName
-     * @param group
      * @return
      */
     @GetMapping("/list")
-    public APIResponse userList(@RequestParam(value = "pageNum", required = false) Integer pageNum,
+    public APIResponse userList(@RequestParam(value = "currPage", required = false) Integer currPage,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                 @RequestParam(value = "account", required = false) String account,
-                                @RequestParam(value = "userName", required = false) String userName,
-                                @RequestParam(value = "group", required = false) String group) {
+                                @RequestParam(value = "depart", required = false) String depart) {
 
-        pageNum = pageNum == null ? Constants.PAGEHELPER_PAGE_CURRENT : pageNum;
+        currPage = currPage == null ? Constants.PAGEHELPER_PAGE_CURRENT : currPage;
         pageSize = pageSize == null ? Constants.PAGEHELPER_PAGE_SIZE : pageSize;
 
         List<UserBean> userList = null;
         try {
-            Page page = PageHelper.startPage(pageNum, pageSize, true);
-            userList = userService.selectUserList(account, userName, Constants.STATUE_INVALID);
+            Page page = PageHelper.startPage(currPage, pageSize, true);
+            userList = userService.selectUserList(account, depart, Constants.STATUE_INVALID);
             Map result = new HashedMap();
             result.put("data", userList);
-            result.put("pageNum", pageNum);
+            result.put("currPage", currPage);
             result.put("total", page.getTotal());
             return APIResponse.toOkResponse(result);
         } catch (Exception e) {
@@ -90,39 +87,38 @@ public class UserController extends BaseController {
 
     /**
      * 添加用户
-     *
-     * @param account
-     * @param name
+     * @param userId
+     * @param userName
      * @param password
-     * @param curPass
      * @param sex
      * @param phone
-     * @param age
+     * @param status
      * @param email
+     * @param note
      * @return
      */
     @PostMapping("/add")
-    public APIResponse addUser(@RequestParam("account") String account,
-                               @RequestParam("name") String name,
+    public APIResponse addUser(@RequestParam("userId") String userId,
+                               @RequestParam("userName") String userName,
                                @RequestParam("password") String password,
-                               @RequestParam("curPass") String curPass,
                                @RequestParam("sex") String sex,
                                @RequestParam("phone") String phone,
-                               @RequestParam("age") int age,
+                               @RequestParam("status") int status,
                                @RequestParam("email") String email,
                                @RequestParam("note") String note) {
 
-        if (StringUtils.isEmpty(password) || !password.equals(curPass)) {
+        if (StringUtils.isEmpty(password)) {
             return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_PWD_DIFF_ERROR);
         }
         UserBean userBean = new UserBean();
-        userBean.setUserId(account);
-        userBean.setUserName(name);
+        userBean.setUserId(userId);
+        userBean.setUserName(userName);
         userBean.setPassword(password);
         userBean.setSex(sex);
         userBean.setPhone(phone);
         userBean.setEmail(email);
         userBean.setNote(note);
+        userBean.setStatus(status);
         userBean.setUpdateUser(getUserName());
         try {
             userService.insertUser(userBean);
@@ -137,31 +133,38 @@ public class UserController extends BaseController {
 
     /**
      * 修改用户
-     *
-     * @param account
-     * @param name
+     * @param userId
+     * @param userName
+     * @param password
      * @param sex
      * @param phone
-     * @param age
+     * @param status
      * @param email
+     * @param note
      * @return
      */
     @PostMapping("/update")
-    public APIResponse updateUser(@RequestParam(value = "account") String account,
-                                  @RequestParam(value = "name") String name,
-                                  @RequestParam(value = "sex") String sex,
-                                  @RequestParam(value = "phone") String phone,
-                                  @RequestParam(value = "age") int age,
-                                  @RequestParam(value = "email") String email,
-                                  @RequestParam(value = "note") String note) {
+    public APIResponse updateUser(@RequestParam("userId") String userId,
+                                  @RequestParam("userName") String userName,
+                                  @RequestParam("password") String password,
+                                  @RequestParam("sex") String sex,
+                                  @RequestParam("phone") String phone,
+                                  @RequestParam("status") int status,
+                                  @RequestParam("email") String email,
+                                  @RequestParam("note") String note) {
 
         UserBean userBean = new UserBean();
-        userBean.setUserId(account);
-        userBean.setUserName(name);
+        userBean.setUserId(userId);
+        userBean.setUserName(userName);
         userBean.setSex(sex);
+        userBean.setStatus(status);
         userBean.setPhone(phone);
         userBean.setEmail(email);
         userBean.setNote(note);
+        if(!StringUtils.isEmpty(password)){
+            userBean.setPassword(password);
+        }
+
         try {
             userService.updateUser(userBean);
         } catch (Exception e) {

@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    List<SysUserDto> selectAll(@Param("userId") String userId, @Param("name") String name, @Param("status") Integer status) throws Exception;
+    List<SysUserDto> selectAll(@Param("userId") String userId, @Param("depart") String depart, @Param("status") Integer status) throws Exception;
 
     SysUserDto selectByUserId(@Param("userId") String userId) throws Exception;
 

@@ -2,7 +2,7 @@
  * Created by luya on 2018/6/16.
  */
 
-var myAjax = function (type, async, url,param, succCallBack) {
+var myAjax = function (type, async, url, param, succCallBack) {
     $.ajax({
         type: type,
         async: async,

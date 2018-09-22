@@ -15,29 +15,28 @@ function dataShowPage(dom, url, type, param, callback, size, start) {
         startPage = 0;
     }
     // 后台查询参数合并
-    var params = {"currentPage": startPage * pageSize, "pageSize": pageSize};
+    var params = {"currPage": startPage * pageSize, "pageSize": pageSize};
     params = $.extend(params, param);
     $.ajax({
         type: type,
         async: false,
         url: url,
         data: params,
+        beforeSend: function (request) {
+            request.setRequestHeader("Authorization", localStorage.getItem('JWT_TOKEN'));
+        },
         success: function (result, status) {
-            if (result["status"] == 0) {
-
-                //权限控制按钮
-                if(result["author"]==0){
-                    $("#resBtn").show();
-                }else{
-                    $("#resBtn").hide();
-                }
-
+            if(result.code  === 701){
+                location.href = "/";
+                return;
+            }
+            if (result.code  === 200) {
                 layui.use(["laypage","layer"], function () {
                     var laypage = layui.laypage;
                     //调用分页
                     laypage.render({
                         elem: dom,
-                        count: result["count"] || 0, //数据总数
+                        count: result.content.total || 0, //数据总数
                         curr: currentPage || 0,
                         limit: pageSize,
                         startPage: startPage,

@@ -37,12 +37,11 @@ public class UserService {
 
     /*获取用户带权限列表*/
     @Transactional(readOnly = true)
-    public List<UserBean> selectUserList(String account, String name, Integer status) throws Exception {
+    public List<UserBean> selectUserList(String account, String depart, Integer status) throws Exception {
         // 设置模糊查询参数
         account = StringUtils.isBlank(account) ? null : "%" + account.trim() + "%";
-        String userName = StringUtils.isBlank(name) ? null : "%" + name.trim() + "%";
         //status = status == null ? Constants.STATUE_INVALID : status;
-        List<SysUserDto> userDtos = userMapper.selectAll(account, userName, status);
+        List<SysUserDto> userDtos = userMapper.selectAll(account, depart, status);
         List<UserBean> userList = new ArrayList<>();
         if (userDtos != null) {
             for (SysUserDto dto : userDtos) {

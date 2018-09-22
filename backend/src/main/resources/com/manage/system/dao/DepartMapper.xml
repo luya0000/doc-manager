@@ -35,11 +35,10 @@
     <!-- 角色数组获取部门信息 -->
     <select id="selectDepartByRoles" resultType="com.manage.system.model.SysDepartDto" parameterType="java.util.List">
         select id , name, 'desc', update_user as updateUser, update_time as updateTime
-        from sys_role_menu srm ,sys_menu_depart smd, sys_depart sd
-        where srm.menu_id = smd.menu_id
-        and smd.depart_id = sd.id
+        from sys_role_depart srd, sys_depart sd
+        where srd.depart_id = sd.id
         <if test="roleIds != null and roleIds.size() > 0">
-            and srm.role_id in
+            and srd.role_id in
             <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>

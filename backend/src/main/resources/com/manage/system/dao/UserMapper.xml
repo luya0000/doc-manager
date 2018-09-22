@@ -4,7 +4,7 @@
 
     <insert id="insert" parameterType="com.manage.system.model.SysUserDto" useGeneratedKeys="true" keyProperty="id">
         insert into sys_user
-        (user_id,, user_name, password, phone, sex, email, note, rank, question, answer,status, update_time, update_user)
+        (user_id, user_name, password, phone, sex, email, note, rank, question, answer,status, update_time, update_user)
         values
         (#{userId,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},
          #{sex,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{note,jdbcType=VARCHAR},#{rank,jdbcType=VARCHAR},
@@ -41,12 +41,20 @@
     </update>
 
     <select id="selectAll" resultType="com.manage.system.model.SysUserDto">
-        select id, account, password, name, sex, age, phone, email, status, note, create_user, create_time, update_user,
-        update_time
-        from t_user
+        SELECT DISTINCT su.user_id, su.user_name, su.password, su.phone, su.sex, su.email, su.note,
+        su.rank, su.question, su.answer, su.status, su.update_user, su.update_time
+        FROM sys_user su
+        <if test="depart != null and depart != ''">
+        , sys_user_role sur, sys_role_depart srd ,sys_depart sd
+        </if>
         <where>
-            <if test="account != null and account != ''">account LIKE #{account,jdbcType=VARCHAR}</if>
-            <if test="name != null and name != ''">AND name LIKE #{name,jdbcType=VARCHAR}</if>
+            <if test="userId != null and userId != ''">su.user_id LIKE #{userId,jdbcType=VARCHAR}</if>
+            <if test="userId != null and userId != ''">OR user_name LIKE #{userId,jdbcType=VARCHAR}</if>
+            <if test="depart != null and depart != ''">
+                AND sur.user_id = su.user_id
+                AND sur.role_id = srd.role_id
+                AND srd.depart_id = sd.id
+            </if>
             <if test="status != null and status != ''">AND status = #{status,jdbcType=VARCHAR}</if>
         </where>
     </select>
