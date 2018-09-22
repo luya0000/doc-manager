@@ -5,7 +5,7 @@ import com.manage.common.BaseController;
 import com.manage.common.UrlConstants;
 import com.manage.exception.impl.BizExceptionStatusEnum;
 import com.manage.system.model.SysPermissionDto;
-import com.manage.system.service.PermissionService;
+import com.manage.system.service.PermService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class PermissionController extends BaseController {
     Log logger = LogFactory.getLog(PermissionController.class);
 
     @Autowired
-    private PermissionService permissionService;
+    private PermService permService;
 
     /**
      * 权限列表
@@ -36,7 +36,7 @@ public class PermissionController extends BaseController {
 
         List<SysPermissionDto> permissionList = null;
         try {
-            permissionList = permissionService.getPermissionList();
+            permissionList = permService.getPermissionList();
             return APIResponse.toOkResponse(permissionList);
         } catch (Exception e) {
             logger.error(e);
@@ -60,7 +60,7 @@ public class PermissionController extends BaseController {
         SysPermissionDto permission = new SysPermissionDto();
         permission.setName(name);
         try {
-            permissionService.insertPermission(permission);
+            permService.insertPermission(permission);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
@@ -80,7 +80,7 @@ public class PermissionController extends BaseController {
     public APIResponse deletePermission(@PathVariable(value = "id") Integer id) {
 
         try {
-            permissionService.deleteByPrimaryKey(id);
+            permService.deleteByPrimaryKey(id);
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();

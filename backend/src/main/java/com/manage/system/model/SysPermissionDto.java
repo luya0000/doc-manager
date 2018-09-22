@@ -2,7 +2,7 @@ package com.manage.system.model;
 
 public class SysPermissionDto {
   private Integer id;
-  private String desc;
+  private String note;
   private String name;
   private Integer menuId;
 
@@ -14,12 +14,12 @@ public class SysPermissionDto {
     this.id = id;
   }
 
-  public String getDesc() {
-    return desc;
+  public String getNote() {
+    return note;
   }
 
-  public void setDesc(String desc) {
-    this.desc = desc;
+  public void setNote(String note) {
+    this.note = note;
   }
 
   public String getName() {

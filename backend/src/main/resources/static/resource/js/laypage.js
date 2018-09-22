@@ -27,7 +27,7 @@ function dataShowPage(dom, url, type, param, callback, size, start) {
         },
         success: function (result, status) {
             if(result.code  === 701){
-                location.href = "/";
+                window.location.href = "/signout";
                 return;
             }
             if (result.code  === 200) {

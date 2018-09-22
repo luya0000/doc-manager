@@ -1,6 +1,7 @@
 package com.manage.system.service;
 
 import com.manage.common.Constants;
+import com.manage.system.bean.DepartBean;
 import com.manage.system.bean.UserBean;
 import com.manage.system.dao.UserMapper;
 import com.manage.system.dao.UserRoleMapper;
@@ -72,19 +73,19 @@ public class UserService {
         SysUserDto userDto = userMapper.selectByUserId(account);
 
         if (userDto != null) {
-            UserBean bean = new UserBean();
-            BeanUtils.copyProperties(userDto, bean);
+            UserBean userBean = new UserBean();
+            BeanUtils.copyProperties(userDto, userBean);
             // 获取角色
-            List<Integer> roles = userRoleService.getRolesByUserId(bean.getUserId());
-            bean.setRoles(roles);
+            List<Integer> roles = userRoleService.getRolesByUserId(userBean.getUserId());
+            userBean.setRoles(roles);
             // 获取部门
-            List<SysDepartDto> departDtoList = departService.getDepartListByRoles(roles);
+            List<DepartBean> departDtoList = departService.getDepartListByRoles(roles);
             List<Integer> departList = new ArrayList<>();
-            for(SysDepartDto dto : departDtoList){
-                departList.add(dto.getId());
+            for (DepartBean bean : departDtoList) {
+                departList.add(bean.getId());
             }
-            bean.setGroup(departList);
-            return bean;
+            userBean.setGroup(departList);
+            return userBean;
         }
         return null;
     }
@@ -103,12 +104,17 @@ public class UserService {
 
         SysUserDto userDto = new SysUserDto();
         BeanUtils.copyProperties(userBean, userDto);
-        userDto.setPassword(null);
+        if(StringUtils.isEmpty(userBean.getPassword())){
+            userDto.setPassword(null);
+        }
         return userMapper.updateByPrimaryKey(userDto);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public int deleteUser(String userId) throws Exception {
+        // 删除用户角色信息
+        userRoleService.delUserRoleByUserId(userId, null);
+        // 删除用户信息
         return userMapper.deleteByPrimaryKey(userId);
     }
 

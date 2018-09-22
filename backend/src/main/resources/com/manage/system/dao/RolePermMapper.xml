@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manage.system.dao.RolePermMapper">
+
+    <insert id="insert">
+        INSERT INTO sys_role_permission (pm_id, role_id)
+        VALUES (#{permId,jdbcType=INTEGER},#{roleId,jdbcType=INTEGER})
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM sys_role_permission
+        <where>
+            <if test="permId != null">pm_id = #{permId,jdbcType=INTEGER}</if>
+            <if test="roleId != null">AND role_id = #{roleId,jdbcType=INTEGER}</if>
+        </where>
+    </delete>
+
+    <select id="selectByRoleId" resultType="java.lang.Integer">
+        SELECT pm_id as id
+        FROM sys_role_permission
+        <where>
+            <if test="roleId != null">role_id = #{roleId,jdbcType=INTEGER}</if>
+        </where>
+    </select>
+
+</mapper>

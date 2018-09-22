@@ -2,16 +2,14 @@ package com.manage.system.bean;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
-public class RoleBean implements Serializable{
-
+/**
+ * Created by luya on 2018/9/22.
+ */
+public class DepartBean implements Serializable{
     private Integer id;
     private String name;
-    private Integer departId;
-    private String departName;
     private String note;
-    private List<Integer> permList; // 权限数组
     private Timestamp updateTime;
     private String updateUser;
 
@@ -31,36 +29,12 @@ public class RoleBean implements Serializable{
         this.name = name;
     }
 
-    public Integer getDepartId() {
-        return departId;
-    }
-
-    public void setDepartId(Integer departId) {
-        this.departId = departId;
-    }
-
     public String getNote() {
         return note;
     }
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public List<Integer> getPermList() {
-        return permList;
-    }
-
-    public void setPermList(List<Integer> permList) {
-        this.permList = permList;
-    }
-
-    public String getDepartName() {
-        return departName;
-    }
-
-    public void setDepartName(String departName) {
-        this.departName = departName;
     }
 
     public Timestamp getUpdateTime() {

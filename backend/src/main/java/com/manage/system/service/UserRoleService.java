@@ -38,21 +38,26 @@ public class UserRoleService {
         return roles != null ? roles : Collections.<Integer>emptyList();
     }
 
-    /*根据用户id取得信息列表*/
+    public int delUserRoleByUserId(String userId, Integer roleId) {
+        int result = userRoleMapper.deleteByParam(userId, roleId);
+        return result;
+    }
+
+    /*根据用户id取得信息列表*//*
     public List<SysRoleDto> getRolesGroupByUserId(String userId) {
         List<SysRoleDto> roleGroupDtos = userRoleMapper.selectByParam(userId, null);
         return roleGroupDtos != null ? roleGroupDtos : Collections.<SysRoleDto>emptyList();
     }
 
-    /*根据角色id取得信息列表*/
+    *//*根据角色id取得信息列表*//*
     public List<SysRoleDto> getRolesGroupByRoleId(Integer roleId) {
         List<SysRoleDto> roleGroupDtos = userRoleMapper.selectByParam(null, roleId);
         return roleGroupDtos != null ? roleGroupDtos : Collections.<SysRoleDto>emptyList();
     }
 
-    /*根据小组id取得信息列表*/
+    *//*根据小组id取得信息列表*//*
     public List<SysRoleDto> getRolesGroupByGroupId(Integer groupId) {
         List<SysRoleDto> roleGroupDtos = userRoleMapper.selectByParam(null, null);
         return roleGroupDtos != null ? roleGroupDtos : Collections.<SysRoleDto>emptyList();
-    }
+    }*/
 }

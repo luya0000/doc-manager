@@ -42,7 +42,7 @@ public class LoginController extends BaseController {
         return model;
     }
 
-    @PostMapping(value = "/logout")
+    @PostMapping(value = "/signout")
     public ModelAndView logout() {
         return new ModelAndView(LOGIN_HTML);
     }

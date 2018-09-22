@@ -4,9 +4,9 @@
 
     <insert id="insert" parameterType="com.manage.system.model.SysDepartDto" useGeneratedKeys="true" keyProperty="id">
         insert into sys_depart
-        (name, 'desc', update_user, update_time)
+        (name, note, update_user, update_time)
         values
-        (#{name,jdbcType=VARCHAR},#{desc,jdbcType=VARCHAR}, now(), #{updateUser,jdbcType=VARCHAR})
+        (#{name,jdbcType=VARCHAR},#{note,jdbcType=VARCHAR}, now(), #{updateUser,jdbcType=VARCHAR})
     </insert>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -18,14 +18,14 @@
         <set>
             update_time = now()
             <if test="name != null and name != ''">,name = #{name,jdbcType=VARCHAR}</if>
-            <if test="desc != null and desc != ''">,desc = #{desc,jdbcType=VARCHAR}</if>
+            <if test="note != null and note != ''">,note = #{note,jdbcType=VARCHAR}</if>
             <if test="updateUser != null and updateUser != ''">,update_user = #{updateUser,jdbcType=VARCHAR}</if>
         </set>
         WHERE id = #{id,jdbcType=INTEGER}
     </update>
 
     <select id="selectAll" resultType="com.manage.system.model.SysDepartDto">
-        select id, name, 'desc', update_user as updateUser, update_time as updateTime
+        select id, name, note, update_user as updateUser, update_time as updateTime
         from sys_depart
         <where>
             <if test="id != null">id = #{id,jdbcType=INTEGER}</if>
@@ -34,7 +34,7 @@
     </select>
     <!-- 角色数组获取部门信息 -->
     <select id="selectDepartByRoles" resultType="com.manage.system.model.SysDepartDto" parameterType="java.util.List">
-        select id , name, 'desc', update_user as updateUser, update_time as updateTime
+        select id , name, note, update_user as updateUser, update_time as updateTime
         from sys_role_depart srd, sys_depart sd
         where srd.depart_id = sd.id
         <if test="roleIds != null and roleIds.size() > 0">
@@ -46,7 +46,7 @@
     </select>
 
     <select id="selectByPrimaryKey" resultType="java.lang.Integer">
-        select id, name, 'desc', update_user as updateUser, update_time as updateTime
+        select id, name, note, update_user as updateUser, update_time as updateTime
         from sys_depart
         where id = #{id,jdbcType=INTEGER}
     </select>

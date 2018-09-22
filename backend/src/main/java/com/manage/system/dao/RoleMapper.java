@@ -12,11 +12,11 @@ import java.util.List;
 @Mapper
 public interface RoleMapper {
 
-    List<SysRoleDto> selectAll(@Param("name") String name, @Param("status") Integer status) throws Exception;
+    List<SysRoleDto> selectAll(@Param("name") String name,@Param("departId") Integer departId) throws Exception;
 
     int insert(SysRoleDto user) throws Exception;
 
-    int deleteByPrimaryKey(Integer id) throws Exception;
+    int deleteByPrimaryKey(@Param("id") Integer id,@Param("departId") Integer departId) throws Exception;
 
     SysRoleDto selectByPrimaryKey(Integer id) throws Exception;
 

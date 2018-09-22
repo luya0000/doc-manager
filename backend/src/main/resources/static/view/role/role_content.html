@@ -1,10 +1,388 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!--列表信息-->
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-header">
+                <div>
+                    <div class="col-sm-3">
+                        <input id="role_name" type="text" class="form-control" placeholder="角色名"/>
+                    </div>
+                    <button class="btn btn-primary" id="queryRoleTable" onclick="queryRoleTable();">查询</button>
+                    <a href="javascript:void(0);" class="btn btn-primary " data-toggle="modal"
+                       onclick="showAddRoleModel();"
+                       data-target="#roleModal">新增角色</a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table id="role_table" class="table table-bordered table-hover"
+                       style="font-size: 12px;" width="100%">
+                    <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>所属部门</th>
+                        <th>备注</th>
+                        <th>创建时间</th>
+                        <th>设置</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div id="page" class="page" style="float: right;"></div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
 
-</body>
-</html>
+<!-- /.row -->
+<!-- 新增/编辑Modal -->
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalTitle">新增角色</h4>
+            </div>
+            <div class="modal-body">
+                <!-- form start -->
+                <form class="form-horizontal" id="roleForm">
+                    <div class="box-body">
+                        <input type="hidden" id="roleId" name="roleId" value="">
+                        <div class="form-group">
+                            <label for="roleName" class="col-sm-4 control-label">角色名称</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control validate" id="roleName" name="roleName"
+                                       placeholder="角色名称">
+                            </div>
+                        </div>
+                        <div class="form-group" id="roleDepartSelect">
+                            <label for="depart" class="col-sm-4 control-label">选择所属部门</label>
+                            <div class="col-sm-7">
+                                <select class="form-control select2" id="depart">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="roleDepartTxt">
+                            <label for="depart" class="col-sm-4 control-label">所属部门</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control validate" id="showDepart" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">选择权限</label>
+                            <div class="col-sm-7">
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="permistion" data-value="1">
+                                        查看文件&nbsp;&nbsp;</input>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="permistion" data-value="2">
+                                        上传文件</input>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="permistion" data-value="3">
+                                        下载文件&nbsp;&nbsp;</input>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="permistion" data-value="4">
+                                        删除文件</input>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="note" class="col-sm-4 control-label">备注</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="note" name="note" placeholder="备注信息">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关<span style="padding-left: 12px"/>闭
+                </button>
+                <button type="button" class="btn btn-primary" id="editRoleBtn" onclick="editRole();">
+                    修<span style="padding-left: 12px"/>改
+                </button>
+                <button type="button" class="btn btn-primary" id="addRoleBtn" onclick="addRole();">
+                    保<span style="padding-left: 12px"/>存
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--数据列表-->
+<script type="text/template" id="role_table_content">
+    <tbody>
+    {@each data as item ,index}
+    <tr>
+        <td style="vertical-align:middle">
+            <input type="hidden" class="role_table_id" value="@{item.id}">
+            @{item.name}
+        </td>  <!--名称-->
+        <td style="vertical-align:middle">@{item.departName}</td><!--所属部门-->
+        <td style="vertical-align:middle">@{item.note}</td><!--备注-->
+        <td style="vertical-align:middle">@{item.updateTime}</td>      <!--电话-->
+        <td style="vertical-align:middle">      <!--设置-->
+            <a href="javascript:void(0);" class="role_del" title="设置该角色可访问的菜单"
+               data-toggle="modal" data-target="#roleModal" data-con-id="@{item.id}">菜单设置</a>
+        </td>
+        <td style="vertical-align:middle">
+            <a href="javascript:void(0);" class="role_del" title="删除角色信息"
+               data-con-id="@{item.userId}">删除</a>
+            <a href="javascript:void(0);" class="role_edit" data-toggle="modal"
+               data-target="#roleModal" data-con-id="@{item.id}">编辑</a>
+        </td>
+    </tr>
+    {@/each}
+    </tbody>
+
+</script>
+
+<script src="../plugins/js/common.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // 初始化表格数据
+        dataShowPage($("#page"), "/sys/role/list", "GET", "", showTableData);
+
+        // 用户编辑modl打开处理
+        $("#role_table").delegate('.role_edit', "click", function () {
+            myAjax("GET", true, "/sys/role/" + $(this).attr("data-con-id"), null, showEditRoleModel);
+        });
+
+        $("#role_table").delegate('.user_del', "click", function () {
+            var userId = $(this).attr("data-con-id");
+            var index = layer.confirm('删除用户不可恢复，确认删除？', {
+                btn: ['删除', '取消'] //按钮
+            }, function () {
+                myAjax("POST", true, "/sys/user/delete/" + userId, null, function () {
+                });
+                if (result.code === 200) {
+                    layer.msg('删除成功.');
+                } else {
+                    layer.msg('删除失败.');
+                }
+                queryRoleTable();
+            })
+        });
+    });
+
+    /*查询数据*/
+    function queryRoleTable() {
+        alert();
+        var queryParms = {
+            roleName: $('#role_name').val(),
+            departId: null,
+        };
+        dataShowPage($("#page"), "/sys/role/list", "GET", queryParms, showTableData);
+    }
+
+    /*处理表格数据呈现*/
+    function showTableData(result) {
+        if (result.code === 200) {
+            var tableContent = juicer($("#role_table_content").text(), result.content);
+            $('#role_table').find('td').remove();
+            $('#role_table').append(tableContent);
+        } else {
+            alert(result.message);
+        }
+    }
+
+    /*用户添加model打开处理*/
+    function showAddRoleModel(form) {
+        // 设置标题
+        $("#myModalTitle").text("添加角色");
+        // 设置所属部门不可修改
+        $("#roleDepartTxt").hide();
+        $("#roleDepartSelect").show();
+        // 清空表单数据
+        $("#roleForm").find("input[id='roleId']").val("");
+        $("#roleForm").find("input[id='roleName']").val("");
+        $("#roleForm").find("input[name='permistion']").val("");
+        $("#roleForm").find("input[id='note']").val("");
+        // 部门列表获取
+        myAjax("GET", true, "/sys/depart/list", null, function (result) {
+            $("#depart").empty();
+            $.each(result.content.data, function (i, pro) {
+                $("#depart").append($("<option/>").attr("value", pro.id).text(pro['name']));
+            });
+        });
+        // 错误样式清除
+        $("#roleForm").find('.formtips').remove().end();
+        $("#roleForm").find('.has-error').removeClass("has-error");
+        $("#roleForm").find('.has-success').removeClass("has-success");
+        // 设置按钮显示
+        $('#editRoleBtn').hide();
+        $('#addRoleBtn').show();
+    }
+
+    /*用户编辑model打开处理*/
+    function showEditRoleModel(result, status) {
+        // 设置所属部门不可修改
+        $("#roleDepartTxt").show();
+        $("#roleDepartSelect").hide();
+        if (result.code !== 200) {
+            layer.msg(result.message);
+        }
+        $("#myModalTitle").text("编辑角色");
+        // 设置表单数据
+        $("#roleForm").find("input[id='roleId']").val(result.content.id);
+        $("#roleForm").find("input[id='roleName']").val(result.content.name);
+        $("#roleForm").find("input[id='note']").val(result.content.note);
+        $("#roleForm").find("input[id='showDepart']").val(result.content.departName);
+
+        // 设置权限选择
+        $('input[name="permistion"]').removeProp("checked");
+        $('input[name="permistion"]').each(function () {
+            var that = this;
+            $(this).prop("checked", false);
+            $(this).removeProp("checked");
+            $.each(result.content.permList, function (i, pro) {
+                console.log(pro);
+                if ($(that).attr("data-value") == pro) {
+                    $(that).prop("checked", true);
+                    //form.find("input[id='userType']").removeProp("checked");
+                }
+            });
+        });
+
+        // 错误样式清除
+        $("#roleForm").find('.formtips').remove().end();
+        $("#roleForm").find('.has-error').removeClass("has-error");
+        $("#roleForm").find('.has-success').removeClass("has-success");
+        // 显示修改按钮
+        $('#editRoleBtn').show();
+        $('#addRoleBtn').hide();
+    }
+
+    /***
+     * 添加角色
+     */
+    function addRole() {
+
+        if (!checkInput($("#roleForm"))) {
+            return;
+        }
+        var permistion = $("#roleForm").find("input[name='permistion']").val();
+        var id_array = new Array();
+        $('input[name="permistion"]:checked').each(function () {
+            //向数组中添加元素
+            id_array.push($(this).attr("data-value"));
+        });
+        //将数组元素连接起来以构建一个字符串
+        var idstr = id_array.join(',');
+
+        var params = {
+            "roleName": $("#roleForm").find("input[id='roleName']").val(),
+            "departId": $("#roleForm").find("select[id='depart']").find('option:selected').val(),
+            "permistion": idstr,
+            "note": $("#roleForm").find("input[id='note']").val()
+        }
+        myAjax("POST", true, "/sys/role/add", params, function (result) {
+            if (result.code === 200) {
+                layer.msg('添加成功.');
+            } else {
+                layer.msg('添加失败.');
+            }
+            $("#roleModal").modal('hide');
+            queryRoleTable();
+        });
+    }
+
+    /***
+     * 编辑用户
+     */
+    function editRole() {
+        var userId = $("#userForm").find("input[id='userId']").val();
+        var userForm = $("#userForm").serialize();
+        if (!checkInput($("#userForm"))) {
+            return;
+        }
+        var params = {
+            "userId": userId,
+            "userName": $("#userForm").find("[id='userName']").val(),
+            "password": $("#userForm").find("[id='password']").val(),
+            "sex": $("#userForm").find("[id='sex']").val(),
+            "phone": $("#userForm").find("[id='phone']").val(),
+            "status": $("#userForm").find("[id='status']").val(),
+            "email": $("#userForm").find("[id='email']").val(),
+            "note": $("#userForm").find("[id='note']").val()
+        }
+        myAjax("POST", true, "/sys/user/update", params, function (result) {
+            if (result.code === 200) {
+                layer.msg('修改成功.');
+            } else {
+                layer.msg('修改失败.');
+            }
+            $("#userModal").modal('hide');
+            queryRoleTable();
+        });
+    }
+
+    /** 添加或编辑时的表单验证 */
+    function checkInput(form) {
+        var ret = true;
+        //校验所有带有validate的class
+        $(form).find(".validate").each(function () {
+            if (ret) {
+                ret = setFormTips(this);
+            }
+        });
+        return ret;
+    }
+
+    /** 表单验证提示效果 */
+    function setFormTips(field) {
+        $(field).parent().find('.formtips').remove().end();
+        var v = $(field).val();
+        // 返回结果
+        var result = true;
+        if ($(field).attr("datatype") == 'nubmer' && (v % 1 != 0 || isNaN(v))) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">必须为整数!</span>');
+            result = false;
+        } else if (v === '' && !($(field).attr("action-type") == 'update')) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">不能为空!</span>');
+            result = false;
+        } else if ($(field).attr("id") == 'userId' && !matchEngNum.test(v)) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">格式不正确!(只能为英文或数字或英文数字组合)</span>');
+            result = false;
+        } else if ($(field).attr("id") == 'password' && v != '' && !match6to16.test(v)) {
+            $(field).closest('.form-group').addClass('has-error');
+            $(field).parent().append('<span class="formtips" style="color:#dd4b39">密码格式不正确!(只能为英文或数字组合，6-16位)</span>');
+            result = false;
+        } else {
+            $(field).closest('.form-group').removeClass('has-error');
+//            $(field).closest('.form-group').removeClass('has-error').addClass('has-SUCCESS');
+        }
+        return result;
+    }
+
+    /*授权model页面打开操作*/
+    function showEditRole() {
+
+    }
+
+    // 编辑用户角色权限操作
+    function editRolePart() {
+
+    }
+
+</script>

@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class SysDepartDto {
   private Integer id;
   private String name;
-  private String desc;
+  private String note;
   private Timestamp updateTime;
   private String updateUser;
 
@@ -25,12 +25,12 @@ public class SysDepartDto {
     this.name = name;
   }
 
-  public String getDesc() {
-    return desc;
+  public String getNote() {
+    return note;
   }
 
-  public void setDesc(String desc) {
-    this.desc = desc;
+  public void setNote(String note) {
+    this.note = note;
   }
 
   public Timestamp getUpdateTime() {

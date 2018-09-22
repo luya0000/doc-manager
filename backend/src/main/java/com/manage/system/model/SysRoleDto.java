@@ -5,7 +5,9 @@ import java.sql.Timestamp;
 public class SysRoleDto {
   private Integer id;
   private String name;
-  private String desc;
+  private Integer departId;
+  private String departName;
+  private String note;
   private Timestamp updateTime;
   private String updateUser;
 
@@ -21,16 +23,32 @@ public class SysRoleDto {
     return name;
   }
 
+  public Integer getDepartId() {
+    return departId;
+  }
+
+  public void setDepartId(Integer departId) {
+    this.departId = departId;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
 
-  public String getDesc() {
-    return desc;
+  public String getNote() {
+    return note;
   }
 
-  public void setDesc(String desc) {
-    this.desc = desc;
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  public String getDepartName() {
+    return departName;
+  }
+
+  public void setDepartName(String departName) {
+    this.departName = departName;
   }
 
   public Timestamp getUpdateTime() {

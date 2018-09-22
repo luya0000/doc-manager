@@ -14,7 +14,7 @@ import java.util.List;
  * Created by luya on 2018/6/8.
  */
 @Service
-public class PermissionService {
+public class PermService {
 
     @Autowired
     private PermissionMapper permissionMapper;

@@ -66,6 +66,7 @@ public class UserController extends BaseController {
     /**
      * 根据主键获取用户
      * id 为－１表示查询自己数据
+     *
      * @param userId
      * @return
      */
@@ -73,10 +74,11 @@ public class UserController extends BaseController {
     public APIResponse getUserByKey(@PathVariable("userId") String userId) {
 
         try {
-            if(StringUtils.isEmpty(userId)){
+            if (StringUtils.isEmpty(userId)) {
                 userId = getAccount();
             }
             UserBean userBean = userService.selectByPrimaryKey(userId);
+            userBean.setPassword(null);
             return APIResponse.toOkResponse(userBean);
         } catch (Exception e) {
             logger.error(e);
@@ -87,6 +89,7 @@ public class UserController extends BaseController {
 
     /**
      * 添加用户
+     *
      * @param userId
      * @param userName
      * @param password
@@ -133,6 +136,7 @@ public class UserController extends BaseController {
 
     /**
      * 修改用户
+     *
      * @param userId
      * @param userName
      * @param password
@@ -152,7 +156,7 @@ public class UserController extends BaseController {
                                   @RequestParam("status") int status,
                                   @RequestParam("email") String email,
                                   @RequestParam("note") String note) {
-
+        // bean赋值
         UserBean userBean = new UserBean();
         userBean.setUserId(userId);
         userBean.setUserName(userName);
@@ -161,9 +165,7 @@ public class UserController extends BaseController {
         userBean.setPhone(phone);
         userBean.setEmail(email);
         userBean.setNote(note);
-        if(!StringUtils.isEmpty(password)){
-            userBean.setPassword(password);
-        }
+        userBean.setPassword(password);
 
         try {
             userService.updateUser(userBean);

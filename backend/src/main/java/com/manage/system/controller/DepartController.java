@@ -7,8 +7,9 @@ import com.manage.common.BaseController;
 import com.manage.common.Constants;
 import com.manage.common.UrlConstants;
 import com.manage.exception.impl.BizExceptionStatusEnum;
+import com.manage.system.bean.DepartBean;
 import com.manage.system.bean.RoleBean;
-import com.manage.system.service.RoleService;
+import com.manage.system.service.DepartService;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,37 +23,37 @@ import java.util.Map;
  * Created by luya on 2018/6/9.
  */
 @RestController
-@RequestMapping(value = UrlConstants.URL_ROLE_MODEL)
-public class RoleController extends BaseController {
+@RequestMapping(value = UrlConstants.URL_DEPART_MODEL)
+public class DepartController extends BaseController {
 
-    private Log logger = LogFactory.getLog(RoleController.class);
+    private Log logger = LogFactory.getLog(DepartController.class);
 
     @Autowired
-    private RoleService roleService;
+    private DepartService departService;
 
     /**
-     * 根据条件获取角色列表
-     *
+     * 根据条件获取部门列表
      * @param currPage
      * @param pageSize
-     * @param roleName
+     * @param departId
+     * @param departName
      * @return
      */
     @GetMapping("/list")
-    public APIResponse roleList(@RequestParam(value = "currPage", required = false) Integer currPage,
+    public APIResponse departList(@RequestParam(value = "currPage", required = false) Integer currPage,
                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                @RequestParam(value = "roleName", required = false) String roleName,
-                                @RequestParam(value = "departId", required = false) Integer departId) {
+                                @RequestParam(value = "departId", required = false) Integer departId,
+                                @RequestParam(value = "departName", required = false) String departName) {
 
         currPage = currPage == null ? Constants.PAGEHELPER_PAGE_CURRENT : currPage;
         pageSize = pageSize == null ? Constants.PAGEHELPER_PAGE_SIZE : pageSize;
 
-        List<RoleBean> roleList = null;
+        List<DepartBean>  departBeanList = null;
         try {
             Page page = PageHelper.startPage(currPage, pageSize, true);
-            roleList = roleService.getRoleList(roleName, departId);
+            departBeanList = departService.getDepartList(departId, departName);
             Map result = new HashedMap();
-            result.put("data", roleList);
+            result.put("data", departBeanList);
             result.put("currPage", currPage);
             result.put("total", page.getTotal());
             return APIResponse.toOkResponse(result);
@@ -64,16 +65,16 @@ public class RoleController extends BaseController {
     }
 
     /**
-     * 根据主键获取角色信息
+     * 根据主键获取部门信息
      *
-     * @param roleId
+     * @param depart
      * @return
      */
     @GetMapping("/{id}")
-    public APIResponse roleInfo(@PathVariable("id") Integer roleId) {
+    public APIResponse departInfo(@PathVariable("id") Integer depart) {
 
         try {
-            RoleBean role = roleService.selectByPrimaryKey(roleId);
+            DepartBean role = departService.selectPrimaryKey(depart);
             return APIResponse.toOkResponse(role);
         } catch (Exception e) {
             logger.error(e);
@@ -83,25 +84,23 @@ public class RoleController extends BaseController {
     }
 
     /**
-     * 添加角色
+     * 添加部门信息
      *
-     * @param roleName
-     * @param departId
-     * @param note
-     * @param permistion
+     * @param name
+     * @param type
      * @return
      */
     @PostMapping("/add")
-    public APIResponse addRole(@RequestParam("roleName") String roleName, @RequestParam("departId") Integer departId,
-                               @RequestParam("note") String note, @RequestParam("permistion") String permistion) {
+    public APIResponse addRole(@RequestParam("name") String name,
+                               @RequestParam("type") String type) {
 
-        RoleBean roleBean = new RoleBean();
-        roleBean.setName(roleName);
-        roleBean.setDepartId(departId);
-        roleBean.setNote(note);
-        roleBean.setUpdateUser(getUserName());
+        DepartBean departBean = new DepartBean();
+        /*roleBean.setName(name);
+        roleBean.setType(type);
+        roleBean.setCreateUser(getUserName());*/
+        departBean.setUpdateUser(getUserName());
         try {
-            roleService.insertRole(roleBean, permistion);
+            departService.insertDepart(departBean);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
@@ -115,24 +114,22 @@ public class RoleController extends BaseController {
      * 修改角色
      *
      * @param id
-     * @param roleName
-     * @param departId
-     * @param note
-     * @param permistion
+     * @param name
+     * @param type
      * @return
      */
     @PostMapping("/update")
     public APIResponse updateRole(@RequestParam(value = "id") Integer id,
-                                  @RequestParam("roleName") String roleName, @RequestParam("departId") Integer departId,
-                                  @RequestParam("note") String note, @RequestParam("permistion") String permistion) {
+                                  @RequestParam("name") String name,
+                                  @RequestParam("type") String type) {
 
-        RoleBean roleBean = new RoleBean();
-        roleBean.setId(id);
-        roleBean.setName(roleName);
-        roleBean.setDepartId(departId);
-        roleBean.setUpdateUser(getUserName());
+        DepartBean departBean = new DepartBean();
+        departBean.setId(id);
+        departBean.setName(name);
+       // roleBean.setType(type);
+        departBean.setUpdateUser(getUserName());
         try {
-            roleService.updateByPrimaryKey(roleBean, permistion);
+            departService.updateByPrimaryKey(departBean);
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
@@ -151,7 +148,7 @@ public class RoleController extends BaseController {
     public APIResponse deleteRole(@PathVariable(value = "id") Integer id) {
 
         try {
-            roleService.deleteByPrimaryKey(id);
+            departService.deleteByPrimaryKey(id);
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
