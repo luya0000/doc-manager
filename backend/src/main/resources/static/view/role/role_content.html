@@ -74,14 +74,14 @@
                         <div class="form-group" id="roleDepartSelect">
                             <label for="depart" class="col-sm-4 control-label">选择所属部门</label>
                             <div class="col-sm-7">
-                                <select class="form-control select2" id="depart">
+                                <select class="form-control select2 validate" id="depart" >
                                 </select>
                             </div>
                         </div>
                         <div class="form-group" id="roleDepartTxt">
                             <label for="depart" class="col-sm-4 control-label">所属部门</label>
                             <div class="col-sm-7">
-                                <input type="text" class="form-control validate" id="showDepart" readonly>
+                                <input type="text" class="form-control" id="showDepart" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -123,10 +123,10 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     关<span style="padding-left: 12px"/>闭
                 </button>
-                <button type="button" class="btn btn-primary" id="editRoleBtn" onclick="editRole();">
+                <button type="button" class="btn btn-primary" id="editRoleBtn" onclick="editRoleAction();">
                     修<span style="padding-left: 12px"/>改
                 </button>
-                <button type="button" class="btn btn-primary" id="addRoleBtn" onclick="addRole();">
+                <button type="button" class="btn btn-primary" id="addRoleBtn" onclick="addRoleAction();">
                     保<span style="padding-left: 12px"/>存
                 </button>
             </div>
@@ -175,8 +175,11 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="roleName" class="col-sm-4 control-label"></label>
+                            <label for="roleName" style="font-size: 10px;color: red">注意：请选择与部门名称相同的菜单，以免用户登陆后无权限操做</label>
+                        </div>
                     </div>
-
                     <!-- /.box-body -->
                 </form>
             </div>
@@ -210,7 +213,7 @@
         </td>
         <td style="vertical-align:middle">
             <a href="javascript:void(0);" class="role_del" title="删除角色信息"
-               data-con-id="@{item.userId}">删除</a>
+               data-con-id="@{item.id}">删除</a>
             <a href="javascript:void(0);" class="role_edit" data-toggle="modal"
                data-target="#roleModal" data-con-id="@{item.id}">编辑</a>
         </td>
@@ -248,7 +251,7 @@
             myAjax("GET", true, "/sys/role/" + $(this).attr("data-con-id"), null, showEditRoleModel);
         });
 
-        $("#role_table").delegate('.user_del', "click", function () {
+        $("#role_table").delegate('.role_del', "click", function () {
             var roleId = $(this).attr("data-con-id");
             var index = layer.confirm('删除不可恢复，确认删除？', {
                 btn: ['删除', '取消'] //按钮
@@ -257,7 +260,7 @@
                     if (result.code === 200) {
                         layer.msg('删除成功.');
                     } else {
-                        layer.msg('删除失败.');
+                        layer.msg(result.message);
                     }
                 });
                 layer.close(index);
@@ -372,7 +375,7 @@
     }
 
     /*添加角色*/
-    function addRole() {
+    function addRoleAction() {
         if (!checkInput($("#roleForm"))) {
             return;
         }
@@ -402,7 +405,7 @@
     }
 
     /*编辑角色*/
-    function editRole() {
+    function editRoleAction() {
         if (!checkInput($("#roleForm"))) {
             return;
         }

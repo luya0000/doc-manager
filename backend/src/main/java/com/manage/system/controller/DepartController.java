@@ -33,6 +33,7 @@ public class DepartController extends BaseController {
 
     /**
      * 根据条件获取部门列表
+     *
      * @param currPage
      * @param pageSize
      * @param departId
@@ -41,14 +42,14 @@ public class DepartController extends BaseController {
      */
     @GetMapping("/list")
     public APIResponse departList(@RequestParam(value = "currPage", required = false) Integer currPage,
-                                @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                @RequestParam(value = "departId", required = false) Integer departId,
-                                @RequestParam(value = "departName", required = false) String departName) {
+                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                  @RequestParam(value = "departId", required = false) Integer departId,
+                                  @RequestParam(value = "departName", required = false) String departName) {
 
         currPage = currPage == null ? Constants.PAGEHELPER_PAGE_CURRENT : currPage;
         pageSize = pageSize == null ? Constants.PAGEHELPER_PAGE_SIZE : pageSize;
 
-        List<DepartBean>  departBeanList = null;
+        List<DepartBean> departBeanList = null;
         try {
             Page page = PageHelper.startPage(currPage, pageSize, true);
             departBeanList = departService.getDepartList(departId, departName);
@@ -85,33 +86,34 @@ public class DepartController extends BaseController {
 
     /**
      * 添加部门信息
-     *
+     * @param code
      * @param name
-     * @param type
+     * @param note
      * @return
      */
     @PostMapping("/add")
-    public APIResponse addRole(@RequestParam("name") String name,
-                               @RequestParam("type") String type) {
+    public APIResponse addDepart(@RequestParam("departCode") String code,
+                                 @RequestParam("departName") String name,
+                                 @RequestParam("note") String note) {
 
         DepartBean departBean = new DepartBean();
-        /*roleBean.setName(name);
-        roleBean.setType(type);
-        roleBean.setCreateUser(getUserName());*/
+        departBean.setCode(code);
+        departBean.setNote(note);
+        departBean.setName(name);
         departBean.setUpdateUser(getUserName());
         try {
             departService.insertDepart(departBean);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
-            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.ROLE_ADD_ERROR);
+            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.DEPART_ADD_ERROR);
         }
         return APIResponse.toOkResponse();
     }
 
 
     /**
-     * 修改角色
+     * 修改部门
      *
      * @param id
      * @param name
@@ -126,14 +128,14 @@ public class DepartController extends BaseController {
         DepartBean departBean = new DepartBean();
         departBean.setId(id);
         departBean.setName(name);
-       // roleBean.setType(type);
+        // roleBean.setType(type);
         departBean.setUpdateUser(getUserName());
         try {
             departService.updateByPrimaryKey(departBean);
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
-            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.ROLE_UPDATE_ERROR);
+            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.DEPART_UPDATE_ERROR);
         }
         return APIResponse.toOkResponse();
     }
@@ -145,14 +147,14 @@ public class DepartController extends BaseController {
      * @return
      */
     @PostMapping("/delete/{id}")
-    public APIResponse deleteRole(@PathVariable(value = "id") Integer id) {
+    public APIResponse deleteDepart(@PathVariable(value = "id") Integer id) {
 
         try {
             departService.deleteByPrimaryKey(id);
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
-            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.ROLE_DELETE_ERROR);
+            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.DEPART_DELETE_ERROR);
         }
         return APIResponse.toOkResponse();
     }

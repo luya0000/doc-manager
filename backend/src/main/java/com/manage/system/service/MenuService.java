@@ -21,6 +21,28 @@ public class MenuService {
     @Autowired
     private RoleMenuService roleMenuService;
 
+    /*插入菜单表数据*/
+    @Transactional(propagation = Propagation.REQUIRED)
+    public int insertMenu(Integer parentId, String name, String url, Integer type, Integer status) throws Exception {
+        SysMenuDto menuDto = new SysMenuDto();
+        menuDto.setName(name);
+        menuDto.setParentId(parentId);
+        menuDto.setType(Constants.MENU_TYPE_DEFAULT);
+        menuDto.setUrl(Constants.DEPART_FILE_PATH);
+        int order = menuMapper.getOrder(parentId);
+        menuDto.setOrder(order + 1);
+        menuDto.setStatus(status);
+        menuMapper.insert(menuDto);
+        return menuDto.getId();
+    }
+
+    /*插入角色菜单表数据*/
+    @Transactional(propagation = Propagation.REQUIRED)
+    public int deleteByPrimaryKey(Integer id) throws Exception {
+        // 删除菜单
+        return menuMapper.deleteByPrimaryKey(id);
+    }
+
     /**
      * @param menuName 菜单名
      * @param parentId 父级菜单id
@@ -109,7 +131,7 @@ public class MenuService {
      * @param menus    当前菜单列表
      * @param allMenus 所有菜单
      */
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     private void getSubMenu(List<Menu> menus, List<SysMenuDto> allMenus) {
         for (Menu menu : menus) {
             for (SysMenuDto dto : allMenus) {
@@ -128,7 +150,7 @@ public class MenuService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void insertRoleMenu(Integer roleId, String[] menuList) throws Exception {
         // 删除菜单关系
-        roleMenuService.deleteByPrimaryKey(null,roleId,Constants.MENU_TYPE_DEFAULT);
+        roleMenuService.deleteByPrimaryKey(null, roleId, Constants.MENU_TYPE_DEFAULT);
         for (String id : menuList) {
             roleMenuService.insertRoleMenu(Integer.parseInt(id), roleId);
         }

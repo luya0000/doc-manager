@@ -13,18 +13,23 @@ public enum BizExceptionStatusEnum implements ResponseStatusEnum {
      */
     AUTH_REQUEST_ERROR(100001, "账号密码错误"),
     USER_CHG_PWD_ERROR(100002, "修改密码错误，用户不存在或者密码错误"),
-    USER_ADD_ERROR(100003, "添加用户失败"),
-    USER_UPDATE_ERROR(100004, "更新用户失败"),
-    USER_DELETE_ERROR(100005, "删除用户失败"),
-    USER_SELETE_ERROR(100006, "查询用户失败"),
+    USER_ADD_ERROR(100003, "用户添加失败"),
+    USER_UPDATE_ERROR(100004, "用户更新失败"),
+    USER_DELETE_ERROR(100005, "用户删除失败"),
+    USER_SELETE_ERROR(100006, "用户查询失败"),
     USER_OLD_NEW_PWD_ERROR(100007, "修改密码错误，两次密码不一致"),
     USER_PWD_DIFF_ERROR(100008, "两次密码不一致"),
 
     /*角色*/
-    ROLE_SELETE_ERROR(200001, "查询角色失败"),
-    ROLE_ADD_ERROR(200002, "添加角色失败"),
-    ROLE_UPDATE_ERROR(200003, "更新角色失败"),
-    ROLE_DELETE_ERROR(200004, "删除角色失败"),
+    ROLE_SELETE_ERROR(200001, "角色查询失败"),
+    ROLE_ADD_ERROR(200002, "角色添加失败"),
+    ROLE_UPDATE_ERROR(200003, "角色更新失败"),
+    ROLE_DELETE_ERROR(200004, "角色删除失败"),
+    ROLE_DELETE_ERROR2(200005, "当前角色正在被用户使用，请先解除关系后再删除"),
+    /*部门*/
+    DEPART_ADD_ERROR(300001, "部门添加失败"),
+    DEPART_UPDATE_ERROR(300002, "部门更新失败"),
+    DEPART_DELETE_ERROR(300003, "部门删除失败"),
 
     /*权限*/
     PERMIS_SELETE_ERROR(400001, "查询权限失败"),

@@ -196,14 +196,14 @@
                 btn: ['删除', '取消'] //按钮
             }, function () {
                 myAjax("POST", true, "/sys/user/delete/" + userId, null, function () {
+                    if (result.code === 200) {
+                        layer.msg('删除成功.');
+                    } else {
+                        layer.msg('删除失败.');
+                    }
+                    layer.close(index);
+                    queryUserTable();
                 });
-                if (result.code === 200) {
-                    layer.msg('删除成功.');
-                } else {
-                    layer.msg('删除失败.');
-                }
-                layer.close(index);
-                queryUserTable();
             })
         });
     });
@@ -259,6 +259,7 @@
         // 用户信息赋值
         $("#userForm").find("input[id='userId']").attr("readonly", true);
         $("#userForm").find("input[id='password']").attr("action-type", 'update');
+        $("#userForm").find("input[id='password']").val("");
         $("#userForm").find("input[id='password']").attr("placeholder", '不更新密码无需填写');
         $("#userForm").find("input[id='userId']").val(result.content.userId);
         $("#userForm").find("input[id='userName']").val(result.content.userName);
@@ -372,12 +373,12 @@
         return result;
     }
     /*授权model页面打开操作*/
-    function showEditRole(){
+    function showEditRole() {
 
     }
     // 编辑用户角色权限操作
     function editRolePart() {
-        
+
     }
-    
+
 </script>

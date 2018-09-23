@@ -3,7 +3,7 @@
 <mapper namespace="com.manage.system.dao.MenuMapper">
 
     <insert id="insert" parameterType="com.manage.system.model.SysMenuDto" useGeneratedKeys="true" keyProperty="id">
-       insert into sys_menu (parent_id,  name, icon, url, type, order, status, update_user, update_time)
+       insert into sys_menu (parent_id, name, icon, url, type, `order`, status, update_user, update_time)
 	    values
 	  (#{parentId,jdbcType=INTEGER},#{name,jdbcType=VARCHAR},#{icon,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},
 	   #{order,jdbcType=INTEGER},#{status,jdbcType=INTEGER},#{updateUser,jdbcType=VARCHAR},now());
@@ -28,7 +28,7 @@
         <where>
             <if test="name != null and name != ''">name LIKE #{name,jdbcType=VARCHAR}</if>
             <if test="parentId != null">AND parent_id = #{parentId,jdbcType=INTEGER}</if>
-            <if test="type != null"> AND type = #{type,jdbcType=INTEGER}</if>
+            <if test="type != null">AND type = #{type,jdbcType=INTEGER}</if>
         </where>
     </select>
 
@@ -66,8 +66,8 @@
         from sys_role_menu srm , sys_menu sm
         where
         srm.menu_id = sm.id
-        and srm.role_id =  #{roleId,jdbcType=INTEGER}
-        <if test="type != null"> AND sm.type = #{type,jdbcType=INTEGER}</if>
+        and srm.role_id = #{roleId,jdbcType=INTEGER}
+        <if test="type != null">AND sm.type = #{type,jdbcType=INTEGER}</if>
         order by sm.order
     </select>
 
@@ -103,12 +103,10 @@
         id = #{id,jdbcType=INTEGER}
     </update>
 
-    <select id="getOrder" parameterType="java.lang.Integer">
-        select order
-        FROM sys_menu
+    <select id="getOrder" resultType="java.lang.Integer">
+        select case when max(sm.order) is null then 0 else  max(sm.order) end  from sys_menu sm
         <where>
-            <if test="parentId != null">AND parent_id = #{parentId,jdbcType=INTEGER}</if>
+            <if test="parentId != null">sm.parent_id = #{parentId,jdbcType=INTEGER}</if>
         </where>
-        order by order
     </select>
 </mapper>

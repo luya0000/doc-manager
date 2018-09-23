@@ -28,5 +28,5 @@ public interface MenuMapper {
 
     List<SysMenuDto> selectMenuByRoleId(@Param("roleId") Integer roleId, @Param("type") Integer type) throws Exception;
 
-    int getOrder(@Param("parentId") Integer parentId) throws Exception;
+    Integer getOrder(@Param("parentId") Integer parentId) throws Exception;
 }

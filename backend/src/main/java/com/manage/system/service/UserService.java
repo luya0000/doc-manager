@@ -78,13 +78,6 @@ public class UserService {
             // 获取角色
             List<Integer> roles = userRoleService.getRolesIdByParam(userBean.getUserId(), null);
             userBean.setRoles(roles);
-            // 获取部门
-            List<DepartBean> departDtoList = departService.getDepartListByRoles(roles);
-            List<Integer> departList = new ArrayList<>();
-            for (DepartBean bean : departDtoList) {
-                departList.add(bean.getId());
-            }
-            userBean.setGroup(departList);
             return userBean;
         }
         return null;

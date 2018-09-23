@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 public class SysDepartDto {
   private Integer id;
+  private Integer menuId;
+  private String code;
   private String name;
   private String note;
   private Timestamp updateTime;
@@ -15,6 +17,22 @@ public class SysDepartDto {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public Integer getMenuId() {
+    return menuId;
+  }
+
+  public void setMenuId(Integer menuId) {
+    this.menuId = menuId;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
   }
 
   public String getName() {

@@ -153,7 +153,7 @@ public class RoleController extends BaseController {
         } catch (Exception e) {
             logger.error(e);
             e.printStackTrace();
-            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.ROLE_DELETE_ERROR);
+            return APIResponse.toExceptionResponse(BizExceptionStatusEnum.ROLE_DELETE_ERROR2);
         }
         return APIResponse.toOkResponse();
     }

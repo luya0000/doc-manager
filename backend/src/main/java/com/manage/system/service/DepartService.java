@@ -1,8 +1,11 @@
 package com.manage.system.service;
 
+import com.manage.common.Constants;
 import com.manage.system.bean.DepartBean;
 import com.manage.system.dao.DepartMapper;
 import com.manage.system.model.SysDepartDto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,18 +22,34 @@ import java.util.List;
 @Service
 public class DepartService {
 
+    private Log logger = LogFactory.getLog(DepartService.class);
+
     @Autowired
     private DepartMapper departMapper;
 
+    @Autowired
+    private MenuService menuService;
+
+    // 插入部门前新建菜单数据  TODO 同时创建文件夹
     @Transactional(propagation = Propagation.REQUIRED)
     public int insertDepart(DepartBean departBean) throws Exception {
         SysDepartDto departDto = new SysDepartDto();
         BeanUtils.copyProperties(departBean, departDto);
-        return departMapper.insert(departDto);
+        try {
+            int menuId = menuService.insertMenu(Constants.MENU_DOC_PARENTID, departBean.getName(), null, null, 1);
+            departDto.setMenuId(menuId);
+            return departMapper.insert(departDto);
+        } catch (Exception e) {
+            logger.error(e);
+            throw new Exception("");
+        }
     }
 
+    // TODO 同时删除文件夹
     @Transactional(propagation = Propagation.REQUIRED)
     public int deleteByPrimaryKey(Integer id) throws Exception {
+        SysDepartDto depart = departMapper.selectByPrimaryKey(id);
+        menuService.deleteByPrimaryKey(depart.getMenuId());
         return departMapper.deleteByPrimaryKey(id);
     }
 

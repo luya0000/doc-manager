@@ -16,6 +16,7 @@ public class Constants {
 
     public static final Integer MENU_TYPE_SYSTEM = 1;
     public static final Integer MENU_TYPE_DEFAULT = 2;
+    public static final Integer MENU_DOC_PARENTID = 10;
 
     // 状态 0有效、1无效
     public static final Integer STATUE_VALID = 1;
@@ -26,6 +27,9 @@ public class Constants {
     public static final Integer PAGEHELPER_PAGE_CURRENT = 0;
     /*每页显示条数*/
     public static final Integer PAGEHELPER_PAGE_SIZE = 10;
+
+    // 文件访问地址
+    public static final String DEPART_FILE_PATH = "#/view/file_manage";
 
     //
     public static final String DATE_FORMAT_YMDHMS = "yyyyMMddHHmmss";
