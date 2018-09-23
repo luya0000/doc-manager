@@ -27,8 +27,8 @@ public class UserRoleService {
     @Autowired
     UserMapper userMapper;
 
-    public List<Integer> getRolesByUserId(String userId) {
-        List<SysRoleDto> roleList = userRoleMapper.selectByParam(userId, null);
+    public List<Integer> getRolesIdByParam(String userId, Integer roleId) {
+        List<SysRoleDto> roleList = userRoleMapper.selectByParam(userId, roleId);
         List<Integer> roles = new ArrayList<>();
         if (roleList != null && roleList.size() > 0) {
             for (SysRoleDto dto : roleList) {

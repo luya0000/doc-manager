@@ -18,13 +18,15 @@ public interface MenuMapper {
     int deleteByPrimaryKey(Integer id) throws Exception;
 
     List<SysMenuDto> selectByParam(@Param("name") String name, @Param("parentId") Integer parentId,
-                                   @Param("type") Integer type, @Param("updateUser") String updateUser) throws Exception;
+                                   @Param("type") Integer type) throws Exception;
 
     List<SysMenuDto> selectMenuByUserId(@Param("userId") String userId) throws Exception;
 
     SysMenuDto selectByPrimaryKey(Integer id) throws Exception;
 
     int updateByPrimaryKey(SysMenuDto menu) throws Exception;
+
+    List<SysMenuDto> selectMenuByRoleId(@Param("roleId") Integer roleId, @Param("type") Integer type) throws Exception;
 
     int getOrder(@Param("parentId") Integer parentId) throws Exception;
 }

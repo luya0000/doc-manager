@@ -18,19 +18,23 @@ public class MenuService {
     @Autowired
     private MenuMapper menuMapper;
 
+    @Autowired
+    private RoleMenuService roleMenuService;
+
     /**
-     * fetch current user's menu
-     *
+     * @param menuName 菜单名
+     * @param parentId 父级菜单id
+     * @param type     菜单类型，1：系统，2：文档
      * @return
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<Menu> getAllMenusWithOutSystem() {
+    public List<Menu> getAllMenusWithOutSystem(String menuName, Integer parentId, Integer type) {
 
         List<Menu> menus = new ArrayList<>();
         List<SysMenuDto> menuList;
         // 获取用户菜单
         try {
-            menuList = menuMapper.selectByParam(null, null, Constants.MENU_TYPE_DEFAULT, null);
+            menuList = menuMapper.selectByParam(menuName, parentId, type);
         } catch (Exception e) {
             menuList = null;
             e.printStackTrace();
@@ -42,8 +46,6 @@ public class MenuService {
     }
 
     /**
-     * fetch current user's menu
-     *
      * @param userId
      * @return
      */
@@ -65,6 +67,29 @@ public class MenuService {
         return menus;
     }
 
+    /**
+     * @param roleId
+     * @return
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<Menu> getMenusByRole(Integer roleId, Integer type) {
+
+        List<Menu> menus = new ArrayList<>();
+        List<SysMenuDto> menuList;
+        // 获取用户菜单
+        try {
+            menuList = menuMapper.selectMenuByRoleId(roleId, type);
+        } catch (Exception e) {
+            menuList = null;
+            e.printStackTrace();
+        }
+        // 菜单二级设置
+        getRootMenus(menus, menuList);
+
+        return menus;
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     private void getRootMenus(List<Menu> menus, List<SysMenuDto> menuList) {
         // 菜单二级设置
         if (menuList != null && menuList.size() > 0) {
@@ -84,6 +109,7 @@ public class MenuService {
      * @param menus    当前菜单列表
      * @param allMenus 所有菜单
      */
+
     private void getSubMenu(List<Menu> menus, List<SysMenuDto> allMenus) {
         for (Menu menu : menus) {
             for (SysMenuDto dto : allMenus) {
@@ -95,6 +121,16 @@ public class MenuService {
             if (menu.getSubMenus().size() > 0) {
                 getSubMenu(menu.getSubMenus(), allMenus);
             }
+        }
+    }
+
+    /*插入角色菜单表数据*/
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void insertRoleMenu(Integer roleId, String[] menuList) throws Exception {
+        // 删除菜单关系
+        roleMenuService.deleteByPrimaryKey(null,roleId,Constants.MENU_TYPE_DEFAULT);
+        for (String id : menuList) {
+            roleMenuService.insertRoleMenu(Integer.parseInt(id), roleId);
         }
     }
 }

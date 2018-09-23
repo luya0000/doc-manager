@@ -116,20 +116,18 @@ public class RoleController extends BaseController {
      *
      * @param id
      * @param roleName
-     * @param departId
      * @param note
      * @param permistion
      * @return
      */
     @PostMapping("/update")
-    public APIResponse updateRole(@RequestParam(value = "id") Integer id,
-                                  @RequestParam("roleName") String roleName, @RequestParam("departId") Integer departId,
+    public APIResponse updateRole(@RequestParam(value = "id") Integer id, @RequestParam("roleName") String roleName,
                                   @RequestParam("note") String note, @RequestParam("permistion") String permistion) {
 
         RoleBean roleBean = new RoleBean();
         roleBean.setId(id);
         roleBean.setName(roleName);
-        roleBean.setDepartId(departId);
+        roleBean.setNote(note);
         roleBean.setUpdateUser(getUserName());
         try {
             roleService.updateByPrimaryKey(roleBean, permistion);

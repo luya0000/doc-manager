@@ -1,6 +1,7 @@
 package com.manage.system.service;
 
 import com.github.pagehelper.util.StringUtil;
+import com.manage.common.Constants;
 import com.manage.system.bean.RoleBean;
 import com.manage.system.dao.RoleMapper;
 import com.manage.system.model.SysRoleDto;
@@ -25,6 +26,12 @@ public class RoleService {
 
     @Autowired
     private RolePermService rolePermService;
+
+    @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
+    private RoleMenuService roleMenuService;
 
     /*获取角色列表*/
     @Transactional(readOnly = true)
@@ -86,7 +93,7 @@ public class RoleService {
     @Transactional(propagation = Propagation.REQUIRED)
     public boolean updateByPrimaryKey(RoleBean roleBean, String perms) throws Exception {
 
-        SysRoleDto roleDto = new SysRoleDto();
+        SysRoleDto roleDto = roleMapper.selectByPrimaryKey(roleBean.getId());
         BeanUtils.copyProperties(roleBean, roleDto);
         roleMapper.updateByPrimaryKey(roleDto);
         // 删除原有角色权限关系
@@ -108,9 +115,18 @@ public class RoleService {
      * @throws Exception
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public int deleteByPrimaryKey(Integer roleId) throws Exception {
-        SysRoleDto roleDto = roleMapper.selectByPrimaryKey(roleId);
-        rolePermService.deleteByPrimaryKey(null, roleDto.getId());
-        return roleMapper.deleteByPrimaryKey(roleId, null);
+    public boolean deleteByPrimaryKey(Integer roleId) throws Exception {
+        // 确认人员角色关系，有人员使用不可删除
+        List<Integer> userRoleId = userRoleService.getRolesIdByParam(null, roleId);
+        if (userRoleId != null && userRoleId.size() > 0) {
+            throw new Exception("当前角色正在被用户使用，请先解除关系后再删除！");
+        }
+        // 删除角色对应菜单(目前仅限普通菜单)
+        roleMenuService.deleteByPrimaryKey(null,roleId, Constants.MENU_TYPE_DEFAULT);
+        // 删除角色对应权限
+        rolePermService.deleteByPrimaryKey(null, roleId);
+        // 删除角色
+        roleMapper.deleteByPrimaryKey(roleId, null);
+        return true;
     }
 }

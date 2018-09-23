@@ -48,7 +48,7 @@ public class UserService {
             for (SysUserDto dto : userDtos) {
                 UserBean bean = new UserBean();
                 BeanUtils.copyProperties(dto, bean);
-                List<Integer> roles = userRoleService.getRolesByUserId(bean.getUserId());
+                List<Integer> roles = userRoleService.getRolesIdByParam(bean.getUserId(), null);
                 bean.setRoles(roles);
                 userList.add(bean);
             }
@@ -76,7 +76,7 @@ public class UserService {
             UserBean userBean = new UserBean();
             BeanUtils.copyProperties(userDto, userBean);
             // 获取角色
-            List<Integer> roles = userRoleService.getRolesByUserId(userBean.getUserId());
+            List<Integer> roles = userRoleService.getRolesIdByParam(userBean.getUserId(), null);
             userBean.setRoles(roles);
             // 获取部门
             List<DepartBean> departDtoList = departService.getDepartListByRoles(roles);
@@ -104,8 +104,10 @@ public class UserService {
 
         SysUserDto userDto = new SysUserDto();
         BeanUtils.copyProperties(userBean, userDto);
-        if(StringUtils.isEmpty(userBean.getPassword())){
+        if (StringUtils.isEmpty(userBean.getPassword())) {
             userDto.setPassword(null);
+        }else{
+            userDto.setPassword(BCrypt.hashpw(userBean.getPassword(), BCrypt.gensalt()));
         }
         return userMapper.updateByPrimaryKey(userDto);
     }
