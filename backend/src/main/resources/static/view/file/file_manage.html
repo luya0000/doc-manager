@@ -66,13 +66,15 @@
         </div>
     </div>
 </div>
+
+
 <script>
 
     var rootPath;
-    $(function () {
+    $(document).ready(function () {
 
         // 获取根路径
-        myAjax("get", false, "/doc/file/getBasePath", null, getRootPath);
+        myAjax("get", false, "/sys/file/getBasePath", {"menuId": $('#menuIdHidden').val()}, getRootPath);
         // 获取目录
         if ($("#path").val() != "") {
             searchFile($("#path").val());

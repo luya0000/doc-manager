@@ -31,6 +31,7 @@
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
             <!-- Sidebar toggle button-->
+            <input id="menuIdHidden" type="hidden" value="">
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button"></a>
             <!--文件查询-->
             <!--<form class="navbar-form navbar-left" role="search">
@@ -209,7 +210,6 @@
     }
 
     function updateResult(result, status){
-        console.log(result);
         if (result.status != 200) {
             layer.msg(result.message);
             return;

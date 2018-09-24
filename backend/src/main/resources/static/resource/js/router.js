@@ -14,8 +14,8 @@ Router.prototype.refresh = function () {
     this.routes[this.currentUrl]();//根据当前的hash值来调用相对应的回调函数
 };
 Router.prototype.init = function () {
-    window.addEventListener('load', this.refresh.bind(this), false);
-    window.addEventListener('hashchange', this.refresh.bind(this), false);
+    window.addEventListener('load', this.refresh.bind(this), true);
+    window.addEventListener('hashchange', this.refresh.bind(this), true);
 }
 //给window对象挂载属性
 window.Router = new Router();
@@ -47,4 +47,7 @@ Router.route('/view/menu', function () {
 });
 Router.route('/view/user', function () {
     routerPage('/view/user/user_content.html');
+});
+Router.route('/view/user/nomal', function () {
+    routerPage('/view/user/user_nomal.html');
 });
