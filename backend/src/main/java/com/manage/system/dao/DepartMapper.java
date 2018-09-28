@@ -21,6 +21,9 @@ public interface DepartMapper {
     /*根据角色id返回所有部门*/
     List<SysDepartDto> selectDepartByRoles(@Param("roleIds") List<Integer> roleIds) throws Exception;
 
+    /*根据角色id返回所有部门*/
+    SysDepartDto getDepartByMenuId(@Param("menuId") Integer menuId);
+
     SysDepartDto selectByPrimaryKey(@Param("id") Integer id) throws Exception;
 
 }

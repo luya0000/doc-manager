@@ -53,7 +53,7 @@ public class FileUtil {
 
     }
 
-    private void makeSureDirs(String dir) {
+    public void makeSureDirs(String dir) {
         File rootFile = new File(dir);
         logger.info("make sure dirs exist " + rootFile.getAbsolutePath());
         if (!rootFile.exists() && rootFile.mkdirs()) {

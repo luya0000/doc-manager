@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by luya on 2018/6/8.
+ * 暂时未使用
  * 权限内容初始化时加入，此类用于后期单独对权限维护，不参与前端操作
  */
 @RestController

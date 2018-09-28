@@ -2,6 +2,7 @@ package com.manage.system.dao;
 
 import com.manage.system.model.SysPermissionDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

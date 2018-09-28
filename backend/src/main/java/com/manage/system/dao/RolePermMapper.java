@@ -1,5 +1,6 @@
 package com.manage.system.dao;
 
+import com.manage.system.model.SysPermissionDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,9 +12,12 @@ import java.util.List;
 @Mapper
 public interface RolePermMapper {
 
-    List<Integer> selectByRoleId(@Param("roleId") Integer roleId) throws Exception;
+    List<SysPermissionDto> selectByRoleIds(@Param("roleIds") List<Integer> roleIds) throws Exception;
 
-    int insert(@Param("permId") Integer permId,@Param("roleId") Integer roleId) throws Exception;
+    List<SysPermissionDto> selectPermByRoleId(@Param("menuId") Integer menuId,
+                                              @Param("userId") String userId) throws Exception;
 
-    int deleteByPrimaryKey(@Param("permId") Integer permId,@Param("roleId") Integer roleId) throws Exception;
+    int insert(@Param("permId") Integer permId, @Param("roleId") Integer roleId) throws Exception;
+
+    int deleteByPrimaryKey(@Param("permId") Integer permId, @Param("roleId") Integer roleId) throws Exception;
 }

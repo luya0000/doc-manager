@@ -7,7 +7,10 @@ import com.manage.common.BaseController;
 import com.manage.common.Constants;
 import com.manage.common.UrlConstants;
 import com.manage.exception.impl.BizExceptionStatusEnum;
+import com.manage.exception.impl.SysExceptionStatusEnum;
 import com.manage.system.bean.UserBean;
+import com.manage.system.model.SysPermissionDto;
+import com.manage.system.service.RolePermService;
 import com.manage.system.service.UserService;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
@@ -30,6 +33,10 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RolePermService permService;
+
 
     /**
      * 根据条件获取用户列表
@@ -219,25 +226,39 @@ public class UserController extends BaseController {
                 return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_OLD_NEW_PWD_ERROR);
             }
             // 传入userId是修改其他人密码，不传入则是修改自己密码.并判断是否有权限修改
-            if (!StringUtils.isEmpty(userId) && !getRoles().contains(Constants.SYSTEM_TYPE) && !getRoles().contains(Constants.ADMIN_TYPE)) {
-                // 无权限修改他人密码
-                return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_HAS_NO_ROLE_ERROR);
-            }
-            if (!StringUtils.isEmpty(userId) && (getRoles().contains(Constants.SYSTEM_TYPE) || getRoles().contains(Constants.ADMIN_TYPE))) {
-                // 有权限修改他人密码
-                if (userService.changePassword(userId, oldPass, newPass, false)) {
-                    return APIResponse.toOkResponse();
+            if (StringUtils.isEmpty(userId)) {
+                // 修改自己密码
+                userService.changePassword(super.getAccount(), oldPass, newPass, true);
+                return APIResponse.toOkResponse();
+            } else {
+                // 判断当前用户是否有权限修改别人密码
+                // 获取操作者角色
+                List<Integer> roleList = super.getRoles();
+
+                // 根据角色获取权限
+                List<SysPermissionDto> perms = permService.getPermByRoleIds(roleList);
+                boolean permFlg = false;
+                for (SysPermissionDto dto : perms) {
+                    if (Constants.PERM_TYPE_DEPART_ADMIN.equals(dto.getName()) ||
+                            Constants.PERM_TYPE_USER_MANAGE.equals(dto.getName())) {
+                        permFlg = true;
+                        break;
+                    }
                 }
-                return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_HAS_NO_ROLE_ERROR);
-            } else if (StringUtils.isEmpty(userId)) {
-                userId = getAccount();
-                if (userService.changePassword(userId, oldPass, newPass, true)) {
-                    return APIResponse.toOkResponse();
+                // 有权限修改他人密码
+                if (permFlg) {
+                    if (userService.changePassword(userId, oldPass, newPass, false)) {
+                        return APIResponse.toOkResponse();
+                    }
+                } else {
+                    // 无权限修改他人密码
+                    return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_HAS_NO_ROLE_ERROR);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
+            return APIResponse.toExceptionResponse(SysExceptionStatusEnum.SERVER_ERROR);
         }
 
         return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_CHG_PWD_ERROR);

@@ -50,4 +50,10 @@
         from sys_depart
         where id = #{id,jdbcType=INTEGER}
     </select>
+
+    <select id="getDepartByMenuId" resultType="com.manage.system.model.SysDepartDto">
+        select id,code,menu_id, name, note, update_user as updateUser, update_time as updateTime
+        from sys_depart
+        where menu_id = #{menuId,jdbcType=INTEGER}
+    </select>
 </mapper>

@@ -22,6 +22,15 @@ public class Constants {
     public static final Integer STATUE_VALID = 1;
     public static final Integer STATUE_INVALID = 0;
 
+    // 权限常量
+    public static final String PERM_TYPE_SELECT = "SEARCH_LIST"; // 查询文件列表
+    public static final String PERM_TYPE_DOWNLOAD = "DOWN_FILE"; //下载文件
+    public static final String PERM_TYPE_UPLOAD = "UP_FILE";// 上传文件
+    public static final String PERM_TYPE_DELETE = "DEL_FILE";// 删除文件
+    public static final String PERM_TYPE_DEPART_ADMIN = "DEPART_ADMIN";// 普通人员管理权限
+    public static final String PERM_TYPE_USER_MANAGE = "USER_MANAGE";// 人员管理的权限
+    public static final String PERM_TYPE_MENU_MANAGE = "MENU_MANAGE";// 菜单管理的权限
+
     // --------------------分页常量-------------------
     /*当前页*/
     public static final Integer PAGEHELPER_PAGE_CURRENT = 0;

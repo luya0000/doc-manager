@@ -4,6 +4,7 @@ import com.github.pagehelper.util.StringUtil;
 import com.manage.common.Constants;
 import com.manage.system.bean.RoleBean;
 import com.manage.system.dao.RoleMapper;
+import com.manage.system.model.SysPermissionDto;
 import com.manage.system.model.SysRoleDto;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -60,15 +61,21 @@ public class RoleService {
             BeanUtils.copyProperties(roleDto, bean);
         }
         // 获取角色对应权限信息
-        List<Integer> premList = rolePermService.getPermByParam(roleDto.getId());
-        bean.setPermList(premList);
+        List<Integer> prems = new ArrayList<>();
+        List<Integer> roleList = new ArrayList<>();
+        roleList.add(roleDto.getId());
+        List<SysPermissionDto> premList = rolePermService.getPermByRoleIds(roleList);
+        for (int i = 0; i < premList.size(); i++) {
+            prems.add(premList.get(i).getId());
+        }
+        bean.setPermList(prems);
         return bean;
     }
 
     /**
      * 插入角色和权限
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean insertRole(RoleBean roleBean, String perms) throws Exception {
         SysRoleDto roleDto = new SysRoleDto();
         BeanUtils.copyProperties(roleBean, roleDto);
@@ -90,7 +97,7 @@ public class RoleService {
      * @return
      * @throws Exception
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean updateByPrimaryKey(RoleBean roleBean, String perms) throws Exception {
 
         SysRoleDto roleDto = roleMapper.selectByPrimaryKey(roleBean.getId());
@@ -114,7 +121,7 @@ public class RoleService {
      * @return
      * @throws Exception
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean deleteByPrimaryKey(Integer roleId) throws Exception {
         // 确认人员角色关系，有人员使用不可删除
         List<Integer> userRoleId = userRoleService.getRolesIdByParam(null, roleId);
@@ -122,7 +129,7 @@ public class RoleService {
             throw new Exception("当前角色正在被用户使用，请先解除关系后再删除！");
         }
         // 删除角色对应菜单(目前仅限普通菜单)
-        roleMenuService.deleteByPrimaryKey(null,roleId, Constants.MENU_TYPE_DEFAULT);
+        roleMenuService.deleteByPrimaryKey(null, roleId, Constants.MENU_TYPE_DEFAULT);
         // 删除角色对应权限
         rolePermService.deleteByPrimaryKey(null, roleId);
         // 删除角色

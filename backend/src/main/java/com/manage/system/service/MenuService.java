@@ -22,7 +22,7 @@ public class MenuService {
     private RoleMenuService roleMenuService;
 
     /*插入菜单表数据*/
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int insertMenu(Integer parentId, String name, String url, Integer type, Integer status) throws Exception {
         SysMenuDto menuDto = new SysMenuDto();
         menuDto.setName(name);
@@ -37,7 +37,7 @@ public class MenuService {
     }
 
     /*插入角色菜单表数据*/
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteByPrimaryKey(Integer id) throws Exception {
         // 删除菜单
         return menuMapper.deleteByPrimaryKey(id);
@@ -147,7 +147,7 @@ public class MenuService {
     }
 
     /*插入角色菜单表数据*/
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertRoleMenu(Integer roleId, String[] menuList) throws Exception {
         // 删除菜单关系
         roleMenuService.deleteByPrimaryKey(null, roleId, Constants.MENU_TYPE_DEFAULT);

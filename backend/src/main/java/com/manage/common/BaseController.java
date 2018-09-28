@@ -7,6 +7,8 @@ import com.manage.util.HttpKit;
 import com.manage.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * Created by luya on 2018/6/6.
  */
@@ -23,8 +25,8 @@ public class BaseController {
         return HttpKit.getRequest().getAttribute(Constants.JWT_ACCOUNT_KEY).toString();
     }
     /* 获取角色 */
-    public String getRoles() {
-        return (String) HttpKit.getRequest().getAttribute(Constants.JWT_ROLES_KEY);
+    public List<Integer> getRoles() {
+        return (List<Integer>) HttpKit.getRequest().getAttribute(Constants.JWT_ROLES_KEY);
     }
 
     public String getUserName() {

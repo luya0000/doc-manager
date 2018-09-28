@@ -4,7 +4,7 @@ public class SysPermissionDto {
   private Integer id;
   private String note;
   private String name;
-  private Integer menuId;
+  private Integer permType;
 
   public Integer getId() {
     return id;
@@ -30,11 +30,11 @@ public class SysPermissionDto {
     this.name = name;
   }
 
-  public Integer getMenuId() {
-    return menuId;
+  public Integer getPermType() {
+    return permType;
   }
 
-  public void setMenuId(Integer menuId) {
-    this.menuId = menuId;
+  public void setPermType(Integer permType) {
+    this.permType = permType;
   }
 }

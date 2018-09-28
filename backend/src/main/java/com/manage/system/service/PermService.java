@@ -26,13 +26,13 @@ public class PermService {
         return permissionDtoList;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int insertPermission(SysPermissionDto permissionDto) throws Exception {
         permissionDto.setId(1);
         return permissionMapper.insert(permissionDto);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteByPrimaryKey(Integer id) throws Exception {
         return permissionMapper.deleteByPrimaryKey(id);
     }

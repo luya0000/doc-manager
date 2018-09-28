@@ -48,6 +48,6 @@ Router.route('/view/menu', function () {
 Router.route('/view/user', function () {
     routerPage('/view/user/user_content.html');
 });
-Router.route('/view/user/nomal', function () {
+/*Router.route('/view/user/nomal', function () {
     routerPage('/view/user/user_nomal.html');
-});
+});*/

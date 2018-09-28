@@ -67,24 +67,19 @@
     </div>
 </div>
 
-
 <script>
-
+    // 根目录
     var rootPath;
     $(document).ready(function () {
-
         // 获取根路径
-        myAjax("get", false, "/sys/file/getBasePath", {"menuId": $('#menuIdHidden').val()}, getRootPath);
-        // 获取目录
-        if ($("#path").val() != "") {
-            searchFile($("#path").val());
-        }
+        myAjax("get", true, "/sys/file/getBasePath", {"menuId": $('#menuIdHidden').val()}, getRootPath);
+        // 文件绑定事件
         $('#fileTable').delegate('.c_path', "click", function () {
             var newPath = $("#path").val() + "/" + this.innerText;
             $("#path").val(newPath);
             searchFile(newPath);
         });
-        $(".webuploader-pick").remove("class");
+        //$(".webuploader-pick").remove("class");
     })
 
     // 获取根路径
@@ -92,6 +87,7 @@
         if (result.code == 200 && result.content != "") {
             rootPath = result.content;
             $("#path").val(result.content);
+            searchFile($("#path").val());
         } else {
             layer.alert('根路径获取失败，联系管理员！', {
                 skin: 'layui-layer-lan' //样式类名
@@ -99,13 +95,16 @@
             });
         }
     }
+
     /*查询路径文件*/
     function searchFile(_path) {
         var data = {
-            path: _path
+            "path": _path,
+            "menuId": $('#menuIdHidden').val()
         }
-        myAjax("GET", true, "/doc/file/fileList", data, searchFileCallBack);
+        myAjax("GET", false, "/sys/file/fileList", data, searchFileCallBack);
     }
+
     /*查询路径文件后处理*/
     function searchFileCallBack(result, status) {
         if (result.code != 200) {
@@ -142,6 +141,7 @@
             $('#fileTable').append(tableList);
         }
     }
+
     /*返回按钮*/
     $("#return").click(function () {
         var path = $("#path").val();
@@ -158,6 +158,7 @@
             }
         }
     });
+
     /*新建文件夹*/
     $("#newFile").click(function () {
         layer.prompt({title: '文件夹名称', formType: 3}, function (text, index) {
@@ -166,11 +167,11 @@
                 layer.msg("文件名不能为空");
                 return false;
             }
-            var param = {
-                path: path,
-                dir: text
-            }
-            myAjax("post", false, "/doc/file/newdir", param, function (result, status) {
+            myAjax("post", false, "/sys/file/newdir", {
+                "path": path,
+                "dir": text,
+                "menuId": $('#menuIdHidden').val()
+            }, function (result, status) {
                 if (result.code != 200) {
                     layer.msg(result.message);
                 }
@@ -179,6 +180,7 @@
             searchFile(path);
         });
     });
+
     /*删除文件或文件夹*/
     <!-- 选择全部/全不选 -->
     $("#All").click(function () {
@@ -201,10 +203,11 @@
                     paths += ":";
                 }
             });
-            var param = {
-                paths: paths
+            if(paths === ""){
+                layer.msg("请选择一个文件");
+                return false;
             }
-            myAjax("post", false, "/doc/file/delete", param, function (result, status) {
+            myAjax("post", false, "/sys/file/delete", {"paths": paths, "menuId": $('#menuIdHidden').val() }, function (result, status) {
                 if (result.code != 200) {
                     layer.msg(result.message);
                     searchFile($("#path").val());
@@ -225,6 +228,7 @@
             });
         });
     });
+
     /*下载文件*/
     $("#downloadFile").click(function () {
         // 选择列表
@@ -234,7 +238,7 @@
             if (this.checked) {
                 fileType = $(this).parent().parent().find(".fileType").val();
                 if (fileType == "path") {
-                    layer.msg("网页版不支持文件夹下载");
+                    layer.msg("不支持文件夹下载!");
                     paths = "";
                     return false;
                 }
@@ -242,7 +246,7 @@
                 paths += ":";
             }
         });
-        download("/doc/file/download", paths, "get");
+        download("/sys/file/download", paths, "get");
     });
 
 
@@ -251,13 +255,13 @@
         if (url && data) {
             var inputs = '';
             inputs += '<input type="hidden" name="paths" value="' + data + '" />';
+            inputs += '<input type="hidden" name="menuId" value="' + $('#menuIdHidden').val() + '" />';
             inputs += '<input type="hidden" name="Authorization" value="' + localStorage.getItem('JWT_TOKEN') + '" />';
             //send request
             jQuery('<form action="' + url + '" method="' + (method || 'post') + '">' + inputs + '</form>')
                     .appendTo('body').submit().remove();
         }
     }
-
 
     /*上传文件*/
     function uploadFileAll(_path) {
@@ -276,11 +280,12 @@
 
             formData: {
                 path: _path,
-                name: "zzzzzzzzz"
+                name: "zzzzzzzzz",
+                menuId: $('#menuIdHidden').val()
             },
             method: "post",
             fileNumLimit: 50,//验证文件总数量, 超出则不允许加入队列
-            server: '/doc/file/upload-file',// 文件接收服务端。
+            server: '/sys/file/upload-file',// 文件接收服务端。
             sendAsBinary: true,
             headers: {Authorization: localStorage.getItem('JWT_TOKEN')}
             //extensions: 'img',
@@ -327,12 +332,11 @@
             searchFile(path_update);
         });
 
-        uploader.on('uploadError', function (file) {
-            console.log(file);
+        uploader.on('uploadError', function (file, status) {
+            console.log(status);
             $('#' + file.id).find('.state').text('上传失败，当前文件夹无操作权限');
         });
         uploader.on('uploadComplete', function (file) {
-            //$("#myModal").modal('hide');
             $('#' + file.id).find('.progress').fadeOut();
             searchFile($("#path").val());
         });

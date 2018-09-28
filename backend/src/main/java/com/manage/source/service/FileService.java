@@ -25,53 +25,47 @@ public class FileService {
     private UserRoleService userRoleService;
 
     /*过滤目标地址下的文件列表*/
-    public List<FileDetail> listAdminFiles(File currentFile, List<String> ownerDirs) {
+    public List<FileDetail> listAdminFiles(File currentFile) {
         List<FileDetail> results = new LinkedList<>();
         File[] files = currentFile.listFiles();
-        if (files == null || ownerDirs == null) {
+        if (files == null) {
             return Collections.emptyList();
         }
-        for (String dir : ownerDirs) {
-            File ownerFile = new File(dir);
-            for (File file : files) {
-                if (file.getPath().contains(ownerFile.getPath())) {
-                    FileDetail fileDetail = new FileDetail();
-                    fileDetail.setName(file.getName());
-                    fileDetail.setSize(file.length());
-                    fileDetail.setPath(file.getPath());
-                    fileDetail.setDate(new SimpleDateFormat("yyyy/MM/dd HH:mm")
-                            .format(new Date(file.lastModified())));
-                    if (file.isFile()) {
-                        long size = file.length() / 1024;
-                        fileDetail.setUnit("KB");
-                        if (size > 1000) {
-                            size = size / 1024;
-                            fileDetail.setUnit("MB");
-                        }
-                        size = size == 0 ? 1 : size;
-                        fileDetail.setSize(size);// MB
-                        String fileName = file.getName();
-                        String pic = "";
-                        String tmp = fileName.substring(fileName.lastIndexOf('.') + 1);
-                        if ("gz".equals(tmp) || "tar".equals(tmp) || "zip".equals(tmp)) {
-                            pic = "gz.png";
-                        } else if ("gif".equals(tmp) || "png".equals(tmp) || "jpg".equals(tmp) || "jpeg".equals(tmp)) {
-                            pic = "img.png";
-                        } else if ("xls".equals(tmp) || "xlsx".equals(tmp)) {
-                            pic = "excel.png";
-                        } else {
-                            pic = "other.png";
-                        }
-                        fileDetail.setPic(pic);
-                        fileDetail.setType("file");
-                    } else {
-                        fileDetail.setType("path");
-                        fileDetail.setPic("file.png");
-                    }
-                    results.add(fileDetail);
+        for (File file : files) {
+            FileDetail fileDetail = new FileDetail();
+            fileDetail.setName(file.getName());
+            fileDetail.setSize(file.length());
+            fileDetail.setPath(file.getPath());
+            fileDetail.setDate(new SimpleDateFormat("yyyy/MM/dd HH:mm")
+                    .format(new Date(file.lastModified())));
+            if (file.isFile()) {
+                long size = file.length() / 1024;
+                fileDetail.setUnit("KB");
+                if (size > 1000) {
+                    size = size / 1024;
+                    fileDetail.setUnit("MB");
                 }
+                size = size == 0 ? 1 : size;
+                fileDetail.setSize(size);// MB
+                String fileName = file.getName();
+                String pic = "";
+                String tmp = fileName.substring(fileName.lastIndexOf('.') + 1);
+                if ("gz".equals(tmp) || "tar".equals(tmp) || "zip".equals(tmp)) {
+                    pic = "gz.png";
+                } else if ("gif".equals(tmp) || "png".equals(tmp) || "jpg".equals(tmp) || "jpeg".equals(tmp)) {
+                    pic = "img.png";
+                } else if ("xls".equals(tmp) || "xlsx".equals(tmp)) {
+                    pic = "excel.png";
+                } else {
+                    pic = "other.png";
+                }
+                fileDetail.setPic(pic);
+                fileDetail.setType("file");
+            } else {
+                fileDetail.setType("path");
+                fileDetail.setPic("file.png");
             }
-
+            results.add(fileDetail);
         }
         return results;
     }
@@ -184,7 +178,7 @@ public class FileService {
 
     /*获取用户角色对应根目录*/
     public List<String> getUserRolePath(String userId, String rootPath) {
-       // List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
+        // List<UserRoleGroupDto> roleGroupDtoList = userRoleService.getRolesGroupByUserId(userId);
         List<String> selfRootPath = new ArrayList<>();
         /*for (UserRoleGroupDto dto : roleGroupDtoList) {
             // 拼接用户目录列表

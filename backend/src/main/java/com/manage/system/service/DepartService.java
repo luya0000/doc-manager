@@ -4,6 +4,7 @@ import com.manage.common.Constants;
 import com.manage.system.bean.DepartBean;
 import com.manage.system.dao.DepartMapper;
 import com.manage.system.model.SysDepartDto;
+import com.manage.util.file.FileUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
@@ -30,30 +31,44 @@ public class DepartService {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private FileUtil fileUtil;
+
+
     // 插入部门前新建菜单数据  TODO 同时创建文件夹
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int insertDepart(DepartBean departBean) throws Exception {
         SysDepartDto departDto = new SysDepartDto();
         BeanUtils.copyProperties(departBean, departDto);
         try {
             int menuId = menuService.insertMenu(Constants.MENU_DOC_PARENTID, departBean.getName(), null, null, 1);
             departDto.setMenuId(menuId);
-            return departMapper.insert(departDto);
+            int departId = departMapper.insert(departDto);
+            //fileUtil.makeSureDirs(departDto.getCode());
+            return departId;
         } catch (Exception e) {
             logger.error(e);
-            throw new Exception("");
+            throw new Exception("部门名称重复！");
         }
     }
 
     // TODO 同时删除文件夹
-    @Transactional(propagation = Propagation.REQUIRED)
+
+    /**
+     * 删除部门同时删除菜单
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteByPrimaryKey(Integer id) throws Exception {
         SysDepartDto depart = departMapper.selectByPrimaryKey(id);
         menuService.deleteByPrimaryKey(depart.getMenuId());
         return departMapper.deleteByPrimaryKey(id);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public DepartBean selectPrimaryKey(Integer id) throws Exception {
         SysDepartDto departDto = departMapper.selectByPrimaryKey(id);
         DepartBean departBean = new DepartBean();
@@ -61,11 +76,26 @@ public class DepartService {
         return departBean;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int updateByPrimaryKey(DepartBean departBean) throws Exception {
         SysDepartDto departDto = new SysDepartDto();
         BeanUtils.copyProperties(departBean, departDto);
         return departMapper.updateByPrimaryKey(departDto);
+    }
+
+    /**
+     * 根据menuid查看部门信息
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @Transactional(readOnly = true)
+    public DepartBean getDepartByMenuId(Integer id) {
+        SysDepartDto departDtos = departMapper.getDepartByMenuId(id);
+        DepartBean departBean = new DepartBean();
+        BeanUtils.copyProperties(departDtos, departBean);
+        return departBean;
     }
 
     @Transactional(readOnly = true)

@@ -13,6 +13,9 @@ public interface RoleMenuMapper {
 
     List<Integer> selectByRoleId(@Param("roleId") Integer roleId) throws Exception;
 
+    /*返回菜单id对应的角色id*/
+    int selectByParam(@Param("menuId") Integer menuId, @Param("roleIds") List<Integer> roleIds) throws Exception;
+
     int insert(@Param("menuId") Integer menuId, @Param("roleId") Integer roleId) throws Exception;
 
     int deleteByPrimaryKey(@Param("menuId") Integer menuId, @Param("roleId") Integer roleId, @Param("menuType") Integer menuType) throws Exception;

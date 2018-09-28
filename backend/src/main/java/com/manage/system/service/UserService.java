@@ -33,9 +33,6 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private DepartService departService;
-
     /*获取用户带权限列表*/
     @Transactional(readOnly = true)
     public List<UserBean> selectUserList(String account, String depart, Integer status) throws Exception {
@@ -83,7 +80,7 @@ public class UserService {
         return null;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int insertUser(UserBean userBean) throws Exception {
         SysUserDto userDto = new SysUserDto();
         BeanUtils.copyProperties(userBean, userDto);
@@ -92,20 +89,20 @@ public class UserService {
         return userMapper.insert(userDto);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int updateUser(UserBean userBean) throws Exception {
 
         SysUserDto userDto = new SysUserDto();
         BeanUtils.copyProperties(userBean, userDto);
         if (StringUtils.isEmpty(userBean.getPassword())) {
             userDto.setPassword(null);
-        }else{
+        } else {
             userDto.setPassword(BCrypt.hashpw(userBean.getPassword(), BCrypt.gensalt()));
         }
         return userMapper.updateByPrimaryKey(userDto);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteUser(String userId) throws Exception {
         // 删除用户角色信息
         userRoleService.delUserRoleByUserId(userId, null);
@@ -123,7 +120,7 @@ public class UserService {
      * @return
      * @throws Exception
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public boolean changePassword(String userId, String oldPassword, String newPassword, boolean self) throws Exception {
         UserBean user = selectByPrimaryKey(userId);
         if (self) {

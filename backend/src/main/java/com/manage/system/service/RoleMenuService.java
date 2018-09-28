@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +26,22 @@ public class RoleMenuService {
         return menuIds;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
+    public Integer getMenuIdByParam(String[] roleIds, Integer menuId) throws Exception {
+        List<Integer> roleIdList = new ArrayList<>();
+        for (String id : roleIds) {
+            roleIdList.add(Integer.parseInt(id));
+        }
+        Integer id = roleMenuMapper.selectByParam(menuId, roleIdList);
+        return id;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int insertRoleMenu(Integer menuId, Integer roleId) throws Exception {
         return roleMenuMapper.insert(menuId, roleId);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteByPrimaryKey(Integer menuId, Integer roleId, Integer menuType) throws Exception {
         return roleMenuMapper.deleteByPrimaryKey(menuId, roleId, menuType);
     }

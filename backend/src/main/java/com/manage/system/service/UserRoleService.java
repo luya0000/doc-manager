@@ -8,6 +8,8 @@ import com.manage.system.model.SysRoleDto;
 import com.manage.system.model.SysUserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +24,7 @@ public class UserRoleService {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
+    @Transactional(readOnly = true)
     public List<Integer> getRolesIdByParam(String userId, Integer roleId) {
         List<SysRoleDto> roleList = userRoleMapper.selectByParam(userId, roleId);
         List<Integer> roles = new ArrayList<>();
@@ -33,6 +36,7 @@ public class UserRoleService {
         return roles != null ? roles : Collections.<Integer>emptyList();
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int delUserRoleByUserId(String userId, Integer roleId) {
         int result = userRoleMapper.deleteByParam(userId, roleId);
         return result;

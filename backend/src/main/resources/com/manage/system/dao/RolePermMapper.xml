@@ -15,12 +15,27 @@
         </where>
     </delete>
 
-    <select id="selectByRoleId" resultType="java.lang.Integer">
-        SELECT pm_id as id
-        FROM sys_role_permission
+    <select id="selectByRoleIds" resultType="com.manage.system.model.SysPermissionDto">
+        SELECT sp.id as id,sp.note as note, sp.name as name, sp.perm_type as permType
+        FROM sys_role_permission srp,sys_permission sp
         <where>
-            <if test="roleId != null">role_id = #{roleId,jdbcType=INTEGER}</if>
+            srp.pm_id = sp.id
+            <if test="roleIds != null and roleIds.size() > 0">
+                AND srp.role_id IN
+                <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
     </select>
 
+    <select id="selectPermByRoleId" resultType="com.manage.system.model.SysPermissionDto">
+        SELECT DISTINCT id, name as name , note as note ,perm_type as permType
+        FROM sys_role_permission srp,sys_user_role sur ,sys_role_menu srm,sys_permission sp
+        WHERE srp.role_id = sur.role_id
+        AND sur.role_id = srm.role_id
+        AND srp.pm_id = sp.id
+        AND srm.menu_id = #{menuId,jdbcType=INTEGER}
+        and sur.user_id = #{userId,jdbcType=VARCHAR}
+    </select>
 </mapper>

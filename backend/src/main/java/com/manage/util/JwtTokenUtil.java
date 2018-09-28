@@ -124,7 +124,6 @@ public class JwtTokenUtil {
         claims.put(jwtProperties.getMd5Key(), randomKey);
         claims.put(jwtProperties.getNameKey(), user.getUserName());
         claims.put("account", user.getUserId());
-        List<Integer> roleIds = new ArrayList<>();
         claims.put(jwtProperties.getRolesKey(), user.getRoles()); //StringUtils.join(roleIds, Constants.ROLE_SPLITOR)
         return doGenerateToken(claims, user.getUserId());
     }
