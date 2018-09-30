@@ -15,6 +15,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -100,6 +101,8 @@ public class UserRoleController extends BaseController {
         try {
             // 删除关系
             userRoleService.delUserRoleByUserId(userId, null);
+            if(StringUtils.isEmpty(roleIds)) return APIResponse.toOkResponse();
+
             // 创建关系
             String[] roleId = roleIds.split(",");
             List<Integer> roleList = new ArrayList<>();
