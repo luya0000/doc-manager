@@ -44,4 +44,11 @@
         WHERE id = #{id,jdbcType=INTEGER}
     </update>
 
+    <select id="selectByDepartId" resultType="com.manage.system.model.SysRoleDto">
+        SELECT distinct sr.id, sr.name, sr.depart_id as departId,sr.note, sr.update_time,sr.update_user
+        FROM sys_role sr , sys_user_role sur
+        WHERE sr.id = sur.role_id
+        AND sr.depart_id = #{departId,jdbcType=INTEGER}
+    </select>
+
 </mapper>

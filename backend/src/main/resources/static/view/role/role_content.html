@@ -393,7 +393,7 @@
             if (result.code === 200) {
                 layer.msg('添加成功.');
             } else {
-                layer.msg('添加失败.');
+                layer.msg(result.message);
             }
             $("#roleModal").modal('hide');
             queryRoleTable();
@@ -424,7 +424,7 @@
             if (result.code === 200) {
                 layer.msg('修改成功.');
             } else {
-                layer.msg('修改失败.');
+                layer.msg(result.message);
             }
             $("#roleModal").modal('hide');
             queryRoleTable();
@@ -492,7 +492,7 @@
             if (result.code === 200) {
                 layer.msg('设置成功.');
             } else {
-                layer.msg('设置失败.');
+                layer.msg(result.message);
             }
             $("#roleMenuModal").modal('hide');
             queryRoleTable();

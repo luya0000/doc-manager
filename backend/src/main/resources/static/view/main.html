@@ -209,13 +209,12 @@
     }
 
     function updateResult(result, status){
-        if (result.status != 200) {
+        if (result.code != 200) {
             layer.msg(result.message);
-            return;
         } else {
-            $("#updateUserPassModal").modal('hide');
-            layer.msg(result.message);
+            layer.msg("密码修改成功！");
         }
+        $("#updateUserPassModal").modal('hide');
     }
 
     function formValidation(form) {

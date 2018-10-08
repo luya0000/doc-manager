@@ -6,6 +6,7 @@ import com.manage.common.APIResponse;
 import com.manage.common.BaseController;
 import com.manage.common.Constants;
 import com.manage.common.UrlConstants;
+import com.manage.exception.DocException;
 import com.manage.exception.impl.BizExceptionStatusEnum;
 import com.manage.exception.impl.SysExceptionStatusEnum;
 import com.manage.system.bean.UserBean;
@@ -228,8 +229,11 @@ public class UserController extends BaseController {
             // 传入userId是修改其他人密码，不传入则是修改自己密码.并判断是否有权限修改
             if (StringUtils.isEmpty(userId)) {
                 // 修改自己密码
-                userService.changePassword(super.getAccount(), oldPass, newPass, true);
-                return APIResponse.toOkResponse();
+                if (userService.changePassword(super.getAccount(), oldPass, newPass, true)) {
+                    return APIResponse.toOkResponse();
+                } else {
+                    return APIResponse.toExceptionResponse(BizExceptionStatusEnum.USER_OLD_PWD_ERROR);
+                }
             } else {
                 // 判断当前用户是否有权限修改别人密码
                 // 获取操作者角色

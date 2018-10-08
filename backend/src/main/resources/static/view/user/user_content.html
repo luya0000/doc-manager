@@ -262,7 +262,7 @@
                     if (result.code === 200) {
                         layer.msg('删除成功.');
                     } else {
-                        layer.msg('删除失败.');
+                        layer.msg(result.message);
                     }
                     layer.close(index);
                     queryUserTable();
@@ -377,7 +377,7 @@
             if (result.code === 200) {
                 layer.msg('添加成功.');
             } else {
-                layer.msg('添加失败.');
+                layer.msg(result.message);
             }
             $("#userModal").modal('hide');
             queryUserTable();
@@ -407,7 +407,7 @@
             if (result.code === 200) {
                 layer.msg('修改成功.');
             } else {
-                layer.msg('修改失败.');
+                layer.msg(result.message);
             }
             $("#userModal").modal('hide');
             queryUserTable();
@@ -488,7 +488,7 @@
             if (result.code === 200) {
                 layer.msg('设置成功.');
             } else {
-                layer.msg('设置失败.');
+                layer.msg(result.message);
             }
             $("#userRoleModel").modal('hide');
         });

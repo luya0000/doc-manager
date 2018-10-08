@@ -6,7 +6,9 @@ import com.manage.common.APIResponse;
 import com.manage.common.BaseController;
 import com.manage.common.Constants;
 import com.manage.common.UrlConstants;
+import com.manage.exception.DocException;
 import com.manage.exception.impl.BizExceptionStatusEnum;
+import com.manage.exception.impl.SysExceptionStatusEnum;
 import com.manage.system.bean.RoleBean;
 import com.manage.system.service.RoleService;
 import org.apache.commons.collections.map.HashedMap;
@@ -150,10 +152,14 @@ public class RoleController extends BaseController {
 
         try {
             roleService.deleteByPrimaryKey(id);
-        } catch (Exception e) {
+        } catch (DocException e) {
             logger.error(e);
             e.printStackTrace();
             return APIResponse.toExceptionResponse(BizExceptionStatusEnum.ROLE_DELETE_ERROR2);
+        } catch (Exception e) {
+            logger.error(e);
+            e.printStackTrace();
+            return APIResponse.toExceptionResponse(SysExceptionStatusEnum.SERVER_ERROR);
         }
         return APIResponse.toOkResponse();
     }

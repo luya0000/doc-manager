@@ -20,5 +20,7 @@ public interface RoleMapper {
 
     SysRoleDto selectByPrimaryKey(Integer id) throws Exception;
 
+    List<SysRoleDto> selectByDepartId(@Param("departId") Integer departId) throws Exception;
+
     int updateByPrimaryKey(SysRoleDto user) throws Exception;
 }

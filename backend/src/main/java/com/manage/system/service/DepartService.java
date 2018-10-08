@@ -1,9 +1,12 @@
 package com.manage.system.service;
 
 import com.manage.common.Constants;
+import com.manage.exception.DocException;
+import com.manage.exception.impl.BizExceptionStatusEnum;
 import com.manage.system.bean.DepartBean;
 import com.manage.system.dao.DepartMapper;
 import com.manage.system.model.SysDepartDto;
+import com.manage.system.model.SysRoleDto;
 import com.manage.util.file.FileUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,8 +35,7 @@ public class DepartService {
     private MenuService menuService;
 
     @Autowired
-    private FileUtil fileUtil;
-
+    private RoleService roleService;
 
     // 插入部门前新建菜单数据  TODO 同时创建文件夹
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -64,6 +66,11 @@ public class DepartService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int deleteByPrimaryKey(Integer id) throws Exception {
         SysDepartDto depart = departMapper.selectByPrimaryKey(id);
+
+        List<SysRoleDto> roleDtoList = roleService.selectByDepartId(id);
+        if (roleDtoList != null && roleDtoList.size() > 0) {
+            throw new DocException(BizExceptionStatusEnum.DEPART_DELETE_ERROR2);
+        }
         menuService.deleteByPrimaryKey(depart.getMenuId());
         return departMapper.deleteByPrimaryKey(id);
     }
