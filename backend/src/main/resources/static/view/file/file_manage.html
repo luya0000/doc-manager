@@ -333,7 +333,6 @@
         });
 
         uploader.on('uploadError', function (file, status) {
-            console.log(status);
             $('#' + file.id).find('.state').text('上传失败，当前文件夹无操作权限');
         });
         uploader.on('uploadComplete', function (file) {

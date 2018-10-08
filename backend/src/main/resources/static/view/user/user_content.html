@@ -258,7 +258,7 @@
             var index = layer.confirm('删除用户不可恢复，确认删除？', {
                 btn: ['删除', '取消'] //按钮
             }, function () {
-                myAjax("POST", true, "/sys/user/delete/" + userId, null, function () {
+                myAjax("POST", true, "/sys/user/delete/" + userId, null, function (result) {
                     if (result.code === 200) {
                         layer.msg('删除成功.');
                     } else {
@@ -462,8 +462,6 @@
             /*$(this).prop("checked", false);
             $(this).removeProp("checked");*/
             $.each(result.content, function (i, pro) {
-                console.log(pro);
-                console.log($(that).attr("data-value"));
                 if ($(that).attr("data-value") == pro) {
                     $(that).prop("checked", true);
                 }

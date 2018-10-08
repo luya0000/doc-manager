@@ -274,7 +274,6 @@
                 myAjax("GET", true, "/sys/menu/all", {"type": 2}, function (menu, status) {
                     if (menu != null && menu.length > 0) {
                         $("#roleMenuForm").find("input[id='parent_menu']").val(menu[0].menuId);
-                        console.log($("#roleMenuForm").find("input[id='parent_menu']").val());
                         var tableContent = juicer($("#role_menu_table_content").text(), menu[0]);
                         $('#role_menu_table').find('td').remove();
                         $('#role_menu_table').append(tableContent);

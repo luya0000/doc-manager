@@ -185,8 +185,7 @@
     });
     // 设置登陆的用户信息
     function getLoginInfo(result, status) {
-        console.log(result);
-        if (result.status == 200) {
+        if (result.code == 200) {
             var user = result.data;
             var form = $("#updateUserPassForm");
             form.find("input[id='userId']").val(user.userId);
